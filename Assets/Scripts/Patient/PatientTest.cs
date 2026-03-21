@@ -10,14 +10,14 @@ public class PatientTest : MonoBehaviour
         //b to start bleed
         if (Input.GetKeyDown(KeyCode.B))
         {
-            patient.applyDamage(10f);
-            Debug.Log("bleed test triggered 10f");
+            patient.applyDamage(5f);
+            Debug.Log("bleed test triggered 5f");
         }
         //h to start heavy bleed
         if (Input.GetKeyDown(KeyCode.H))
         {
-            patient.applyDamage(30f);
-            Debug.Log("bleed test triggered 30f");
+            patient.applyDamage(15f);
+            Debug.Log("bleed test triggered 15f");
         }
         //s to stop bleed
         if (Input.GetKeyDown(KeyCode.S))

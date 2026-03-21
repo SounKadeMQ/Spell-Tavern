@@ -17,11 +17,14 @@ public class VitalsUI : MonoBehaviour
         if (patient == null) return;
         bloodBar.value = patient.bloodLevel;
 
+        float bleed = patient.getBleedRate();
+
         if (vitalsText != null)
         {
             vitalsText.text =
                 $"Blood: {patient.bloodLevel:F0}\n" +
-                $"Bleeding: {patient.bleed}";
+                $"Bleeding: " + (patient.bleed ? "YES":"NO") + "\n" +
+                $"Bleed/sec: " + bleed.ToString("F2");
         }
     }
 }
