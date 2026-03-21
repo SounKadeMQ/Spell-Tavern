@@ -22,7 +22,7 @@ public class MouseDraw : MonoBehaviour
             mousePos.z = 0f; // Set z to 0 for 2D
 
             // Only add point if it's far enough from the last point to avoid lag
-            if (positionCount == 0 || Vector3.Distance(mousePos, lineRenderer.GetPosition(positionCount - 1)) > 0.1f)
+            if (positionCount == 0 || Vector3.Distance(mousePos, lineRenderer.GetPosition(positionCount - 1)) > 1f)
             {
                 positionCount++;
                 lineRenderer.positionCount = positionCount;
