@@ -4,63 +4,44 @@ using UnityEngine;
 
 public class MouseDraw : MonoBehaviour
 {
-    Coroutine drawing;
-    bool letGo;
-    GameObject newLine;
-    // Update is called once per frame
+    private LineRenderer lineRenderer;
+    private int positionCount = 0;
+    [SerializeField] private float time = 0;
+
+    void Start()
+    {
+        lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.positionCount = 0; // Start with no points
+    }
+
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0)) // While left mouse button is held
         {
-            StartLine();
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePos.z = 0f; // Set z to 0 for 2D
+
+            // Only add point if it's far enough from the last point to avoid lag
+            if (positionCount == 0 || Vector3.Distance(mousePos, lineRenderer.GetPosition(positionCount - 1)) > 0.1f)
+            {
+                positionCount++;
+                lineRenderer.positionCount = positionCount;
+                lineRenderer.SetPosition(positionCount - 1, mousePos);
+            }
         }
-        if(Input.GetMouseButtonUp(0))
+        else
         {
-            EndLine();
+            if (time >= 1)
+            {
+                lineRenderer.positionCount = 0;
+                time = 0;
+                positionCount = 0;
+            }
+            time += Time.deltaTime;
         }
-    }
-
-
-    void StartLine()
-    {
-        letGo = false;
-        if(drawing!=null)
+        if (Input.GetMouseButtonUp(0)) 
         {
-            StopCoroutine(drawing);
+            time = 0;
         }
-        drawing = StartCoroutine(DrawLine());
-    }
-
-    void EndLine()
-    {
-        StartCoroutine(ClearLine());
-        StopCoroutine(ClearLine());
-    }
-
-    IEnumerator DrawLine()
-    {
-        newLine = Instantiate(Resources.Load("Line") as GameObject, new Vector3(0,0,0), Quaternion.identity);
-        LineRenderer line = newLine.GetComponent<LineRenderer>();
-        line.positionCount = 0;
-
-        if(letGo == true)
-        {
-            Destroy(newLine, 1f);
-        }
-        while(letGo == false)
-        {
-            Vector3 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            position.z = 0;
-            line.positionCount++;
-            line.SetPosition(line.positionCount-1, position);
-            yield return null;
-
-        }
-    }
-
-    IEnumerator ClearLine()
-    {
-        yield return new WaitForSeconds(0);
-        letGo = true;
     }
 }
