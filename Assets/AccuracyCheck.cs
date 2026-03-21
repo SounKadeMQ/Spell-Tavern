@@ -4,7 +4,7 @@ public class AccuracyCheck : MonoBehaviour
 {
     [SerializeField] GameObject line;
     private LineRenderer tracerLine;
-    privatee LineRenderer drawLine;
+    private LineRenderer drawLine;
 
     void Start()
     {
@@ -15,9 +15,7 @@ public class AccuracyCheck : MonoBehaviour
     {
         if (Input.GetMouseButtonUp(0)) 
         {
-            drawLine = line.GetComponent<LineeRenderer>();
+            drawLine = line.GetComponent<LineRenderer>();
         }
     }
-
-    
 }
