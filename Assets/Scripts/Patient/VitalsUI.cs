@@ -15,13 +15,11 @@ public class VitalsUI : MonoBehaviour
     void Update()
     {
         if (patient == null) return;
-        healthBar.value = patient.health;
         bloodBar.value = patient.bloodLevel;
 
         if (vitalsText != null)
         {
             vitalsText.text =
-                $"HP: {patient.health:F0}\n" +
                 $"Blood: {patient.bloodLevel:F0}\n" +
                 $"Bleeding: {patient.bleed}";
         }

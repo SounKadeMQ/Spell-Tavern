@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Patient : MonoBehaviour
 {
-    public float health = 100f;
     public float bloodLevel = 100f;
     public bool bleed; //init false
 
@@ -15,9 +14,8 @@ public class Patient : MonoBehaviour
     public void applyDamage(float amt) 
     {
         if (isDead) return;
-        health -= amt;
 
-        if (health <= 0) 
+        if (bloodLevel <= 0) 
         {
             Die();
         }
