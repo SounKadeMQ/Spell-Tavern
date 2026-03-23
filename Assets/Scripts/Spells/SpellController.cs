@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 //AccuracyCheck.cs
 
@@ -17,12 +18,37 @@ MISS; waterHeal = 100 * 0.3 * 0.1 = 2
 
 public class SpellController : MonoBehaviour
 {
+    public enum SpellJudgement
+    {
+        Nice,
+        Great,
+        Good,
+        Eh,
+        Miss
+    }
+
+    public enum SpellType
+    {
+        None,
+        Water,
+        Wind,
+        Earth,
+        Lightning,
+        Fire
+    }
+
     public Patient patient;
     public AccuracyCheck waterAccuracyCheck;
 
     public bool readyToMerge;
     [SerializeField] private bool useDrawnWaterSpell = true;
     [SerializeField] private bool enableDebugHotkeys = true;
+    [SerializeField] private SpellType selectedSpell = SpellType.Water;
+
+    [Header("Feedback")]
+    [SerializeField] private TextMeshProUGUI spellJudgementText;
+    [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private int score;
 
     [Header("Water Spell")]
     public float waterPotency = 100f;
@@ -56,7 +82,10 @@ public class SpellController : MonoBehaviour
     void Update()
     //todo: implement later
     {
-        if (useDrawnWaterSpell && waterAccuracyCheck != null && waterAccuracyCheck.TryConsumeAccuracy(out float drawnAccuracy))
+        if (useDrawnWaterSpell &&
+            selectedSpell == SpellType.Water &&
+            waterAccuracyCheck != null &&
+            waterAccuracyCheck.TryConsumeAccuracy(out float drawnAccuracy))
         {
             CastWater(drawnAccuracy);
         }
@@ -92,14 +121,19 @@ public class SpellController : MonoBehaviour
     {
         if (patient == null) return;
 
+        SpellJudgement judgement = GetSpellJudgement(acc);
         float mult = GetAccuracyMultiplier(acc);
         float totalHeal = calcWaterHeal(waterPotency, mult);
+        int pointsAwarded = GetPointsForJudgement(judgement);
 
         float t = Mathf.InverseLerp(0.1f, 1.1f, mult);
         float reduction = Mathf.Lerp(0.6f, 0.3f, t);
 
         patient.startHoT(totalHeal, waterDuration);
         patient.bleedReduction(reduction, waterDuration); //reduces bleed based on accuracy of the spell
+        score += pointsAwarded;
+
+        UpdateFeedbackUI(judgement);
 
 
         if(audioSource != null && waterSFX != null)
@@ -109,10 +143,96 @@ public class SpellController : MonoBehaviour
 
         Debug.Log(
             "water cast - acc: " + acc.ToString("F3") +
+            " - judgement: " + GetJudgementText(judgement) +
+            " - points: " + pointsAwarded +
             " - multiplier: " + mult.ToString("F2") +
             " - total heal: " + totalHeal.ToString("F2") +
             " - bleed reduction: " + reduction.ToString("F2") 
         );
+    }
+
+    public void SetSelectedSpell(SpellType spell)
+    {
+        selectedSpell = spell;
+    }
+
+    public SpellType GetSelectedSpell()
+    {
+        return selectedSpell;
+    }
+
+    SpellJudgement GetSpellJudgement(float acc)
+    {
+        if (acc <= 0.35f)
+        {
+            return SpellJudgement.Nice;
+        }
+
+        if (acc <= 2.15f)
+        {
+            return SpellJudgement.Great;
+        }
+
+        if (acc <= 3.5f)
+        {
+            return SpellJudgement.Good;
+        }
+
+        if (acc <= 5f)
+        {
+            return SpellJudgement.Eh;
+        }
+
+        return SpellJudgement.Miss;
+    }
+
+    int GetPointsForJudgement(SpellJudgement judgement)
+    {
+        switch (judgement)
+        {
+            case SpellJudgement.Nice:
+                return 300;
+            case SpellJudgement.Great:
+                return 250;
+            case SpellJudgement.Good:
+                return 150;
+            case SpellJudgement.Eh:
+                return 50;
+            default:
+                return 0;
+        }
+    }
+
+    string GetJudgementText(SpellJudgement judgement)
+    {
+        switch (judgement)
+        {
+            case SpellJudgement.Nice:
+                return "NICE!!! (300 points)";
+            case SpellJudgement.Great:
+                return "GREAT!!";
+            case SpellJudgement.Good:
+                return "GOOD!";
+            case SpellJudgement.Eh:
+                return "EH...!";
+            default:
+                return "MISS!";
+        }
+    }
+
+    void UpdateFeedbackUI(SpellJudgement judgement)
+    {
+        string feedback = GetJudgementText(judgement);
+
+        if (spellJudgementText != null)
+        {
+            spellJudgementText.text = feedback;
+        }
+
+        if (scoreText != null)
+        {
+            scoreText.text = score.ToString();
+        }
     }
 
     float GetAccuracyMultiplier(float acc)
@@ -125,6 +245,11 @@ public class SpellController : MonoBehaviour
         if (acc <= 2.15f)
         {
             return 0.75f;
+        }
+
+        if (acc <= 3.5f)
+        {
+            return 0.55f;
         }
 
         if (acc <= 5f)
