@@ -21,6 +21,11 @@ public class MouseDraw : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetMouseButtonDown(0))
+        {
+            BeginStroke();
+        }
+
         if (Input.GetMouseButton(0)) // While left mouse button is held
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -61,5 +66,13 @@ public class MouseDraw : MonoBehaviour
     {
         worldPosition = strokeStartWorldPosition;
         return hasStroke;
+    }
+
+    void BeginStroke()
+    {
+        lineRenderer.positionCount = 0;
+        positionCount = 0;
+        time = 0f;
+        hasStroke = false;
     }
 }
