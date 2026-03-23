@@ -1776,6 +1776,7 @@ LineRenderer:
   - {x: 2, y: -2, z: 0}
   - {x: 2, y: 2, z: 0}
   - {x: 6, y: 2, z: 0}
+  - {x: 6, y: -2, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -1796,16 +1797,16 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.38990554, g: 0.38202205, b: 0.9245283, a: 1}
-      key1: {r: 0.19996901, g: 0.07623346, b: 0.93962264, a: 1}
+      key0: {r: 0.509434, g: 0.05833077, b: 0.045176197, a: 1}
+      key1: {r: 0, g: 0.013287813, b: 0.8867924, a: 1}
       key2: {r: 0, g: 0.013287813, b: 0.8867924, a: 1}
-      key3: {r: 0.024562731, g: 0.021019593, b: 0.8932817, a: 0}
-      key4: {r: 1, g: 1, b: 1, a: 0}
+      key3: {r: 0, g: 0.013287813, b: 0.8867924, a: 0}
+      key4: {r: 0.19996901, g: 0.07623346, b: 0.93962264, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}
       key7: {r: 0, g: 0, b: 0, a: 0}
-      ctime0: 17039
-      ctime1: 56514
+      ctime0: 50809
+      ctime1: 65304
       ctime2: 65304
       ctime3: 65535
       ctime4: 65535
@@ -1820,7 +1821,7 @@ LineRenderer:
       atime5: 0
       atime6: 0
       atime7: 0
-      m_Mode: 0
+      m_Mode: 1
       m_ColorSpace: 0
       m_NumColorKeys: 4
       m_NumAlphaKeys: 3
@@ -1952,6 +1953,8 @@ MonoBehaviour:
   patientWounds: {fileID: 0}
   mouseDraw: {fileID: 1932356263}
   waterAccuracyCheck: {fileID: 1430581639}
+  earthAccuracyCheck: {fileID: 1692664337}
+  fireAccuracyCheck: {fileID: 863098230}
   readyToMerge: 0
   useDrawnWaterSpell: 1
   enableDebugHotkeys: 1
@@ -1962,16 +1965,16 @@ MonoBehaviour:
   earthSpellKey: 115
   waterSpellKey: 100
   waterRuneVisual: {fileID: 1430581638}
-  earthRuneVisual: {fileID: 0}
+  earthRuneVisual: {fileID: 1692664336}
   fireRuneVisual: {fileID: 863098229}
   startIndicatorColor: {r: 0.7, g: 0.95, b: 1, a: 0.9}
   spellJudgementText: {fileID: 0}
   scoreText: {fileID: 0}
   score: 0
-  niceThreshold: 0.35
-  greatThreshold: 1.75
-  goodThreshold: 2.5
-  ehThreshold: 4
+  niceThreshold: 1.6
+  greatThreshold: 1.8235
+  goodThreshold: 2.05
+  ehThreshold: 3
   idealCastTime: 0.85
   maxCastTime: 2.2
   speedAccuracyBonus: 0.35

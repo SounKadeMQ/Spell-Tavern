@@ -43,6 +43,8 @@ public class SpellController : MonoBehaviour
     [SerializeField] private PatientWounds patientWounds;
     [SerializeField] private MouseDraw mouseDraw;
     public AccuracyCheck waterAccuracyCheck;
+    public AccuracyCheck earthAccuracyCheck;
+    public AccuracyCheck fireAccuracyCheck;
 
     public bool readyToMerge;
     [SerializeField] private bool useDrawnWaterSpell = true;
@@ -61,7 +63,11 @@ public class SpellController : MonoBehaviour
     [SerializeField] private Color startIndicatorColor = new Color(0.7f, 0.95f, 1f, 0.9f);
 
     private LineRenderer waterRuneLine;
+    private LineRenderer earthRuneLine;
+    private LineRenderer fireRuneLine;
     private Vector3[] waterRuneTemplateOffsets;
+    private Vector3[] earthRuneTemplateOffsets;
+    private Vector3[] fireRuneTemplateOffsets;
 
     [Header("Feedback")]
     [SerializeField] private TextMeshProUGUI spellJudgementText;
@@ -127,6 +133,28 @@ public class SpellController : MonoBehaviour
             CacheWaterRuneTemplate();
         }
 
+        if (fireRuneVisual == null && fireAccuracyCheck != null)
+        {
+            fireRuneVisual = fireAccuracyCheck.gameObject;
+        }
+
+        if (earthRuneVisual == null && earthAccuracyCheck != null)
+        {
+            earthRuneVisual = earthAccuracyCheck.gameObject;
+        }
+
+        if (earthAccuracyCheck != null)
+        {
+            earthRuneLine = earthAccuracyCheck.GetComponent<LineRenderer>();
+            CacheEarthRuneTemplate();
+        }
+
+        if (fireAccuracyCheck != null)
+        {
+            fireRuneLine = fireAccuracyCheck.GetComponent<LineRenderer>();
+            CacheFireRuneTemplate();
+        }
+
         if (requireSpellSelection)
         {
             selectedSpell = SpellType.None;
@@ -145,18 +173,17 @@ public class SpellController : MonoBehaviour
 
         HandleSpellSelectionInput();
 
-        if (selectedSpell == SpellType.Water &&
+        if ((selectedSpell == SpellType.Water ||
+             selectedSpell == SpellType.Earth ||
+             selectedSpell == SpellType.Fire) &&
             mouseDraw != null &&
             mouseDraw.TryConsumeStrokeStart(out Vector3 strokeStartPosition))
         {
-            MoveWaterRuneTo(strokeStartPosition);
+            MoveSelectedRuneTo(strokeStartPosition);
             StrokeStartIndicator.Create(strokeStartPosition, startIndicatorColor);
         }
 
-        if (useDrawnWaterSpell &&
-            selectedSpell == SpellType.Water &&
-            waterAccuracyCheck != null &&
-            waterAccuracyCheck.TryConsumeAccuracy(out float drawnAccuracy))
+        if (TryConsumeSelectedSpellAccuracy(out float drawnAccuracy))
         {
             float finalAccuracy = GetSpeedAdjustedAccuracy(drawnAccuracy);
             bool isQuickCast = IsQuickCast();
@@ -590,16 +617,91 @@ public class SpellController : MonoBehaviour
         }
     }
 
-    void MoveWaterRuneTo(Vector3 anchorPosition)
+    void CacheFireRuneTemplate()
     {
-        if (waterRuneLine == null || waterRuneTemplateOffsets == null)
+        if (fireRuneLine == null || fireRuneLine.positionCount == 0)
+        {
+            fireRuneTemplateOffsets = null;
+            return;
+        }
+
+        fireRuneTemplateOffsets = new Vector3[fireRuneLine.positionCount];
+        Vector3 anchor = fireRuneLine.GetPosition(0);
+
+        for (int i = 0; i < fireRuneLine.positionCount; i++)
+        {
+            fireRuneTemplateOffsets[i] = fireRuneLine.GetPosition(i) - anchor;
+        }
+    }
+
+    void CacheEarthRuneTemplate()
+    {
+        if (earthRuneLine == null || earthRuneLine.positionCount == 0)
+        {
+            earthRuneTemplateOffsets = null;
+            return;
+        }
+
+        earthRuneTemplateOffsets = new Vector3[earthRuneLine.positionCount];
+        Vector3 anchor = earthRuneLine.GetPosition(0);
+
+        for (int i = 0; i < earthRuneLine.positionCount; i++)
+        {
+            earthRuneTemplateOffsets[i] = earthRuneLine.GetPosition(i) - anchor;
+        }
+    }
+
+    void MoveSelectedRuneTo(Vector3 anchorPosition)
+    {
+        switch (selectedSpell)
+        {
+            case SpellType.Water:
+                MoveRuneTo(waterRuneLine, waterRuneTemplateOffsets, anchorPosition);
+                break;
+            case SpellType.Earth:
+                MoveRuneTo(earthRuneLine, earthRuneTemplateOffsets, anchorPosition);
+                break;
+            case SpellType.Fire:
+                MoveRuneTo(fireRuneLine, fireRuneTemplateOffsets, anchorPosition);
+                break;
+        }
+    }
+
+    bool TryConsumeSelectedSpellAccuracy(out float accuracy)
+    {
+        accuracy = 0f;
+
+        if (!useDrawnWaterSpell)
+        {
+            return false;
+        }
+
+        switch (selectedSpell)
+        {
+            case SpellType.Water:
+                return waterAccuracyCheck != null &&
+                       waterAccuracyCheck.TryConsumeAccuracy(out accuracy);
+            case SpellType.Earth:
+                return earthAccuracyCheck != null &&
+                       earthAccuracyCheck.TryConsumeAccuracy(out accuracy);
+            case SpellType.Fire:
+                return fireAccuracyCheck != null &&
+                       fireAccuracyCheck.TryConsumeAccuracy(out accuracy);
+            default:
+                return false;
+        }
+    }
+
+    void MoveRuneTo(LineRenderer runeLine, Vector3[] runeTemplateOffsets, Vector3 anchorPosition)
+    {
+        if (runeLine == null || runeTemplateOffsets == null)
         {
             return;
         }
 
-        for (int i = 0; i < waterRuneTemplateOffsets.Length; i++)
+        for (int i = 0; i < runeTemplateOffsets.Length; i++)
         {
-            waterRuneLine.SetPosition(i, anchorPosition + waterRuneTemplateOffsets[i]);
+            runeLine.SetPosition(i, anchorPosition + runeTemplateOffsets[i]);
         }
     }
 }
