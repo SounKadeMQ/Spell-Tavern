@@ -1,20 +1,25 @@
 using System.Collections;
-using NUnit.Framework;
-using Unity.IntegerTime;
-using Unity.VisualScripting;
-using UnityEditor.U2D.Tooling.Analyzer;
 using UnityEngine;
 
 public class Patient : MonoBehaviour
 {
-    public float bloodLevel = 100f;
-    private float bleedMod = 1f; //1 = full bleed
+    public PatientData data;
+    public float bloodLevel;
+    private float bleedMod; //1 = full bleed
     public bool bleed; //init false
-    public float currentBleedRate = 0f;
+    public float currentBleedRate;
 
     private bool isDead = false;
     private Coroutine bleedRoutine;
     private Coroutine healRoutine;
+
+    public void Initialize(PatientData patientData)
+    {
+        data = patientData;
+        bloodLevel = data.startingBlood;
+        currentBleedRate = data.startingBleedRate;
+        bleedMod = data.startingBleedMod;
+    }
 
     public void applyDamage(float amt) 
     {
@@ -23,18 +28,23 @@ public class Patient : MonoBehaviour
         if (bloodLevel <= 0) 
         {
             Die();
+            return;
         }
 
-        bleed = true;
-        currentBleedRate = amt;
-        bleedRoutine = StartCoroutine(Bleed(amt)); //sits here until used
+        currentBleedRate += amt;
+        bleed = currentBleedRate > 0f;
+
+        if (bleedRoutine == null)
+        {
+            bleedRoutine = StartCoroutine(Bleed());
+        }
     }
 
-    IEnumerator Bleed(float rate) 
+    IEnumerator Bleed() 
     {
         while (bleed && !isDead)
         {
-            bloodLevel -= rate * Time.deltaTime;
+            bloodLevel -= getBleedRate() * Time.deltaTime;
             if(bloodLevel <= 0)
             {
                 Die();
@@ -42,6 +52,8 @@ public class Patient : MonoBehaviour
             }
             yield return null;
         }
+
+        bleedRoutine = null;
     }
 
     public void stopBleeding()
