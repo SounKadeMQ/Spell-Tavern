@@ -13,12 +13,22 @@ public class Patient : MonoBehaviour
     private Coroutine bleedRoutine;
     private Coroutine healRoutine;
 
+    void Start()
+    {
+        if (data != null)
+        {
+            Initialize(data);
+        }
+    }
+
     public void Initialize(PatientData patientData)
     {
         data = patientData;
         bloodLevel = data.startingBlood;
         currentBleedRate = data.startingBleedRate;
         bleedMod = data.startingBleedMod;
+
+        Debug.Log($"Loaded {data.patientName}: blood {bloodLevel}, stored bleed rate {currentBleedRate}");
     }
 
     public void applyDamage(float amt) 

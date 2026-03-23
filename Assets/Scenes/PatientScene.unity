@@ -1416,7 +1416,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7954f90fcb31de74e8fc123e15ce07cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Patient
-  data: {fileID: 0}
+  data: {fileID: 11400000, guid: d76f5b62e52517145b650e24ea3e9016, type: 2}
   bloodLevel: 100
   bleed: 0
   currentBleedRate: 0
