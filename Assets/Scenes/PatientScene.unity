@@ -633,6 +633,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1932356262}
   - {fileID: 1865490860}
   m_Father: {fileID: 1731897576}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1176,13 +1177,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1430581638}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a80b9de64c519ac4b9f16fb5efb96444, type: 3}
+  m_Script: {fileID: 11500000, guid: 5b796793e2d3f2d468e9e216bba79bae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AccuracyCheck
   line: {fileID: 1932356261}
   accuracy: 0
   minimumSampleCount: 3
   minimumStrokeLength: 2
+  minimumLengthCoverage: 0.8
+  endpointTolerance: 1.5
+  pathTolerance: 1.25
+  minimumPathMatchRatio: 0.85
 --- !u!120 &1430581640
 LineRenderer:
   serializedVersion: 3
@@ -1302,12 +1307,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1430581638}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.38333, y: -2.80357, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.38333, y: -3.79357, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1865490860}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1454671554
 GameObject:
@@ -1390,15 +1395,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1731897576}
+    m_TransformParent: {fileID: 1084433404}
     m_Modifications:
     - target: {fileID: 6370132063917017219, guid: 7a0ff9fa90159064d972b671820a0c26, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.11512
+      value: -0.96505004
       objectReference: {fileID: 0}
     - target: {fileID: 6370132063917017219, guid: 7a0ff9fa90159064d972b671820a0c26, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.07326
+      value: -2.74406
       objectReference: {fileID: 0}
     - target: {fileID: 6370132063917017219, guid: 7a0ff9fa90159064d972b671820a0c26, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1594,7 +1599,6 @@ Transform:
   - {fileID: 1692125200}
   - {fileID: 1084433404}
   - {fileID: 1724683129}
-  - {fileID: 1932356262}
   - {fileID: 1249590323}
   - {fileID: 1131546432}
   m_Father: {fileID: 0}
@@ -1616,6 +1620,10 @@ MonoBehaviour:
   readyToMerge: 0
   useDrawnWaterSpell: 1
   enableDebugHotkeys: 1
+  selectedSpell: 1
+  spellJudgementText: {fileID: 0}
+  scoreText: {fileID: 0}
+  score: 0
   waterPotency: 100
   waterDuration: 2
   testAccuracy: 0.38
@@ -1863,6 +1871,7 @@ Transform:
   - {fileID: 573621352}
   - {fileID: 250870337}
   - {fileID: 1222084828}
+  - {fileID: 1430581641}
   m_Father: {fileID: 1084433404}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1865490861
@@ -2082,4 +2091,3 @@ SceneRoots:
   m_Roots:
   - {fileID: 299416781}
   - {fileID: 1731897576}
-  - {fileID: 1430581641}
