@@ -6,12 +6,14 @@ public class Patient : MonoBehaviour
     public PatientData data;
     public float bloodLevel;
     private float bleedMod; //1 = full bleed
+    private float defaultBleedMod = 1f;
     public bool bleed; //init false
     public float currentBleedRate;
 
     private bool isDead = false;
     private Coroutine bleedRoutine;
     private Coroutine healRoutine;
+    private Coroutine bleedReductionRoutineRef;
 
     void Start()
     {
@@ -26,7 +28,14 @@ public class Patient : MonoBehaviour
         data = patientData;
         bloodLevel = data.startingBlood;
         currentBleedRate = data.startingBleedRate;
-        bleedMod = data.startingBleedMod;
+        defaultBleedMod = data.startingBleedMod;
+        bleedMod = defaultBleedMod;
+        bleed = currentBleedRate > 0f;
+
+        if (bleed)
+        {
+            bleedRoutine = StartCoroutine(Bleed());
+        }
 
         Debug.Log($"Loaded {data.patientName}: blood {bloodLevel}, stored bleed rate {currentBleedRate}");
     }
@@ -69,12 +78,21 @@ public class Patient : MonoBehaviour
     public void stopBleeding()
     {
         bleed = false;
+        currentBleedRate = 0f;
+
         if (bleedRoutine != null)
         {
             StopCoroutine(bleedRoutine);
             bleedRoutine = null;
-            currentBleedRate = 0f;
         }
+
+        if (bleedReductionRoutineRef != null)
+        {
+            StopCoroutine(bleedReductionRoutineRef);
+            bleedReductionRoutineRef = null;
+        }
+
+        bleedMod = defaultBleedMod;
     }
 
     public void restoreVitals(float amt)
@@ -93,7 +111,15 @@ public class Patient : MonoBehaviour
         if (healRoutine != null)
         {
             StopCoroutine(healRoutine);
+            healRoutine = null;
         }
+
+        if (dur <= 0f)
+        {
+            restoreVitals(totalHeal);
+            return;
+        }
+
         healRoutine = StartCoroutine(HealOverTime(totalHeal, dur));
     }
 
@@ -118,15 +144,28 @@ public class Patient : MonoBehaviour
 
     public void bleedReduction(float mod, float dur)
     {
-        StartCoroutine(bleedReductionRoutine(mod, dur));
+        if (bleedReductionRoutineRef != null)
+        {
+            StopCoroutine(bleedReductionRoutineRef);
+            bleedReductionRoutineRef = null;
+        }
+
+        if (dur <= 0f)
+        {
+            bleedMod = defaultBleedMod;
+            return;
+        }
+
+        bleedReductionRoutineRef = StartCoroutine(BleedReductionRoutine(mod, dur));
 
     }
 
-    IEnumerator bleedReductionRoutine(float mod, float dur)
+    IEnumerator BleedReductionRoutine(float mod, float dur)
     {
         bleedMod = mod;
         yield return new WaitForSeconds(dur);
-        bleedMod = 1f;
+        bleedMod = defaultBleedMod;
+        bleedReductionRoutineRef = null;
     }
  
     public float getBleedRate()

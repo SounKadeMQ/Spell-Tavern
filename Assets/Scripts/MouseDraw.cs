@@ -7,6 +7,11 @@ public class MouseDraw : MonoBehaviour
     private LineRenderer lineRenderer;
     private int positionCount = 0;
     [SerializeField] private float time = 0;
+    private bool hasStroke;
+    private Vector3 strokeStartWorldPosition;
+
+    public bool HasStroke => hasStroke;
+    public LineRenderer CurrentLine => lineRenderer;
 
     void Start()
     {
@@ -24,6 +29,12 @@ public class MouseDraw : MonoBehaviour
             // Only add point if it's far enough from the last point to avoid lag
             if (positionCount == 0 || Vector3.Distance(mousePos, lineRenderer.GetPosition(positionCount - 1)) > 1f)
             {
+                if (positionCount == 0)
+                {
+                    strokeStartWorldPosition = mousePos;
+                    hasStroke = true;
+                }
+
                 positionCount++;
                 lineRenderer.positionCount = positionCount;
                 lineRenderer.SetPosition(positionCount - 1, mousePos);
@@ -36,6 +47,7 @@ public class MouseDraw : MonoBehaviour
                 lineRenderer.positionCount = 0;
                 time = 0;
                 positionCount = 0;
+                hasStroke = false;
             }
             time += Time.deltaTime;
         }
@@ -43,5 +55,11 @@ public class MouseDraw : MonoBehaviour
         {
             time = 0;
         }
+    }
+
+    public bool TryGetStrokeStart(out Vector3 worldPosition)
+    {
+        worldPosition = strokeStartWorldPosition;
+        return hasStroke;
     }
 }

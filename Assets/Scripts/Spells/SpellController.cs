@@ -18,8 +18,11 @@ MISS; waterHeal = 100 * 0.3 * 0.1 = 2
 public class SpellController : MonoBehaviour
 {
     public Patient patient;
+    public AccuracyCheck waterAccuracyCheck;
 
     public bool readyToMerge;
+    [SerializeField] private bool useDrawnWaterSpell = true;
+    [SerializeField] private bool enableDebugHotkeys = true;
 
     [Header("Water Spell")]
     public float waterPotency = 100f;
@@ -53,11 +56,21 @@ public class SpellController : MonoBehaviour
     void Update()
     //todo: implement later
     {
+        if (useDrawnWaterSpell && waterAccuracyCheck != null && waterAccuracyCheck.TryConsumeAccuracy(out float drawnAccuracy))
+        {
+            CastWater(drawnAccuracy);
+        }
+
+        if (!enableDebugHotkeys)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             CastWater(testAccuracy);
         }
-            if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             CastWater(0.20f); // perfect
         }
