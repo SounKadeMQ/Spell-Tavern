@@ -1256,18 +1256,18 @@ LineRenderer:
     colorGradient:
       serializedVersion: 2
       key0: {r: 0.38990554, g: 0.38202205, b: 0.9245283, a: 1}
-      key1: {r: 1, g: 1, b: 1, a: 1}
-      key2: {r: 1, g: 1, b: 1, a: 1}
-      key3: {r: 0, g: 0, b: 0, a: 0}
-      key4: {r: 0, g: 0, b: 0, a: 0}
+      key1: {r: 0.19996901, g: 0.07623346, b: 0.93962264, a: 1}
+      key2: {r: 0, g: 0.013287813, b: 0.8867924, a: 1}
+      key3: {r: 0.024562731, g: 0.021019593, b: 0.8932817, a: 0}
+      key4: {r: 1, g: 1, b: 1, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}
       key7: {r: 0, g: 0, b: 0, a: 0}
-      ctime0: 48342
-      ctime1: 60524
-      ctime2: 65535
-      ctime3: 0
-      ctime4: 0
+      ctime0: 17039
+      ctime1: 56514
+      ctime2: 65304
+      ctime3: 65535
+      ctime4: 65535
       ctime5: 0
       ctime6: 0
       ctime7: 0
@@ -1281,7 +1281,7 @@ LineRenderer:
       atime7: 0
       m_Mode: 0
       m_ColorSpace: 0
-      m_NumColorKeys: 3
+      m_NumColorKeys: 4
       m_NumAlphaKeys: 3
     numCornerVertices: 0
     numCapVertices: 0
@@ -1303,7 +1303,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.38333, y: -2.80357, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1611,7 +1611,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellController
   patient: {fileID: 1865490857}
-  waterAccuracyCheck: {fileID: 0}
+  waterAccuracyCheck: {fileID: 1430581639}
   readyToMerge: 0
   useDrawnWaterSpell: 1
   enableDebugHotkeys: 1
@@ -1630,8 +1630,8 @@ MonoBehaviour:
   firePotency: 100
   fireDuration: 2
   fireTestAccuracy: 0.38
-  audioSource: {fileID: 0}
-  waterSFX: {fileID: 0}
+  audioSource: {fileID: 1865490861}
+  waterSFX: {fileID: 8300000, guid: 8805800bb56fb6940bf44f4bb1ea372b, type: 3}
 --- !u!1 &1744274244
 GameObject:
   m_ObjectHideFlags: 0
