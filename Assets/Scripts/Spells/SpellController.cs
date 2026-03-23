@@ -38,6 +38,8 @@ public class SpellController : MonoBehaviour
     }
 
     public Patient patient;
+    [SerializeField] private PatientWounds patientWounds;
+    [SerializeField] private MouseDraw mouseDraw;
     public AccuracyCheck waterAccuracyCheck;
 
     public bool readyToMerge;
@@ -82,12 +84,16 @@ public class SpellController : MonoBehaviour
     void Update()
     //todo: implement later
     {
+        if (patient != null && patientWounds == null)
+        {
+            patientWounds = patient.GetComponent<PatientWounds>();
+        }
+
         if (useDrawnWaterSpell &&
-            selectedSpell == SpellType.Water &&
             waterAccuracyCheck != null &&
             waterAccuracyCheck.TryConsumeAccuracy(out float drawnAccuracy))
         {
-            CastWater(drawnAccuracy);
+            CastSelectedSpell(drawnAccuracy);
         }
 
         if (!enableDebugHotkeys)
@@ -97,7 +103,15 @@ public class SpellController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            CastWater(testAccuracy);
+            CastSelectedSpell(GetSelectedSpellTestAccuracy());
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            CastEarth(earthTestAccuracy);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            CastFire(fireTestAccuracy);
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -151,6 +165,16 @@ public class SpellController : MonoBehaviour
         );
     }
 
+    public void CastEarth(float acc)
+    {
+        CastTargetedSpell(SpellType.Earth, acc);
+    }
+
+    public void CastFire(float acc)
+    {
+        CastTargetedSpell(SpellType.Fire, acc);
+    }
+
     public void SetSelectedSpell(SpellType spell)
     {
         selectedSpell = spell;
@@ -159,6 +183,22 @@ public class SpellController : MonoBehaviour
     public SpellType GetSelectedSpell()
     {
         return selectedSpell;
+    }
+
+    void CastSelectedSpell(float acc)
+    {
+        switch (selectedSpell)
+        {
+            case SpellType.Water:
+                CastWater(acc);
+                break;
+            case SpellType.Earth:
+                CastEarth(acc);
+                break;
+            case SpellType.Fire:
+                CastFire(acc);
+                break;
+        }
     }
 
     SpellJudgement GetSpellJudgement(float acc)
@@ -263,5 +303,75 @@ public class SpellController : MonoBehaviour
     float calcWaterHeal(float pot, float mult)
     {
         return pot * 0.3f * mult;
+    }
+
+    void CastTargetedSpell(SpellType spellType, float acc)
+    {
+        if (!TryGetTargetWound(out CutWound wound))
+        {
+            if (spellJudgementText != null)
+            {
+                spellJudgementText.text = "No wound targeted.";
+            }
+
+            Debug.Log(spellType + " cast failed: no wound targeted.");
+            return;
+        }
+
+        SpellJudgement judgement = GetSpellJudgement(acc);
+        int pointsAwarded = GetPointsForJudgement(judgement);
+        bool treated = wound.TryApplySpell(spellType, out string outcome);
+
+        if (treated)
+        {
+            score += pointsAwarded;
+        }
+
+        if (spellJudgementText != null)
+        {
+            spellJudgementText.text = outcome;
+        }
+
+        if (scoreText != null)
+        {
+            scoreText.text = score.ToString();
+        }
+
+        Debug.Log(
+            spellType + " cast - acc: " + acc.ToString("F3") +
+            " - outcome: " + outcome +
+            " - points: " + (treated ? pointsAwarded : 0));
+    }
+
+    bool TryGetTargetWound(out CutWound wound)
+    {
+        wound = null;
+
+        if (patientWounds == null)
+        {
+            return false;
+        }
+
+        if (mouseDraw != null &&
+            mouseDraw.CurrentLine != null &&
+            patientWounds.TryGetWoundTouchedByLine(mouseDraw.CurrentLine, out wound))
+        {
+            return true;
+        }
+
+        return patientWounds.TryGetFirstOpenWound(out wound);
+    }
+
+    float GetSelectedSpellTestAccuracy()
+    {
+        switch (selectedSpell)
+        {
+            case SpellType.Earth:
+                return earthTestAccuracy;
+            case SpellType.Fire:
+                return fireTestAccuracy;
+            default:
+                return testAccuracy;
+        }
     }
 }

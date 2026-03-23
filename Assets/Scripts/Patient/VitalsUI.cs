@@ -15,7 +15,16 @@ public class VitalsUI : MonoBehaviour
     void Update()
     {
         if (patient == null) return;
-        bloodBar.value = patient.bloodLevel;
+
+        if (bloodBar != null)
+        {
+            bloodBar.value = patient.bloodLevel;
+        }
+
+        if (healthBar != null)
+        {
+            healthBar.value = patient.bloodLevel;
+        }
 
         float bleed = patient.getBleedRate();
 

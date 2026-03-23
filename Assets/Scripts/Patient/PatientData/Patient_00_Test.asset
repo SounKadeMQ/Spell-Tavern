@@ -15,4 +15,4 @@ MonoBehaviour:
   patientName: Angie
   startingBlood: 100
   startingBleedRate: 3
-  startingBleedMod: 1
+  startingBleedMod: -0

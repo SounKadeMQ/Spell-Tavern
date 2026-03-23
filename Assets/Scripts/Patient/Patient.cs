@@ -5,37 +5,63 @@ public class Patient : MonoBehaviour
 {
     public PatientData data;
     public float bloodLevel;
+    [SerializeField] private PatientWounds patientWounds;
     private float bleedMod; //1 = full bleed
     private float defaultBleedMod = 1f;
     public bool bleed; //init false
     public float currentBleedRate;
+    private float directBleedRate;
 
     private bool isDead = false;
     private Coroutine bleedRoutine;
     private Coroutine healRoutine;
     private Coroutine bleedReductionRoutineRef;
 
-    void Start()
+    void Awake()
     {
+        if (patientWounds == null)
+        {
+            patientWounds = GetComponent<PatientWounds>();
+        }
+
         if (data != null)
         {
             Initialize(data);
         }
     }
 
+    void Update()
+    {
+        RefreshBleedState();
+    }
+
     public void Initialize(PatientData patientData)
     {
+        if (bleedRoutine != null)
+        {
+            StopCoroutine(bleedRoutine);
+            bleedRoutine = null;
+        }
+
+        if (healRoutine != null)
+        {
+            StopCoroutine(healRoutine);
+            healRoutine = null;
+        }
+
+        if (bleedReductionRoutineRef != null)
+        {
+            StopCoroutine(bleedReductionRoutineRef);
+            bleedReductionRoutineRef = null;
+        }
+
         data = patientData;
         bloodLevel = data.startingBlood;
-        currentBleedRate = data.startingBleedRate;
+        directBleedRate = data.startingBleedRate;
         defaultBleedMod = data.startingBleedMod;
         bleedMod = defaultBleedMod;
-        bleed = currentBleedRate > 0f;
-
-        if (bleed)
-        {
-            bleedRoutine = StartCoroutine(Bleed());
-        }
+        isDead = false;
+        RefreshBleedState();
 
         Debug.Log($"Loaded {data.patientName}: blood {bloodLevel}, stored bleed rate {currentBleedRate}");
     }
@@ -50,13 +76,8 @@ public class Patient : MonoBehaviour
             return;
         }
 
-        currentBleedRate += amt;
-        bleed = currentBleedRate > 0f;
-
-        if (bleedRoutine == null)
-        {
-            bleedRoutine = StartCoroutine(Bleed());
-        }
+        directBleedRate += amt;
+        RefreshBleedState();
     }
 
     IEnumerator Bleed() 
@@ -77,8 +98,8 @@ public class Patient : MonoBehaviour
 
     public void stopBleeding()
     {
-        bleed = false;
-        currentBleedRate = 0f;
+        directBleedRate = 0f;
+        RefreshBleedState();
 
         if (bleedRoutine != null)
         {
@@ -172,6 +193,37 @@ public class Patient : MonoBehaviour
     {
         return currentBleedRate * bleedMod;
     }
+
+    public void NotifyBleedSourcesChanged()
+    {
+        RefreshBleedState();
+    }
+
+    void RefreshBleedState()
+    {
+        float woundBleedRate = patientWounds != null ? patientWounds.GetTotalBleedRate() : 0f;
+        currentBleedRate = directBleedRate + woundBleedRate;
+        bleed = currentBleedRate > 0f;
+
+        if (isDead)
+        {
+            return;
+        }
+
+        if (bleed)
+        {
+            if (bleedRoutine == null)
+            {
+                bleedRoutine = StartCoroutine(Bleed());
+            }
+        }
+        else if (bleedRoutine != null)
+        {
+            StopCoroutine(bleedRoutine);
+            bleedRoutine = null;
+        }
+    }
+
     void Die()
     {
         if (isDead) return;

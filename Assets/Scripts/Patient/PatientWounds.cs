@@ -9,6 +9,11 @@ public class PatientWounds : MonoBehaviour
 
     void Awake()
     {
+        if (cutWounds.Count == 0)
+        {
+            cutWounds.AddRange(GetComponentsInChildren<CutWound>());
+        }
+
         cutWounds.RemoveAll(wound => wound == null);
     }
 
@@ -52,5 +57,37 @@ public class PatientWounds : MonoBehaviour
         }
 
         cutWounds.Add(wound);
+    }
+
+    public float GetTotalBleedRate()
+    {
+        float totalBleedRate = 0f;
+
+        for (int i = 0; i < cutWounds.Count; i++)
+        {
+            CutWound wound = cutWounds[i];
+            if (wound != null)
+            {
+                totalBleedRate += wound.GetBleedRate();
+            }
+        }
+
+        return totalBleedRate;
+    }
+
+    public bool TryGetFirstOpenWound(out CutWound wound)
+    {
+        for (int i = 0; i < cutWounds.Count; i++)
+        {
+            CutWound candidate = cutWounds[i];
+            if (candidate != null && candidate.IsOpen)
+            {
+                wound = candidate;
+                return true;
+            }
+        }
+
+        wound = null;
+        return false;
     }
 }
