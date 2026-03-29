@@ -68,6 +68,25 @@ public class SpellController : MonoBehaviour
     private Vector3[] waterRuneTemplateOffsets;
     private Vector3[] earthRuneTemplateOffsets;
     private Vector3[] fireRuneTemplateOffsets;
+    private Vector3[] waterRuneTemplateOffsetsReversed;
+    private Vector3[] earthRuneTemplateOffsetsReversed;
+    private Vector3[] fireRuneTemplateOffsetsReversed;
+    private float waterRuneTemplateAngle;
+    private float earthRuneTemplateAngle;
+    private float fireRuneTemplateAngle;
+    private float waterRuneTemplateAngleReversed;
+    private float earthRuneTemplateAngleReversed;
+    private float fireRuneTemplateAngleReversed;
+    private float waterRuneCurrentAngle;
+    private float earthRuneCurrentAngle;
+    private float fireRuneCurrentAngle;
+    private float waterRuneAngleVelocity;
+    private float earthRuneAngleVelocity;
+    private float fireRuneAngleVelocity;
+    private bool hasLockedRuneAnchor;
+    private Vector3 lockedRuneAnchorPosition;
+    private bool hasLockedRuneDirectionMode;
+    private bool lockedRuneUsesReversedTemplate;
 
     [Header("Feedback")]
     [SerializeField] private TextMeshProUGUI spellJudgementText;
@@ -86,6 +105,9 @@ public class SpellController : MonoBehaviour
     [SerializeField] private float speedAccuracyBonus = 0.35f;
     [SerializeField] private float speedAccuracyPenalty = 0.2f;
     [SerializeField] private float quickCastThreshold = 0.95f;
+
+    [Header("Rune Smoothing")]
+    [SerializeField] private float runeRotationSmoothTime = 0.12f;
 
     [Header("Cast Popup")]
     [SerializeField] private float popupHeightOffset = 1.25f;
@@ -171,6 +193,12 @@ public class SpellController : MonoBehaviour
             patientWounds = patient.GetComponent<PatientWounds>();
         }
 
+        if (mouseDraw == null || !mouseDraw.HasStroke)
+        {
+            hasLockedRuneAnchor = false;
+            hasLockedRuneDirectionMode = false;
+        }
+
         HandleSpellSelectionInput();
 
         if ((selectedSpell == SpellType.Water ||
@@ -179,12 +207,36 @@ public class SpellController : MonoBehaviour
             mouseDraw != null &&
             mouseDraw.TryConsumeStrokeStart(out Vector3 strokeStartPosition))
         {
-            MoveSelectedRuneTo(strokeStartPosition);
+            lockedRuneAnchorPosition = strokeStartPosition;
+            hasLockedRuneAnchor = true;
+            hasLockedRuneDirectionMode = false;
+            MoveSelectedRuneTo(lockedRuneAnchorPosition);
             StrokeStartIndicator.Create(strokeStartPosition, startIndicatorColor);
+        }
+
+        if ((selectedSpell == SpellType.Water ||
+             selectedSpell == SpellType.Earth ||
+             selectedSpell == SpellType.Fire) &&
+            mouseDraw != null &&
+            mouseDraw.HasDirectionalStroke &&
+            mouseDraw.TryGetStrokeStart(out Vector3 currentStrokeStart))
+        {
+            if (!hasLockedRuneDirectionMode)
+            {
+                lockedRuneUsesReversedTemplate = ShouldUseReversedTemplate(mouseDraw.CurrentStrokeDirection);
+                hasLockedRuneDirectionMode = true;
+            }
+
+            Vector3 runeAnchorPosition = hasLockedRuneAnchor
+                ? lockedRuneAnchorPosition
+                : currentStrokeStart;
+            MoveSelectedRuneTo(runeAnchorPosition, mouseDraw.CurrentStrokeDirection, lockedRuneUsesReversedTemplate);
         }
 
         if (TryConsumeSelectedSpellAccuracy(out float drawnAccuracy))
         {
+            hasLockedRuneAnchor = false;
+            hasLockedRuneDirectionMode = false;
             float finalAccuracy = GetSpeedAdjustedAccuracy(drawnAccuracy);
             bool isQuickCast = IsQuickCast();
             Vector3 popupWorldPosition = GetPopupWorldPosition();
@@ -485,6 +537,33 @@ public class SpellController : MonoBehaviour
         return patientWounds.TryGetFirstOpenWound(out wound);
     }
 
+    Vector3 GetRuneAnchorPosition(Vector3 fallbackPosition)
+    {
+        if (patientWounds == null)
+        {
+            return fallbackPosition;
+        }
+
+        if (mouseDraw != null &&
+            mouseDraw.CurrentLine != null &&
+            patientWounds.TryGetWoundTouchedByLine(mouseDraw.CurrentLine, out CutWound lineTouchedWound))
+        {
+            return lineTouchedWound.GetSpellAnchorPosition(fallbackPosition);
+        }
+
+        if (patientWounds.TryGetWoundAtSpellPoint(fallbackPosition, out CutWound pointTouchedWound))
+        {
+            return pointTouchedWound.GetSpellAnchorPosition(fallbackPosition);
+        }
+
+        if (patientWounds.TryGetFirstOpenWound(out CutWound openWound))
+        {
+            return openWound.GetSpellAnchorPosition(fallbackPosition);
+        }
+
+        return fallbackPosition;
+    }
+
     float GetSelectedSpellTestAccuracy()
     {
         switch (selectedSpell)
@@ -605,16 +684,23 @@ public class SpellController : MonoBehaviour
         if (waterRuneLine == null || waterRuneLine.positionCount == 0)
         {
             waterRuneTemplateOffsets = null;
+            waterRuneTemplateAngle = 0f;
             return;
         }
 
         waterRuneTemplateOffsets = new Vector3[waterRuneLine.positionCount];
         Vector3 anchor = waterRuneLine.GetPosition(0);
+        waterRuneTemplateAngle = GetRuneAngle(waterRuneLine);
+        waterRuneTemplateOffsetsReversed = GetReversedOffsets(waterRuneLine);
+        waterRuneTemplateAngleReversed = Mathf.Repeat(waterRuneTemplateAngle + 180f, 360f);
 
         for (int i = 0; i < waterRuneLine.positionCount; i++)
         {
             waterRuneTemplateOffsets[i] = waterRuneLine.GetPosition(i) - anchor;
         }
+
+        waterRuneCurrentAngle = waterRuneTemplateAngle;
+        waterRuneAngleVelocity = 0f;
     }
 
     void CacheFireRuneTemplate()
@@ -622,16 +708,23 @@ public class SpellController : MonoBehaviour
         if (fireRuneLine == null || fireRuneLine.positionCount == 0)
         {
             fireRuneTemplateOffsets = null;
+            fireRuneTemplateAngle = 0f;
             return;
         }
 
         fireRuneTemplateOffsets = new Vector3[fireRuneLine.positionCount];
         Vector3 anchor = fireRuneLine.GetPosition(0);
+        fireRuneTemplateAngle = GetRuneAngle(fireRuneLine);
+        fireRuneTemplateOffsetsReversed = GetReversedOffsets(fireRuneLine);
+        fireRuneTemplateAngleReversed = Mathf.Repeat(fireRuneTemplateAngle + 180f, 360f);
 
         for (int i = 0; i < fireRuneLine.positionCount; i++)
         {
             fireRuneTemplateOffsets[i] = fireRuneLine.GetPosition(i) - anchor;
         }
+
+        fireRuneCurrentAngle = fireRuneTemplateAngle;
+        fireRuneAngleVelocity = 0f;
     }
 
     void CacheEarthRuneTemplate()
@@ -639,30 +732,63 @@ public class SpellController : MonoBehaviour
         if (earthRuneLine == null || earthRuneLine.positionCount == 0)
         {
             earthRuneTemplateOffsets = null;
+            earthRuneTemplateAngle = 0f;
             return;
         }
 
         earthRuneTemplateOffsets = new Vector3[earthRuneLine.positionCount];
         Vector3 anchor = earthRuneLine.GetPosition(0);
+        earthRuneTemplateAngle = GetRuneAngle(earthRuneLine);
+        earthRuneTemplateOffsetsReversed = GetReversedOffsets(earthRuneLine);
+        earthRuneTemplateAngleReversed = Mathf.Repeat(earthRuneTemplateAngle + 180f, 360f);
 
         for (int i = 0; i < earthRuneLine.positionCount; i++)
         {
             earthRuneTemplateOffsets[i] = earthRuneLine.GetPosition(i) - anchor;
         }
+
+        earthRuneCurrentAngle = earthRuneTemplateAngle;
+        earthRuneAngleVelocity = 0f;
     }
 
     void MoveSelectedRuneTo(Vector3 anchorPosition)
     {
+        MoveSelectedRuneTo(anchorPosition, Vector3.right, false);
+    }
+
+    void MoveSelectedRuneTo(Vector3 anchorPosition, Vector3 strokeDirection, bool useReversedTemplate)
+    {
         switch (selectedSpell)
         {
             case SpellType.Water:
-                MoveRuneTo(waterRuneLine, waterRuneTemplateOffsets, anchorPosition);
+                MoveRuneTo(
+                    waterRuneLine,
+                    useReversedTemplate ? waterRuneTemplateOffsetsReversed : waterRuneTemplateOffsets,
+                    anchorPosition,
+                    useReversedTemplate ? waterRuneTemplateAngleReversed : waterRuneTemplateAngle,
+                    strokeDirection,
+                    ref waterRuneCurrentAngle,
+                    ref waterRuneAngleVelocity);
                 break;
             case SpellType.Earth:
-                MoveRuneTo(earthRuneLine, earthRuneTemplateOffsets, anchorPosition);
+                MoveRuneTo(
+                    earthRuneLine,
+                    useReversedTemplate ? earthRuneTemplateOffsetsReversed : earthRuneTemplateOffsets,
+                    anchorPosition,
+                    useReversedTemplate ? earthRuneTemplateAngleReversed : earthRuneTemplateAngle,
+                    strokeDirection,
+                    ref earthRuneCurrentAngle,
+                    ref earthRuneAngleVelocity);
                 break;
             case SpellType.Fire:
-                MoveRuneTo(fireRuneLine, fireRuneTemplateOffsets, anchorPosition);
+                MoveRuneTo(
+                    fireRuneLine,
+                    useReversedTemplate ? fireRuneTemplateOffsetsReversed : fireRuneTemplateOffsets,
+                    anchorPosition,
+                    useReversedTemplate ? fireRuneTemplateAngleReversed : fireRuneTemplateAngle,
+                    strokeDirection,
+                    ref fireRuneCurrentAngle,
+                    ref fireRuneAngleVelocity);
                 break;
         }
     }
@@ -692,16 +818,102 @@ public class SpellController : MonoBehaviour
         }
     }
 
-    void MoveRuneTo(LineRenderer runeLine, Vector3[] runeTemplateOffsets, Vector3 anchorPosition)
+    float GetRuneAngle(LineRenderer runeLine)
+    {
+        if (runeLine == null || runeLine.positionCount < 2)
+        {
+            return 0f;
+        }
+
+        Vector3 start = runeLine.GetPosition(0);
+        Vector3 end = runeLine.GetPosition(runeLine.positionCount - 1);
+        Vector3 direction = end - start;
+        if (direction.sqrMagnitude <= Mathf.Epsilon)
+        {
+            return 0f;
+        }
+
+        return Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+    }
+
+    Vector3[] GetReversedOffsets(LineRenderer runeLine)
+    {
+        if (runeLine == null || runeLine.positionCount == 0)
+        {
+            return null;
+        }
+
+        Vector3[] reversedOffsets = new Vector3[runeLine.positionCount];
+        Vector3 reverseAnchor = runeLine.GetPosition(runeLine.positionCount - 1);
+
+        for (int i = 0; i < runeLine.positionCount; i++)
+        {
+            int reverseIndex = runeLine.positionCount - i - 1;
+            reversedOffsets[i] = runeLine.GetPosition(reverseIndex) - reverseAnchor;
+        }
+
+        return reversedOffsets;
+    }
+
+    bool ShouldUseReversedTemplate(Vector3 strokeDirection)
+    {
+        if (strokeDirection.sqrMagnitude <= Mathf.Epsilon)
+        {
+            return false;
+        }
+
+        float strokeAngle = Mathf.Atan2(strokeDirection.y, strokeDirection.x) * Mathf.Rad2Deg;
+        float forwardDelta = Mathf.Abs(Mathf.DeltaAngle(GetSelectedRuneTemplateAngle(false), strokeAngle));
+        float reverseDelta = Mathf.Abs(Mathf.DeltaAngle(GetSelectedRuneTemplateAngle(true), strokeAngle));
+        return reverseDelta < forwardDelta;
+    }
+
+    float GetSelectedRuneTemplateAngle(bool reversed)
+    {
+        switch (selectedSpell)
+        {
+            case SpellType.Water:
+                return reversed ? waterRuneTemplateAngleReversed : waterRuneTemplateAngle;
+            case SpellType.Earth:
+                return reversed ? earthRuneTemplateAngleReversed : earthRuneTemplateAngle;
+            case SpellType.Fire:
+                return reversed ? fireRuneTemplateAngleReversed : fireRuneTemplateAngle;
+            default:
+                return 0f;
+        }
+    }
+
+    void MoveRuneTo(
+        LineRenderer runeLine,
+        Vector3[] runeTemplateOffsets,
+        Vector3 anchorPosition,
+        float templateAngle,
+        Vector3 strokeDirection,
+        ref float currentAngle,
+        ref float angleVelocity)
     {
         if (runeLine == null || runeTemplateOffsets == null)
         {
             return;
         }
 
+        float targetAngle = templateAngle;
+        if (strokeDirection.sqrMagnitude > Mathf.Epsilon)
+        {
+            targetAngle = Mathf.Atan2(strokeDirection.y, strokeDirection.x) * Mathf.Rad2Deg;
+        }
+
+        currentAngle = Mathf.SmoothDampAngle(
+            currentAngle,
+            targetAngle,
+            ref angleVelocity,
+            runeRotationSmoothTime);
+
+        Quaternion rotation = Quaternion.Euler(0f, 0f, currentAngle - templateAngle);
+
         for (int i = 0; i < runeTemplateOffsets.Length; i++)
         {
-            runeLine.SetPosition(i, anchorPosition + runeTemplateOffsets[i]);
+            runeLine.SetPosition(i, anchorPosition + (rotation * runeTemplateOffsets[i]));
         }
     }
 }

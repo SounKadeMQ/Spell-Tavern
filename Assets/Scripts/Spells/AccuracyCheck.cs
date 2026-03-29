@@ -9,8 +9,8 @@ public class AccuracyCheck : MonoBehaviour
     [SerializeField] private int minimumSampleCount = 3;
     [SerializeField] private float minimumStrokeLength = 2f;
     [SerializeField] private float minimumLengthCoverage = 0.8f;
-    [SerializeField] private float endpointTolerance = 1.5f;
-    [SerializeField] private float pathTolerance = 1.25f;
+    [SerializeField] private int normalizedSampleCount = 64;
+    [SerializeField] private float normalizedPathTolerance = 0.18f;
     [SerializeField] private float minimumPathMatchRatio = 0.85f;
     private bool hasFreshAccuracy;
 
@@ -68,31 +68,29 @@ public class AccuracyCheck : MonoBehaviour
                 return;
             }
 
-            if (!HasValidEndpoints())
+            Vector2[] normalizedTracerPoints = GetNormalizedPoints(tracerLine);
+            Vector2[] normalizedDrawPoints = GetNormalizedPoints(drawLine);
+            if (normalizedTracerPoints == null || normalizedDrawPoints == null)
             {
                 return;
             }
 
-            if (!HasValidPathMatch())
+            bool reverseMatch = ShouldUseReverseMatch(normalizedTracerPoints, normalizedDrawPoints);
+            AlignPointSetToTemplate(normalizedDrawPoints, normalizedTracerPoints, reverseMatch);
+
+            if (!HasValidPathMatch(normalizedTracerPoints, normalizedDrawPoints))
             {
                 return;
             }
 
-            for (int i = 0; i < posCount;i++)
+            for (int i = 0; i < normalizedSampleCount; i++)
             {
-                float x = Mathf.Abs(tracerLine.GetPosition(i).x -drawLine.GetPosition(i).x) + Mathf.Abs(tracerLine.GetPosition(i).y -drawLine.GetPosition(i).y);
-                float xInverse = Mathf.Abs(tracerLine.GetPosition(i).x -drawLine.GetPosition(drawLine.positionCount-i-1).x) + Mathf.Abs(tracerLine.GetPosition(i).y -drawLine.GetPosition(drawLine.positionCount-i-1).y);
-                if(x >= xInverse)
-                {
-                    accuracy += xInverse;
-                }
-                else 
-                {
-                    accuracy += x;
-                }
-
+                int drawIndex = reverseMatch
+                    ? normalizedSampleCount - i - 1
+                    : i;
+                accuracy += Vector2.Distance(normalizedTracerPoints[i], normalizedDrawPoints[drawIndex]);
             }
-            accuracy = accuracy/posCount;
+            accuracy /= normalizedSampleCount;
             hasFreshAccuracy = true;
         }
     }
@@ -110,39 +108,139 @@ public class AccuracyCheck : MonoBehaviour
         return true;
     }
 
-    bool HasValidEndpoints()
+    Vector2[] GetNormalizedPoints(LineRenderer targetLine)
     {
-        Vector3 drawStart = drawLine.GetPosition(0);
-        Vector3 drawEnd = drawLine.GetPosition(drawLine.positionCount - 1);
-        Vector3 tracerStart = tracerLine.GetPosition(0);
-        Vector3 tracerEnd = tracerLine.GetPosition(tracerLine.positionCount - 1);
+        Vector2[] resampledPoints = ResampleLine(targetLine, normalizedSampleCount);
+        if (resampledPoints == null)
+        {
+            return null;
+        }
 
-        bool forwardMatch =
-            Vector3.Distance(drawStart, tracerStart) <= endpointTolerance &&
-            Vector3.Distance(drawEnd, tracerEnd) <= endpointTolerance;
+        Vector2 centroid = Vector2.zero;
+        for (int i = 0; i < resampledPoints.Length; i++)
+        {
+            centroid += resampledPoints[i];
+        }
 
-        bool reverseMatch =
-            Vector3.Distance(drawStart, tracerEnd) <= endpointTolerance &&
-            Vector3.Distance(drawEnd, tracerStart) <= endpointTolerance;
+        centroid /= resampledPoints.Length;
 
-        return forwardMatch || reverseMatch;
+        float maxDistance = 0f;
+        for (int i = 0; i < resampledPoints.Length; i++)
+        {
+            resampledPoints[i] -= centroid;
+            maxDistance = Mathf.Max(maxDistance, resampledPoints[i].magnitude);
+        }
+
+        if (maxDistance <= Mathf.Epsilon)
+        {
+            return null;
+        }
+
+        for (int i = 0; i < resampledPoints.Length; i++)
+        {
+            resampledPoints[i] /= maxDistance;
+        }
+
+        return resampledPoints;
     }
 
-    bool HasValidPathMatch()
+    bool HasValidPathMatch(Vector2[] normalizedTracerPoints, Vector2[] normalizedDrawPoints)
     {
         int matchingPoints = 0;
 
-        for (int i = 0; i < drawLine.positionCount; i++)
+        for (int i = 0; i < normalizedTracerPoints.Length; i++)
         {
-            Vector3 point = drawLine.GetPosition(i);
-            if (GetDistanceToLine(point, tracerLine) <= pathTolerance)
+            if (Vector2.Distance(normalizedTracerPoints[i], normalizedDrawPoints[i]) <= normalizedPathTolerance)
             {
                 matchingPoints++;
             }
         }
 
-        float matchRatio = (float)matchingPoints / drawLine.positionCount;
+        float matchRatio = (float)matchingPoints / normalizedTracerPoints.Length;
         return matchRatio >= minimumPathMatchRatio;
+    }
+
+    bool ShouldUseReverseMatch(Vector2[] normalizedTracerPoints, Vector2[] normalizedDrawPoints)
+    {
+        float forwardDistance = 0f;
+        float reverseDistance = 0f;
+
+        for (int i = 0; i < normalizedTracerPoints.Length; i++)
+        {
+            forwardDistance += Vector2.Distance(normalizedTracerPoints[i], normalizedDrawPoints[i]);
+            reverseDistance += Vector2.Distance(
+                normalizedTracerPoints[i],
+                normalizedDrawPoints[normalizedDrawPoints.Length - i - 1]);
+        }
+
+        return reverseDistance < forwardDistance;
+    }
+
+    void AlignPointSetToTemplate(Vector2[] pointsToAlign, Vector2[] templatePoints, bool reverseMatch)
+    {
+        Vector2 sourceStart = reverseMatch
+            ? pointsToAlign[pointsToAlign.Length - 1]
+            : pointsToAlign[0];
+        Vector2 sourceEnd = reverseMatch
+            ? pointsToAlign[0]
+            : pointsToAlign[pointsToAlign.Length - 1];
+
+        Vector2 templateStart = templatePoints[0];
+        Vector2 templateEnd = templatePoints[templatePoints.Length - 1];
+
+        float sourceAngle = Mathf.Atan2(sourceEnd.y - sourceStart.y, sourceEnd.x - sourceStart.x) * Mathf.Rad2Deg;
+        float templateAngle = Mathf.Atan2(templateEnd.y - templateStart.y, templateEnd.x - templateStart.x) * Mathf.Rad2Deg;
+        float angleDelta = templateAngle - sourceAngle;
+
+        Quaternion rotation = Quaternion.Euler(0f, 0f, angleDelta);
+        for (int i = 0; i < pointsToAlign.Length; i++)
+        {
+            pointsToAlign[i] = rotation * pointsToAlign[i];
+        }
+    }
+
+    Vector2[] ResampleLine(LineRenderer targetLine, int sampleCount)
+    {
+        if (targetLine == null || targetLine.positionCount < 2 || sampleCount < 2)
+        {
+            return null;
+        }
+
+        float totalLength = GetLineLength(targetLine, targetLine.positionCount);
+        if (totalLength <= Mathf.Epsilon)
+        {
+            return null;
+        }
+
+        Vector2[] sampledPoints = new Vector2[sampleCount];
+        float stepLength = totalLength / (sampleCount - 1);
+        float traversedLength = 0f;
+        float targetLength = 0f;
+        int sampleIndex = 0;
+
+        Vector3 previousPoint = targetLine.GetPosition(0);
+        sampledPoints[sampleIndex++] = previousPoint;
+
+        for (int i = 1; i < targetLine.positionCount && sampleIndex < sampleCount - 1; i++)
+        {
+            Vector3 currentPoint = targetLine.GetPosition(i);
+            float segmentLength = Vector3.Distance(previousPoint, currentPoint);
+
+            while (traversedLength + segmentLength >= targetLength + stepLength &&
+                   sampleIndex < sampleCount - 1)
+            {
+                targetLength += stepLength;
+                float distanceIntoSegment = targetLength - traversedLength;
+                float t = segmentLength <= Mathf.Epsilon ? 0f : distanceIntoSegment / segmentLength;
+                sampledPoints[sampleIndex++] = Vector3.Lerp(previousPoint, currentPoint, t);
+            }
+
+            traversedLength += segmentLength;
+            previousPoint = currentPoint;
+        }
+
+        sampledPoints[sampleCount - 1] = targetLine.GetPosition(targetLine.positionCount - 1);
+        return sampledPoints;
     }
 
     float GetDistanceToLine(Vector3 point, LineRenderer targetLine)

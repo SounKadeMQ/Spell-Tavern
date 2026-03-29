@@ -76,6 +76,32 @@ public class CutWound : MonoBehaviour
         return false;
     }
 
+    public Vector3 GetSpellAnchorPosition(Vector3 referencePosition)
+    {
+        Collider2D anchorCollider = spellBoundsHitbox != null ? spellBoundsHitbox : cutHitbox;
+        if (anchorCollider == null)
+        {
+            return transform.position;
+        }
+
+        Bounds bounds = anchorCollider.bounds;
+        Vector3 center = bounds.center;
+        Vector3 offset = referencePosition - center;
+
+        if (offset.sqrMagnitude <= Mathf.Epsilon)
+        {
+            return center + new Vector3(bounds.extents.x, 0f, 0f);
+        }
+
+        float scaleX = Mathf.Abs(offset.x) > Mathf.Epsilon ? bounds.extents.x / Mathf.Abs(offset.x) : float.MaxValue;
+        float scaleY = Mathf.Abs(offset.y) > Mathf.Epsilon ? bounds.extents.y / Mathf.Abs(offset.y) : float.MaxValue;
+        float scale = Mathf.Min(scaleX, scaleY);
+
+        Vector3 edgePoint = center + (offset * scale);
+        edgePoint.z = transform.position.z;
+        return edgePoint;
+    }
+
     public void Open()
     {
         isOpen = true;
