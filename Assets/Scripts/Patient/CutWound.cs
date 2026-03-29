@@ -90,6 +90,12 @@ public class CutWound : MonoBehaviour
         NotifyPatient();
     }
 
+    void CauteriseAndRemove()
+    {
+        Close();
+        Destroy(gameObject);
+    }
+
     public float GetBleedRate()
     {
         if (!isOpen)
@@ -123,7 +129,7 @@ public class CutWound : MonoBehaviour
             case WoundType.Cut:
                 if (spellType == SpellController.SpellType.Fire)
                 {
-                    Close();
+                    CauteriseAndRemove();
                     outcome = "Cut cauterised.";
                     return true;
                 }
@@ -140,7 +146,7 @@ public class CutWound : MonoBehaviour
 
                 if (spellType == SpellController.SpellType.Fire && isStabilized)
                 {
-                    Close();
+                    CauteriseAndRemove();
                     outcome = "Laceration cauterised.";
                     return true;
                 }
