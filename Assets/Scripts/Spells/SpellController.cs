@@ -3,19 +3,19 @@ using UnityEngine;
 //AccuracyCheck.cs
 
 /*
-0.00 - 1.60 = NICE!!!
-1.61 - 1.8235 = GREAT!!
-1.8236 - 2.05 = GOOD!
-2.06 - 3.00 = EH...!
-3.00+ = MISS!
+0.035 or less = PERFECT!!!!
+0.04 = GREAT!!!
+0.06 = GOOD!!
+0.08 = EH...!
+0.10+ = MISS
 
 effectMultiplier = 1 / 1 (1 + accuracy);
 
 Perfect; waterHeal = 100 * 0.3 * 1.1 = 33
-Accurate; waterHeal = 100 * 0.3 * 0.75 = 22.5
-Good; waterHeal = 100 * 0.3 * 0.55 = 16.5
-Eh; waterHeal = 100 * 0.3 * 0.4 = 12
-MISS; waterHeal = 100 * 0.3 * 0.1 = 3
+Great; waterHeal = 100 * 0.3 * 0.85 = 25.5
+Good; waterHeal = 100 * 0.3 * 0.7 = 21
+Eh; waterHeal = 100 * 0.3 * 0.5 = 15
+Miss; waterHeal = 100 * 0.3 * 0.1 = 3
 */
 
 public class SpellController : MonoBehaviour
@@ -94,15 +94,15 @@ public class SpellController : MonoBehaviour
     [SerializeField] private int score;
 
     [Header("Accuracy Tuning")]
-    [SerializeField] private float niceThreshold = 1.6f;
-    [SerializeField] private float greatThreshold = 1.8235f;
-    [SerializeField] private float goodThreshold = 2.05f;
-    [SerializeField] private float ehThreshold = 3f;
+    [SerializeField] private float niceThreshold = 0.035f;
+    [SerializeField] private float greatThreshold = 0.04f;
+    [SerializeField] private float goodThreshold = 0.06f;
+    [SerializeField] private float ehThreshold = 0.08f;
 
     [Header("Speed Tuning")]
     [SerializeField] private float idealCastTime = 0.85f;
     [SerializeField] private float maxCastTime = 2.2f;
-    [SerializeField] private float speedAccuracyBonus = 0.35f;
+    [SerializeField] private float speedAccuracyBonus = 0.08f;
     [SerializeField] private float speedAccuracyPenalty = 0.2f;
     [SerializeField] private float quickCastThreshold = 0.95f;
 
@@ -237,10 +237,9 @@ public class SpellController : MonoBehaviour
         {
             hasLockedRuneAnchor = false;
             hasLockedRuneDirectionMode = false;
-            float finalAccuracy = GetSpeedAdjustedAccuracy(drawnAccuracy);
             bool isQuickCast = IsQuickCast();
             Vector3 popupWorldPosition = GetPopupWorldPosition();
-            CastSelectedSpell(finalAccuracy, isQuickCast, popupWorldPosition);
+            CastSelectedSpell(drawnAccuracy, isQuickCast, popupWorldPosition);
         }
 
         if (!enableDebugHotkeys)
@@ -421,11 +420,11 @@ public class SpellController : MonoBehaviour
         switch (judgement)
         {
             case SpellJudgement.Nice:
-                return "NICE!!! (300 points)";
+                return "PERFECT!!!! (300 points)";
             case SpellJudgement.Great:
-                return "GREAT!!";
+                return "GREAT!!!";
             case SpellJudgement.Good:
-                return "GOOD!";
+                return "GOOD!!";
             case SpellJudgement.Eh:
                 return "EH...!";
             default:
@@ -632,11 +631,11 @@ public class SpellController : MonoBehaviour
         switch (judgement)
         {
             case SpellJudgement.Nice:
-                return "NICE!!!";
+                return "PERFECT!!!!";
             case SpellJudgement.Great:
-                return "GREAT!!";
+                return "GREAT!!!";
             case SpellJudgement.Good:
-                return "GOOD!";
+                return "GOOD!!";
             case SpellJudgement.Eh:
                 return "EH...!";
             default:
