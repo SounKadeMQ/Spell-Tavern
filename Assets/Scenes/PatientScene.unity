@@ -529,6 +529,122 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1001 &580631906
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 605396774470906178, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1713867288408532535, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_Name
+      value: HealthbarCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 5253471945630015828, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5253471945630015828, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+--- !u!114 &1048836093 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1926075044403138321, guid: 3887741f2dad083439e954ca343f53ca, type: 3}
+  m_PrefabInstance: {fileID: 580631906}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
 --- !u!1 &1057818352
 GameObject:
   m_ObjectHideFlags: 0
@@ -1160,6 +1276,7 @@ GameObject:
   - component: {fileID: 1430581641}
   - component: {fileID: 1430581640}
   - component: {fileID: 1430581639}
+  - component: {fileID: 1430581642}
   m_Layer: 0
   m_Name: WaterRune
   m_TagString: Untagged
@@ -1176,13 +1293,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 1430581638}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a80b9de64c519ac4b9f16fb5efb96444, type: 3}
+  m_Script: {fileID: 11500000, guid: 9045c568dfdacd84f9dbba261fa24e1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AccuracyCheck
-  line: {fileID: 1932356261}
-  accuracy: 0
-  minimumSampleCount: 3
-  minimumStrokeLength: 2
+  patient: {fileID: 1865490857}
+  waterAccuracyCheck: {fileID: 1430581642}
+  readyToMerge: 0
+  useDrawnWaterSpell: 1
+  enableDebugHotkeys: 1
+  selectedSpell: 1
+  spellJudgementText: {fileID: 0}
+  scoreText: {fileID: 0}
+  score: 0
+  waterPotency: 100
+  waterDuration: 2
+  testAccuracy: 0.38
+  windPotency: 100
+  windDuration: 2
+  windTestAccuracy: 0.38
+  earthPotency: 100
+  earthDuration: 2
+  earthTestAccuracy: 0.38
+  lightningPotency: 100
+  lightningDuration: 2
+  lightningTestAccuracy: 0.38
+  firePotency: 100
+  fireDuration: 2
+  fireTestAccuracy: 0.38
+  audioSource: {fileID: 0}
+  waterSFX: {fileID: 0}
 --- !u!120 &1430581640
 LineRenderer:
   serializedVersion: 3
@@ -1256,9 +1395,9 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.38990554, g: 0.38202205, b: 0.9245283, a: 1}
-      key1: {r: 0.19996901, g: 0.07623346, b: 0.93962264, a: 1}
-      key2: {r: 0, g: 0.013287813, b: 0.8867924, a: 1}
+      key0: {r: 0.38990554, g: 0.38202205, b: 0.9245283, a: 0.5882353}
+      key1: {r: 0.19996901, g: 0.07623346, b: 0.93962264, a: 0.5882353}
+      key2: {r: 0, g: 0.013287813, b: 0.8867924, a: 0.78431374}
       key3: {r: 0.024562731, g: 0.021019593, b: 0.8932817, a: 0}
       key4: {r: 1, g: 1, b: 1, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
@@ -1273,7 +1412,7 @@ LineRenderer:
       ctime6: 0
       ctime7: 0
       atime0: 0
-      atime1: 14726
+      atime1: 65535
       atime2: 65535
       atime3: 0
       atime4: 0
@@ -1283,7 +1422,7 @@ LineRenderer:
       m_Mode: 0
       m_ColorSpace: 0
       m_NumColorKeys: 4
-      m_NumAlphaKeys: 3
+      m_NumAlphaKeys: 2
     numCornerVertices: 2
     numCapVertices: 3
     alignment: 0
@@ -1309,6 +1448,26 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1430581642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1430581638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b796793e2d3f2d468e9e216bba79bae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AccuracyCheck
+  line: {fileID: 1932356261}
+  accuracy: 0
+  minimumSampleCount: 3
+  minimumStrokeLength: 2
+  minimumLengthCoverage: 0.8
+  endpointTolerance: 1.5
+  pathTolerance: 1.25
+  minimumPathMatchRatio: 0.85
 --- !u!1 &1454671554
 GameObject:
   m_ObjectHideFlags: 0
@@ -1522,6 +1681,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1724683129}
   - component: {fileID: 1724683130}
+  - component: {fileID: 1724683132}
+  - component: {fileID: 1724683131}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -1561,6 +1722,35 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   bloodBar: {fileID: 1424940698}
   vitalsText: {fileID: 1424066679}
+--- !u!114 &1724683131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1724683128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b660b005070b08a4aae16f529e10e255, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  maxHealth: 100
+--- !u!114 &1724683132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1724683128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1120ae2a40c51f54c8ad17f4361b0847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthBar
+  useExistingHealthBar: 0
+  existingSlider: {fileID: 1048836093}
+  healthBarPrefab: {fileID: 0}
+  offset: {x: 0, y: 1, z: 0}
 --- !u!1 &1731897575
 GameObject:
   m_ObjectHideFlags: 0
@@ -1612,10 +1802,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellController
   patient: {fileID: 1865490857}
-  waterAccuracyCheck: {fileID: 1430581639}
+  waterAccuracyCheck: {fileID: 0}
   readyToMerge: 0
   useDrawnWaterSpell: 1
   enableDebugHotkeys: 1
+  selectedSpell: 1
+  spellJudgementText: {fileID: 0}
+  scoreText: {fileID: 0}
+  score: 0
   waterPotency: 100
   waterDuration: 2
   testAccuracy: 0.38
@@ -2083,3 +2277,4 @@ SceneRoots:
   - {fileID: 299416781}
   - {fileID: 1731897576}
   - {fileID: 1430581641}
+  - {fileID: 580631906}

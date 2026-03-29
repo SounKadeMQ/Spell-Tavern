@@ -12,12 +12,14 @@ public class HealthBar : MonoBehaviour
     private Slider slider;
     private GameObject healthBarInstance;
     private Health healthComponent;
+    private Patient patient;
 
     void Awake()
     {
         healthComponent = GetComponent<Health>();
+        patient = GetComponent<Patient>();
 
-        if(healthComponent == null)
+        if(patient == null)
         {
             enabled = false;
             return;
@@ -33,8 +35,8 @@ public class HealthBar : MonoBehaviour
             slider = existingSlider;
         }
 
-        slider.maxValue = healthComponent.GetMaxHealth();
-        slider.value = healthComponent.GetCurrentHealth();
+        slider.maxValue = patient.bloodLevel;
+        slider.value = patient.bloodLevel;
         
     }
 
@@ -45,7 +47,7 @@ public class HealthBar : MonoBehaviour
 
     void Update()
     {
-        slider.value = healthComponent.GetCurrentHealth();
+        slider.value = patient.bloodLevel;
         if (!useExistingHealthBar && healthBarInstance != null)
         {
             healthBarInstance.transform.position = healthComponent.transform.position + offset;
