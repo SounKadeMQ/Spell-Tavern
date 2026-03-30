@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PatientData
   patientName: Angie
   startingBlood: 100
-  startingBleedRate: 3
-  startingBleedMod: 1
+  startingBleedRate: 1
+  startingBleedMod: 0.5

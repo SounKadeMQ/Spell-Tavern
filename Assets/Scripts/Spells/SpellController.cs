@@ -20,6 +20,9 @@ Miss; waterHeal = 100 * 0.3 * 0.1 = 3
 
 public class SpellController : MonoBehaviour
 {
+    public static event System.Action<SpellType> SpellCastSucceeded;
+    public static event System.Action<SpellType> SpellSelected;
+
     public enum SpellJudgement
     {
         Nice,
@@ -335,6 +338,8 @@ public class SpellController : MonoBehaviour
             audioSource.PlayOneShot(waterSFX);
         }
 
+        SpellCastSucceeded?.Invoke(SpellType.Water);
+
         Debug.Log(
             "water cast - acc: " + acc.ToString("F3") +
             " - cast time: " + (mouseDraw != null ? mouseDraw.LastStrokeDuration.ToString("F2") : "n/a") +
@@ -360,6 +365,7 @@ public class SpellController : MonoBehaviour
     {
         selectedSpell = spell;
         UpdateRuneVisibility();
+        SpellSelected?.Invoke(spell);
     }
 
     public SpellType GetSelectedSpell()
@@ -517,6 +523,7 @@ public class SpellController : MonoBehaviour
         if (treated)
         {
             score += pointsAwarded;
+            SpellCastSucceeded?.Invoke(spellType);
         }
 
         ShowCastPopup(judgement, IsQuickCast(), GetPopupWorldPosition());

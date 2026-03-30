@@ -312,7 +312,6 @@ GameObject:
   - component: {fileID: 510807627}
   - component: {fileID: 510807626}
   - component: {fileID: 510807625}
-  - component: {fileID: 510807624}
   m_Layer: 5
   m_Name: CanvasDialogue
   m_TagString: Untagged
@@ -320,33 +319,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &510807624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 510807623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3409004dbbf2ee0438857687469e2f28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PatientDialogueController
-  speakerText: {fileID: 1621598090}
-  dialogueText: {fileID: 560711744}
-  dialogueRoot: {fileID: 510807623}
-  lines:
-  - speaker: Nurse
-    text: As you can see, the patient has three external wounds currently.
-  - speaker: Nurse
-    text: Hm... It seems like the blood level of our patient is lower than usual.
-  - speaker: Nurse
-    text: Before we start, lets cast a Water spell.
-  - speaker: Nurse
-    text: Select the Water spell with "D", and follow the castline with Mouse1.
-  characterRevealInterval: 0.05
-  audioSource: {fileID: 4314252904258111273}
-  voiceTestClip: {fileID: 8300000, guid: 00ce4035e7551f34aa32aa956e3c7733, type: 3}
 --- !u!114 &510807625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2459,8 +2431,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PreOpDialogueController, Assembly-CSharp
+      - m_Target: {fileID: 1992937019}
+        m_TargetAssemblyTypeName: PatientDialogueController, Assembly-CSharp
         m_MethodName: NextLine
         m_Mode: 1
         m_Arguments:
@@ -2535,6 +2507,104 @@ MonoBehaviour:
   minimumPointDistance: 0.15
   pointSmoothing: 0.35
   minimumDirectionalDistance: 0.01
+--- !u!1 &1992937018
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1992937020}
+  - component: {fileID: 1992937019}
+  m_Layer: 0
+  m_Name: PatientDialogueController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1992937019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992937018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3409004dbbf2ee0438857687469e2f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PatientDialogueController
+  spellController: {fileID: 1731897578}
+  speakerText: {fileID: 1621598090}
+  dialogueText: {fileID: 560711744}
+  dialogueRoot: {fileID: 510807623}
+  nextButtonRoot: {fileID: 510807623}
+  lines:
+  - speaker: Nurse
+    text: Okay, lets see here...
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    requiredSpell: 0
+  - speaker: Nurse
+    text: The patient has 3 external wounds.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    requiredSpell: 0
+  - speaker: Nurse
+    text: ... It seems like our patient here has a diminishing amount of blood.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    requiredSpell: 0
+  - speaker: Nurse
+    text: Let's cast Water first to restore some of their blood.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    requiredSpell: 0
+  - speaker: Nurse
+    text: Press the "D" button to select the Water spell.
+    waitForSpellSelect: 1
+    waitForSpellCast: 0
+    requiredSpell: 1
+  - speaker: Nurse
+    text: Good! Now, use Left Mouse Click, and follow the symbol of the spell.
+    waitForSpellSelect: 0
+    waitForSpellCast: 1
+    requiredSpell: 1
+  - speaker: Nurse
+    text: Great work. That should stabilise our patient's blood levels an amount.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    requiredSpell: 1
+  - speaker: Nurse
+    text: Now, lets look at these cuts.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    requiredSpell: 1
+  - speaker: Nurse
+    text: 'Select the Fire spell, and '
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    requiredSpell: 1
+  characterRevealInterval: 0.1
+  audioSource: {fileID: 4314252904258111273}
+  voiceTestClip: {fileID: 8300000, guid: 00ce4035e7551f34aa32aa956e3c7733, type: 3}
+--- !u!4 &1992937020
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992937018}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.04494, y: -0.91882, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2729557481727153958 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4910081813951350248, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
@@ -2554,9 +2624,53 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1084433404}
     m_Modifications:
+    - target: {fileID: 14184041101698072, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Size.x
+      value: 4.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 14184041101698072, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Size.y
+      value: 3.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 14184041101698072, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -7538700045611955427, guid: a0009cc6bcfb8064bb924e8ef39fa193, type: 3}
+    - target: {fileID: 14184041101698072, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Color.b
+      value: 0.7735849
+      objectReference: {fileID: 0}
+    - target: {fileID: 14184041101698072, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7735849
+      objectReference: {fileID: 0}
+    - target: {fileID: 14184041101698072, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7735849
+      objectReference: {fileID: 0}
+    - target: {fileID: 14184041101698072, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1914401027501521056, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
       propertyPath: m_Name
       value: Patient
+      objectReference: {fileID: 0}
+    - target: {fileID: 6060054588088932945, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6060054588088932945, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Color.b
+      value: 0.26666668
+      objectReference: {fileID: 0}
+    - target: {fileID: 6060054588088932945, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Color.g
+      value: 0.26666668
+      objectReference: {fileID: 0}
+    - target: {fileID: 6060054588088932945, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Color.r
+      value: 0.26666668
       objectReference: {fileID: 0}
     - target: {fileID: 7074736234963427174, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2598,6 +2712,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8194278722823506628, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Color.b
+      value: 0.26666668
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194278722823506628, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Color.g
+      value: 0.26666668
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194278722823506628, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Color.r
+      value: 0.26666668
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 6776466328048341294, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
@@ -2635,3 +2761,4 @@ SceneRoots:
   - {fileID: 863098232}
   - {fileID: 1692664339}
   - {fileID: 510807628}
+  - {fileID: 1992937020}
