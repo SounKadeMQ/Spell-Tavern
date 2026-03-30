@@ -75,6 +75,13 @@ public class SpellController : MonoBehaviour
     [SerializeField] private GameObject fireRuneVisual;
     [SerializeField] private Color startIndicatorColor = new Color(0.7f, 0.95f, 1f, 0.9f);
 
+    [Header("Spell HUD")]
+    [SerializeField] private GameObject waterRuneIcon;
+    [SerializeField] private GameObject earthRuneIcon;
+    [SerializeField] private GameObject fireRuneIcon;
+    [SerializeField] private Color waterRuneReadyColor = Color.white;
+    [SerializeField] private Color waterRuneCooldownColor = new Color(1f, 0.25f, 0.25f, 0.55f);
+
     private LineRenderer waterRuneLine;
     private LineRenderer earthRuneLine;
     private LineRenderer fireRuneLine;
@@ -136,6 +143,7 @@ public class SpellController : MonoBehaviour
     public float waterPotency = 100f;
     public float waterDuration = 2f;
     public float testAccuracy = 0.38f;
+    [SerializeField] private float waterCooldownDuration = 5f;
 
     [Header("Wind Spell")]
     public float windPotency = 100f;
@@ -160,6 +168,8 @@ public class SpellController : MonoBehaviour
     [Header("Audio")]
     public AudioSource audioSource;
     public AudioClip waterSFX;
+
+    private float nextWaterCastTime;
 
     void Awake()
     {
@@ -208,6 +218,7 @@ public class SpellController : MonoBehaviour
         }
 
         UpdateRuneVisibility();
+        UpdateSpellSelectionUI();
         UpdateScoreUI();
     }
 
@@ -230,6 +241,8 @@ public class SpellController : MonoBehaviour
         {
             patientWounds = patient.GetComponent<PatientWounds>();
         }
+
+        UpdateWaterCooldownVisual();
 
         if (mouseDraw == null || !mouseDraw.HasStroke)
         {
@@ -343,6 +356,7 @@ public class SpellController : MonoBehaviour
 
         patient.startHoT(totalHeal, waterDuration);
         patient.bleedReduction(reduction, waterDuration); //reduces bleed based on accuracy of the spell
+        nextWaterCastTime = Time.time + waterCooldownDuration;
         score += pointsAwarded;
         RegisterMissIfNeeded(judgement);
 
@@ -387,6 +401,7 @@ public class SpellController : MonoBehaviour
         hideRuneUntilNextStroke = false;
         selectedSpell = spell;
         UpdateRuneVisibility();
+        UpdateSpellSelectionUI();
         SpellSelected?.Invoke(spell);
     }
 
@@ -425,6 +440,12 @@ public class SpellController : MonoBehaviour
         switch (selectedSpell)
         {
             case SpellType.Water:
+                if (IsWaterOnCooldown())
+                {
+                    ShowWaterCooldownFeedback();
+                    return;
+                }
+
                 CastWater(acc, true, isQuickCast, popupWorldPosition);
                 break;
             case SpellType.Earth:
@@ -798,6 +819,14 @@ public class SpellController : MonoBehaviour
         SetRuneVisible(fireRuneVisual, selectedSpell == SpellType.Fire && showSelectedRune);
     }
 
+    void UpdateSpellSelectionUI()
+    {
+        SetRuneVisible(waterRuneIcon, selectedSpell == SpellType.Water);
+        SetRuneVisible(earthRuneIcon, selectedSpell == SpellType.Earth);
+        SetRuneVisible(fireRuneIcon, selectedSpell == SpellType.Fire);
+        UpdateWaterCooldownVisual();
+    }
+
     void SetRuneVisible(GameObject runeVisual, bool visible)
     {
         if (runeVisual != null)
@@ -1068,5 +1097,54 @@ public class SpellController : MonoBehaviour
         hasLockedRuneDirectionMode = false;
         lockedRuneStrokeDirection = Vector3.right;
         UpdateRuneVisibility();
+    }
+
+    bool IsWaterOnCooldown()
+    {
+        return Time.time < nextWaterCastTime;
+    }
+
+    void UpdateWaterCooldownVisual()
+    {
+        float remainingCooldown = Mathf.Max(0f, nextWaterCastTime - Time.time);
+        Color targetColor = waterRuneReadyColor;
+
+        if (remainingCooldown > 0f && waterCooldownDuration > 0f)
+        {
+            float cooldownProgress = 1f - Mathf.Clamp01(remainingCooldown / waterCooldownDuration);
+            targetColor = Color.Lerp(waterRuneCooldownColor, waterRuneReadyColor, cooldownProgress);
+        }
+
+        ApplyIconColor(waterRuneIcon, targetColor);
+    }
+
+    void ShowWaterCooldownFeedback()
+    {
+        float remainingCooldown = Mathf.Max(0f, nextWaterCastTime - Time.time);
+
+        if (spellJudgementText != null)
+        {
+            spellJudgementText.text = "Water cooling down: " + remainingCooldown.ToString("F1") + "s";
+        }
+    }
+
+    void ApplyIconColor(GameObject iconObject, Color color)
+    {
+        if (iconObject == null)
+        {
+            return;
+        }
+
+        Graphic graphic = iconObject.GetComponent<Graphic>();
+        if (graphic != null)
+        {
+            graphic.color = color;
+        }
+
+        SpriteRenderer spriteRenderer = iconObject.GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = color;
+        }
     }
 }

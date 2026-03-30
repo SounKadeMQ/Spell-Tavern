@@ -5,7 +5,7 @@ public class PatientTest : MonoBehaviour
     public Patient patient;
     void Update()
     {
-        if (patient == null) return;
+        if (!DebugModeState.IsEnabled || patient == null) return;
 
         //b to start bleed
         if (Input.GetKeyDown(KeyCode.B))
