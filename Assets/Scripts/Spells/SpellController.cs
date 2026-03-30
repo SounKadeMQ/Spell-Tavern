@@ -142,6 +142,11 @@ public class SpellController : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip waterSFX;
 
+    void Awake()
+    {
+        ApplyDefaultAccuracyThresholds();
+    }
+
     void Start()
     {
         if (waterRuneVisual == null && waterAccuracyCheck != null)
@@ -183,6 +188,16 @@ public class SpellController : MonoBehaviour
         }
 
         UpdateRuneVisibility();
+    }
+
+    void ApplyDefaultAccuracyThresholds()
+    {
+        // Force the current normalized-accuracy bands in case older scene serialization
+        // still has the pre-normalization threshold values saved on the component.
+        niceThreshold = 0.035f;
+        greatThreshold = 0.04f;
+        goodThreshold = 0.06f;
+        ehThreshold = 0.08f;
     }
 
     void Update()

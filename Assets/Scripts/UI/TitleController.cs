@@ -3,11 +3,11 @@ using UnityEngine.SceneManagement;
 
 public class TitleScreenUI : MonoBehaviour
 {
-    [SerializeField] private string PatientScene = "PatientScene";
+    [SerializeField] private string preOpSceneName = "preOpScene";
 
     public void StartGame()
     {
-        SceneManager.LoadScene(PatientScene);
+        SceneManager.LoadScene(preOpSceneName);
     }
 
     public void QuitGame()

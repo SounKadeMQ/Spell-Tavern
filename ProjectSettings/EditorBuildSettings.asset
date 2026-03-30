@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Gameplay/PatientScene.unity
     guid: 2ed4beb95a601a744a3c09ce07944b69
   - enabled: 1
+    path: Assets/Scenes/Gameplay/preOpScene.unity
+    guid: a2e91c9423edbad4e991e3450524dea8
+  - enabled: 1
     path: Assets/Scenes/SurgeryScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   m_configObjects: {}
