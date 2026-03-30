@@ -9,7 +9,7 @@ public class SpellTester : MonoBehaviour
 
     void Update()
     {
-        if (patient == null) return;
+        if (!DebugModeState.IsEnabled || patient == null) return;
 
         if (Input.GetKeyDown(KeyCode.Q))
         {

@@ -83,6 +83,7 @@ public class SurgeryEndController : MonoBehaviour
         RefreshResultTexts(completeScoreText, completeRankText, completeMissText);
         SetPanelVisible(gameOverRoot, false);
         SetPanelVisible(missionCompleteRoot, true);
+        BringPanelToFront(missionCompleteRoot);
     }
 
     public void ShowGameOver()
@@ -97,6 +98,7 @@ public class SurgeryEndController : MonoBehaviour
         RefreshResultTexts(gameOverScoreText, gameOverRankText, gameOverMissText);
         SetPanelVisible(missionCompleteRoot, false);
         SetPanelVisible(gameOverRoot, true);
+        BringPanelToFront(gameOverRoot);
     }
 
     public void RetrySurgery()
@@ -175,6 +177,28 @@ public class SurgeryEndController : MonoBehaviour
         if (root != null)
         {
             root.SetActive(visible);
+
+            CanvasGroup canvasGroup = root.GetComponent<CanvasGroup>();
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = visible ? 1f : 0f;
+                canvasGroup.interactable = visible;
+                canvasGroup.blocksRaycasts = visible;
+            }
+        }
+    }
+
+    void BringPanelToFront(GameObject root)
+    {
+        if (root == null)
+        {
+            return;
+        }
+
+        RectTransform rectTransform = root.transform as RectTransform;
+        if (rectTransform != null)
+        {
+            rectTransform.SetAsLastSibling();
         }
     }
 }

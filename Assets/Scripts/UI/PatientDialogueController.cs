@@ -40,8 +40,6 @@ public class PatientDialogueController : MonoBehaviour
     [SerializeField] private Image transitionFadeOverlay;
     [SerializeField] private float transitionFadeDuration = 0.35f;
     [SerializeField] private float transitionMidpointHoldDuration = 0.1f;
-    [SerializeField] private Color missionCompleteFadeColor = new Color(0.2f, 0.55f, 0.2f, 1f);
-
     private int currentLineIndex;
     private Coroutine typewriterRoutine;
     private Coroutine transitionRoutine;
@@ -469,30 +467,7 @@ public class PatientDialogueController : MonoBehaviour
         GameplayPause.SetPaused(true);
         SetNextButtonVisible(false);
         SetDialogueVisible(false);
-
-        Color originalOverlayColor = transitionFadeOverlay != null ? transitionFadeOverlay.color : Color.black;
-        if (transitionFadeOverlay != null)
-        {
-            Color fadeColor = missionCompleteFadeColor;
-            fadeColor.a = 0f;
-            transitionFadeOverlay.color = fadeColor;
-        }
-
-        yield return FadeOverlay(0f, 1f);
-
-        if (transitionMidpointHoldDuration > 0f)
-        {
-            yield return new WaitForSecondsRealtime(transitionMidpointHoldDuration);
-        }
-
-        SetTransitionOverlayAlpha(0f);
-
-        if (transitionFadeOverlay != null)
-        {
-            transitionFadeOverlay.color = originalOverlayColor;
-            transitionFadeOverlay.raycastTarget = false;
-            transitionFadeOverlay.gameObject.SetActive(false);
-        }
+        yield return null;
 
         transitionRoutine = null;
 

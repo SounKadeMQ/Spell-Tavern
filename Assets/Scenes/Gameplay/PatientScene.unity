@@ -1143,7 +1143,7 @@ MonoBehaviour:
   missionCompleteRoot: {fileID: 975777526}
   gameOverRoot: {fileID: 655718571}
   completeScoreText: {fileID: 843077869}
-  completeRankText: {fileID: 1896246434}
+  completeRankText: {fileID: 612502921}
   completeMissText: {fileID: 0}
   gameOverScoreText: {fileID: 1987825356}
   gameOverRankText: {fileID: 1896246434}
@@ -1840,11 +1840,11 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1339401090}
+  - {fileID: 2079176501}
   - {fileID: 612502920}
   - {fileID: 843077871}
   - {fileID: 1349202124}
-  - {fileID: 2079176501}
-  - {fileID: 1339401090}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2267,7 +2267,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.2679245, g: 0.2679245, b: 0.2679245, a: 1}
@@ -5310,7 +5310,7 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
   - speaker: Nurse
-    text: Press the "D" button to select the Water spell.
+    text: Press the "D" key to select the Water spell.
     waitForSpellSelect: 1
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -5361,7 +5361,7 @@ MonoBehaviour:
     requiredSpell: 1
     requiredWoundLocation: 0
   - speaker: Nurse
-    text: Press the "D" button, to select the Fire spell.
+    text: Press the "A" key, to select the Fire spell.
     waitForSpellSelect: 1
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -5520,7 +5520,6 @@ MonoBehaviour:
   transitionFadeOverlay: {fileID: 1548773138}
   transitionFadeDuration: 0.35
   transitionMidpointHoldDuration: 0.1
-  missionCompleteFadeColor: {r: 0.2, g: 0.55, b: 0.2, a: 1}
 --- !u!4 &1992937020
 Transform:
   m_ObjectHideFlags: 0
@@ -5529,8 +5528,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1992937018}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.04494, y: -0.91882, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -3.0449219, y: -0.91882324, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5593,7 +5592,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TitleText
+  m_text: Mission Successful!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5751,6 +5750,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3794993699844337852, guid: 5aee64ab025f2c143a17fabffd9bc01e, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4464764405495302883, guid: 5aee64ab025f2c143a17fabffd9bc01e, type: 3}
       propertyPath: cutSprite
       value: 
@@ -5763,6 +5766,10 @@ PrefabInstance:
       propertyPath: woundSpriteRenderer
       value: 
       objectReference: {fileID: 1262567548}
+    - target: {fileID: 4759296386152071959, guid: 5aee64ab025f2c143a17fabffd9bc01e, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6977752174509168122, guid: 5aee64ab025f2c143a17fabffd9bc01e, type: 3}
       propertyPath: m_Name
       value: CutLaceration
@@ -5798,7 +5805,7 @@ SceneRoots:
   - {fileID: 863098232}
   - {fileID: 1692664339}
   - {fileID: 510807628}
-  - {fileID: 1992937020}
   - {fileID: 745434967}
+  - {fileID: 1992937020}
   - {fileID: 655718575}
   - {fileID: 975777530}

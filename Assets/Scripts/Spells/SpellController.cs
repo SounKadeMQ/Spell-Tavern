@@ -164,6 +164,7 @@ public class SpellController : MonoBehaviour
     void Awake()
     {
         ApplyDefaultAccuracyThresholds();
+        enableDebugHotkeys &= DebugModeState.IsEnabled;
     }
 
     void Start()
