@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 //AccuracyCheck.cs
 
 /*
@@ -100,11 +101,17 @@ public class SpellController : MonoBehaviour
     private bool hasLockedRuneDirectionMode;
     private bool lockedRuneUsesReversedTemplate;
     private Vector3 lockedRuneStrokeDirection = Vector3.right;
+    private bool hideRuneUntilNextStroke;
 
     [Header("Feedback")]
     [SerializeField] private TextMeshProUGUI spellJudgementText;
     [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI scoreRankText;
+    [SerializeField] private TextMeshProUGUI missCountText;
+    [SerializeField] private Slider scoreMeter;
+    [SerializeField] private int scoreMeterMax = 5500;
     [SerializeField] private int score;
+    [SerializeField] private int missCount;
 
     [Header("Accuracy Tuning")]
     [SerializeField] private SpellAccuracyThresholds waterThresholds = new SpellAccuracyThresholds();
@@ -200,6 +207,7 @@ public class SpellController : MonoBehaviour
         }
 
         UpdateRuneVisibility();
+        UpdateScoreUI();
     }
 
     void ApplyDefaultAccuracyThresholds()
@@ -237,6 +245,8 @@ public class SpellController : MonoBehaviour
             mouseDraw != null &&
             mouseDraw.TryConsumeStrokeStart(out Vector3 strokeStartPosition))
         {
+            hideRuneUntilNextStroke = false;
+            UpdateRuneVisibility();
             lockedRuneAnchorPosition = strokeStartPosition;
             hasLockedRuneAnchor = true;
             hasLockedRuneDirectionMode = false;
@@ -333,6 +343,7 @@ public class SpellController : MonoBehaviour
         patient.startHoT(totalHeal, waterDuration);
         patient.bleedReduction(reduction, waterDuration); //reduces bleed based on accuracy of the spell
         score += pointsAwarded;
+        RegisterMissIfNeeded(judgement);
 
         UpdateFeedbackUI(judgement);
         if (showPopup)
@@ -346,6 +357,7 @@ public class SpellController : MonoBehaviour
             audioSource.PlayOneShot(waterSFX);
         }
 
+        HideRuneAfterSuccessfulCast();
         SpellCastSucceeded?.Invoke(SpellType.Water);
 
         Debug.Log(
@@ -371,6 +383,7 @@ public class SpellController : MonoBehaviour
 
     public void SetSelectedSpell(SpellType spell)
     {
+        hideRuneUntilNextStroke = false;
         selectedSpell = spell;
         UpdateRuneVisibility();
         SpellSelected?.Invoke(spell);
@@ -477,10 +490,7 @@ public class SpellController : MonoBehaviour
             spellJudgementText.text = feedback;
         }
 
-        if (scoreText != null)
-        {
-            scoreText.text = score.ToString();
-        }
+        UpdateScoreUI();
     }
 
     float GetAccuracyMultiplier(float acc)
@@ -532,10 +542,12 @@ public class SpellController : MonoBehaviour
         SpellJudgement judgement = GetSpellJudgement(spellType, acc);
         int pointsAwarded = GetPointsForJudgement(judgement);
         bool treated = wound.TryApplySpell(spellType, out string outcome);
+        RegisterMissIfNeeded(judgement);
 
         if (treated)
         {
             score += pointsAwarded;
+            HideRuneAfterSuccessfulCast();
             SpellCastSucceeded?.Invoke(spellType);
         }
 
@@ -546,15 +558,74 @@ public class SpellController : MonoBehaviour
             spellJudgementText.text = outcome;
         }
 
-        if (scoreText != null)
-        {
-            scoreText.text = score.ToString();
-        }
+        UpdateScoreUI();
 
         Debug.Log(
             spellType + " cast - acc: " + acc.ToString("F3") +
             " - outcome: " + outcome +
             " - points: " + (treated ? pointsAwarded : 0));
+    }
+
+    void UpdateScoreUI()
+    {
+        if (scoreText != null)
+        {
+            scoreText.text = score.ToString();
+        }
+
+        if (scoreRankText != null)
+        {
+            scoreRankText.text = GetScoreRankText();
+        }
+
+        if (missCountText != null)
+        {
+            missCountText.text = "Misses: " + missCount;
+        }
+
+        if (scoreMeter != null)
+        {
+            scoreMeter.maxValue = Mathf.Max(1, scoreMeterMax);
+            scoreMeter.value = Mathf.Clamp(score, 0, scoreMeter.maxValue);
+        }
+    }
+
+    void RegisterMissIfNeeded(SpellJudgement judgement)
+    {
+        if (judgement == SpellJudgement.Miss)
+        {
+            missCount++;
+        }
+    }
+
+    string GetScoreRankText()
+    {
+        if (score >= 5500 && missCount <= 3)
+        {
+            return "MS - Master Sage";
+        }
+
+        if (score >= 4500 && missCount <= 7)
+        {
+            return "S - Supreme Sage";
+        }
+
+        if (score >= 3500 && missCount <= 15)
+        {
+            return "A - Adept Sage";
+        }
+
+        if (score >= 2500)
+        {
+            return "B - Beneficial Sage";
+        }
+
+        if (score >= 1500)
+        {
+            return "C - Rookie Sage";
+        }
+
+        return "D - Desperate Sage";
     }
 
     bool TryGetTargetWound(out CutWound wound)
@@ -705,9 +776,10 @@ public class SpellController : MonoBehaviour
 
     void UpdateRuneVisibility()
     {
-        SetRuneVisible(waterRuneVisual, selectedSpell == SpellType.Water);
-        SetRuneVisible(earthRuneVisual, selectedSpell == SpellType.Earth);
-        SetRuneVisible(fireRuneVisual, selectedSpell == SpellType.Fire);
+        bool showSelectedRune = !hideRuneUntilNextStroke;
+        SetRuneVisible(waterRuneVisual, selectedSpell == SpellType.Water && showSelectedRune);
+        SetRuneVisible(earthRuneVisual, selectedSpell == SpellType.Earth && showSelectedRune);
+        SetRuneVisible(fireRuneVisual, selectedSpell == SpellType.Fire && showSelectedRune);
     }
 
     void SetRuneVisible(GameObject runeVisual, bool visible)
@@ -971,5 +1043,14 @@ public class SpellController : MonoBehaviour
             default:
                 return waterThresholds;
         }
+    }
+
+    void HideRuneAfterSuccessfulCast()
+    {
+        hideRuneUntilNextStroke = true;
+        hasLockedRuneAnchor = false;
+        hasLockedRuneDirectionMode = false;
+        lockedRuneStrokeDirection = Vector3.right;
+        UpdateRuneVisibility();
     }
 }

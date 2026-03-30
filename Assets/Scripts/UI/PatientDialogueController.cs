@@ -386,7 +386,7 @@ public class PatientDialogueController : MonoBehaviour
 
             if (patientWounds == null)
             {
-                patientWounds = FindFirstObjectByType<PatientWounds>();
+                patientWounds = FindAnyObjectByType<PatientWounds>();
             }
         }
     }
