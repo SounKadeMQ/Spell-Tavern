@@ -778,12 +778,13 @@ MonoBehaviour:
   nextSceneName: PatientScene
   lines:
   - speaker: Nurse
-    text: This is a test patient!
+    text: Hello there.
   - speaker: Nurse
-    text: This is also a test dialogue!
+    text: Another patient has come in.
   - speaker: Nurse
-    text: The patient has three external wounds. The patient also has 3 internal
-      wounds.
+    text: The patient has three external wounds that we know of.
+  - speaker: Nurse
+    text: The patient has three external wounds that we know of.
   characterRevealInterval: 0.1
   audioSource: {fileID: 1546726103}
   voiceTestClip: {fileID: 8300000, guid: 00ce4035e7551f34aa32aa956e3c7733, type: 3}
