@@ -31,6 +31,16 @@ public class MouseDraw : MonoBehaviour
 
     void Update()
     {
+        if (GameplayPause.IsPaused)
+        {
+            if (hasStroke || positionCount > 0)
+            {
+                ClearStroke();
+            }
+
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             BeginStroke();
@@ -113,13 +123,19 @@ public class MouseDraw : MonoBehaviour
 
     void BeginStroke()
     {
+        ClearStroke();
+        strokeStartTime = Time.time;
+        lastStrokeDuration = 0f;
+        currentStrokeDirection = Vector3.right;
+    }
+
+    void ClearStroke()
+    {
         lineRenderer.positionCount = 0;
         positionCount = 0;
         time = 0f;
         hasStroke = false;
-        strokeStartTime = Time.time;
-        lastStrokeDuration = 0f;
-        currentStrokeDirection = Vector3.right;
+        strokeStartedThisFrame = false;
     }
 
     void AddPoint(Vector3 point)

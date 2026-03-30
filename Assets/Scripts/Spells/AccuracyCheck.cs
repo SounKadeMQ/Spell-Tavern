@@ -24,6 +24,12 @@ public class AccuracyCheck : MonoBehaviour
 
     void Update()
     {
+        if (GameplayPause.IsPaused)
+        {
+            hasFreshAccuracy = false;
+            return;
+        }
+
         if (Input.GetMouseButtonUp(0)) 
         {
             accuracy = 0;

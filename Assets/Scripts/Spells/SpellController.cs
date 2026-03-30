@@ -203,6 +203,11 @@ public class SpellController : MonoBehaviour
     void Update()
     //todo: implement later
     {
+        if (GameplayPause.IsPaused)
+        {
+            return;
+        }
+
         if (patient != null && patientWounds == null)
         {
             patientWounds = patient.GetComponent<PatientWounds>();
