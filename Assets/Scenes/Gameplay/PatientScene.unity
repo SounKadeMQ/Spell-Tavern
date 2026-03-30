@@ -792,7 +792,7 @@ MonoBehaviour:
   audioSource: {fileID: 1260592527}
   heartbeatClip: {fileID: 8300000, guid: 334871a3fb3a4db4884fe03f66327cad, type: 3}
   healthyPitch: 0.85
-  criticalPitch: 1.5
+  criticalPitch: 5
   lowBloodThreshold: 35
   healthyBloodLevel: 100
   minVolume: 0.2
@@ -2490,7 +2490,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: Game Over!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3376,7 +3376,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 272464919}
   - {fileID: 402880134}
   - {fileID: 320769267}
   - {fileID: 323818171}
@@ -3384,6 +3383,7 @@ RectTransform:
   - {fileID: 1340978723}
   - {fileID: 761225596}
   - {fileID: 1895332221}
+  - {fileID: 272464919}
   m_Father: {fileID: 1731897576}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -5836,7 +5836,7 @@ MonoBehaviour:
   scoreRankText: {fileID: 761225597}
   missCountText: {fileID: 0}
   scoreMeter: {fileID: 1340978724}
-  scoreMeterMax: 13500
+  scoreMeterMax: 5000
   score: 0
   missCount: 0
   waterThresholds:
