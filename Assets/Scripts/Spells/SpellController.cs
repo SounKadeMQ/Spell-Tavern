@@ -168,6 +168,8 @@ public class SpellController : MonoBehaviour
     [Header("Audio")]
     public AudioSource audioSource;
     public AudioClip waterSFX;
+    public AudioClip earthSFX;
+    public AudioClip fireSFX;
 
     private float nextWaterCastTime;
 
@@ -585,6 +587,7 @@ public class SpellController : MonoBehaviour
         {
             score += pointsAwarded;
             HideRuneAfterSuccessfulCast();
+            PlaySpellSfx(spellType);
             SpellCastSucceeded?.Invoke(spellType);
         }
 
@@ -1125,6 +1128,34 @@ public class SpellController : MonoBehaviour
         if (spellJudgementText != null)
         {
             spellJudgementText.text = "Water cooling down: " + remainingCooldown.ToString("F1") + "s";
+        }
+    }
+
+    void PlaySpellSfx(SpellType spellType)
+    {
+        if (audioSource == null)
+        {
+            return;
+        }
+
+        AudioClip clipToPlay = null;
+
+        switch (spellType)
+        {
+            case SpellType.Water:
+                clipToPlay = waterSFX;
+                break;
+            case SpellType.Earth:
+                clipToPlay = earthSFX;
+                break;
+            case SpellType.Fire:
+                clipToPlay = fireSFX;
+                break;
+        }
+
+        if (clipToPlay != null)
+        {
+            audioSource.PlayOneShot(clipToPlay);
         }
     }
 
