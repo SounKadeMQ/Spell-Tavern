@@ -109,7 +109,7 @@ public class SpellController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI scoreRankText;
     [SerializeField] private TextMeshProUGUI missCountText;
     [SerializeField] private Slider scoreMeter;
-    [SerializeField] private int scoreMeterMax = 5500;
+    [SerializeField] private int scoreMeterMax = 2400;
     [SerializeField] private int score;
     [SerializeField] private int missCount;
 
@@ -615,27 +615,27 @@ public class SpellController : MonoBehaviour
 
     string GetScoreRankText()
     {
-        if (score >= 5500 && missCount <= 3)
+        if (score >= 2200 && missCount <= 1)
         {
             return "MS - Master Sage";
         }
 
-        if (score >= 4500 && missCount <= 7)
+        if (score >= 1900 && missCount <= 2)
         {
             return "S - Supreme Sage";
         }
 
-        if (score >= 3500 && missCount <= 15)
+        if (score >= 1500 && missCount <= 4)
         {
             return "A - Adept Sage";
         }
 
-        if (score >= 2500)
+        if (score >= 1100)
         {
             return "B - Beneficial Sage";
         }
 
-        if (score >= 1500)
+        if (score >= 700)
         {
             return "C - Rookie Sage";
         }

@@ -16,6 +16,7 @@ public class PatientDialogueLine
     public bool waitForWoundsCleared;
     public bool waitBeforeShowingLine;
     public bool transitionToInside;
+    public bool missionCompleteFlag;
     public SpellController.SpellType requiredSpell = SpellController.SpellType.None;
     public CutWound.WoundLocation requiredWoundLocation = CutWound.WoundLocation.Outside;
 }
@@ -32,12 +33,14 @@ public class PatientDialogueController : MonoBehaviour
     [SerializeField] private float characterRevealInterval = 0.05f;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip voiceTestClip;
+    [SerializeField] private SurgeryEndController surgeryEndController;
     [Header("Patient View Transition")]
     [SerializeField] private GameObject outsidePatientRoot;
     [SerializeField] private GameObject insidePatientRoot;
     [SerializeField] private Image transitionFadeOverlay;
     [SerializeField] private float transitionFadeDuration = 0.35f;
     [SerializeField] private float transitionMidpointHoldDuration = 0.1f;
+    [SerializeField] private Color missionCompleteFadeColor = new Color(0.2f, 0.55f, 0.2f, 1f);
 
     private int currentLineIndex;
     private Coroutine typewriterRoutine;
@@ -273,6 +276,17 @@ public class PatientDialogueController : MonoBehaviour
             isWaitingForWoundsCleared = true;
         }
 
+        if (lines[currentLineIndex].missionCompleteFlag)
+        {
+            if (transitionRoutine != null)
+            {
+                StopCoroutine(transitionRoutine);
+            }
+
+            transitionRoutine = StartCoroutine(CompleteMissionAfterLine());
+            return;
+        }
+
         if (isWaitingForSpellSelect || isWaitingForSpellCast || isWaitingForWoundsCleared)
         {
             SetNextButtonVisible(false);
@@ -450,6 +464,53 @@ public class PatientDialogueController : MonoBehaviour
         ContinueAfterWait();
     }
 
+    IEnumerator CompleteMissionAfterLine()
+    {
+        GameplayPause.SetPaused(true);
+        SetNextButtonVisible(false);
+        SetDialogueVisible(false);
+
+        Color originalOverlayColor = transitionFadeOverlay != null ? transitionFadeOverlay.color : Color.black;
+        if (transitionFadeOverlay != null)
+        {
+            Color fadeColor = missionCompleteFadeColor;
+            fadeColor.a = 0f;
+            transitionFadeOverlay.color = fadeColor;
+        }
+
+        yield return FadeOverlay(0f, 1f);
+
+        if (transitionMidpointHoldDuration > 0f)
+        {
+            yield return new WaitForSecondsRealtime(transitionMidpointHoldDuration);
+        }
+
+        SetTransitionOverlayAlpha(0f);
+
+        if (transitionFadeOverlay != null)
+        {
+            transitionFadeOverlay.color = originalOverlayColor;
+            transitionFadeOverlay.raycastTarget = false;
+            transitionFadeOverlay.gameObject.SetActive(false);
+        }
+
+        transitionRoutine = null;
+
+        if (surgeryEndController == null)
+        {
+            surgeryEndController = FindAnyObjectByType<SurgeryEndController>();
+        }
+
+        if (surgeryEndController != null)
+        {
+            surgeryEndController.ShowMissionComplete();
+        }
+        else
+        {
+            EndDialogue();
+        }
+    }
+
     IEnumerator FadeOverlay(float fromAlpha, float toAlpha)
     {
         if (transitionFadeOverlay == null)
@@ -513,6 +574,11 @@ public class PatientDialogueController : MonoBehaviour
             {
                 patientWounds = FindAnyObjectByType<PatientWounds>();
             }
+        }
+
+        if (surgeryEndController == null)
+        {
+            surgeryEndController = FindAnyObjectByType<SurgeryEndController>();
         }
     }
 

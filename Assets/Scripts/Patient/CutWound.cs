@@ -23,6 +23,11 @@ public class CutWound : MonoBehaviour
     [SerializeField] private Collider2D cutHitbox;
     [SerializeField] private Collider2D spellBoundsHitbox;
 
+    [Header("Visuals")]
+    [SerializeField] private SpriteRenderer woundSpriteRenderer;
+    [SerializeField] private Sprite cutSprite;
+    [SerializeField] private Sprite lacerationSprite;
+
     [Header("State")]
     [SerializeField] private WoundType woundType = WoundType.Cut;
     [SerializeField] private WoundLocation woundLocation = WoundLocation.Outside;
@@ -38,11 +43,27 @@ public class CutWound : MonoBehaviour
     public WoundType Type => woundType;
     public WoundLocation Location => woundLocation;
 
+    private Sprite originalVisualSprite;
+    private Vector3 originalVisualLocalPosition;
+    private Vector3 originalVisualLocalScale;
+
     void Start()
     {
         if (patient == null)
         {
             patient = GetComponentInParent<Patient>();
+        }
+
+        if (woundSpriteRenderer == null)
+        {
+            woundSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        }
+
+        if (woundSpriteRenderer != null)
+        {
+            originalVisualSprite = woundSpriteRenderer.sprite;
+            originalVisualLocalPosition = woundSpriteRenderer.transform.localPosition;
+            originalVisualLocalScale = woundSpriteRenderer.transform.localScale;
         }
 
         PatientWounds patientWounds = GetComponentInParent<PatientWounds>();
@@ -53,9 +74,11 @@ public class CutWound : MonoBehaviour
 
         if (!applyBleedOnStart || patient == null)
         {
+            RefreshVisualState();
             return;
         }
 
+        RefreshVisualState();
         patient.NotifyBleedSourcesChanged();
     }
 
@@ -182,6 +205,7 @@ public class CutWound : MonoBehaviour
                 if (spellType == SpellController.SpellType.Earth && !isStabilized)
                 {
                     isStabilized = true;
+                    RefreshVisualState();
                     NotifyPatient();
                     outcome = "Laceration stabilized.";
                     return true;
@@ -212,5 +236,72 @@ public class CutWound : MonoBehaviour
         {
             patient.NotifyBleedSourcesChanged();
         }
+    }
+
+    void RefreshVisualState()
+    {
+        if (woundSpriteRenderer == null)
+        {
+            return;
+        }
+
+        Sprite targetSprite = null;
+
+        switch (woundType)
+        {
+            case WoundType.Cut:
+                targetSprite = cutSprite;
+                break;
+            case WoundType.Laceration:
+                targetSprite = isStabilized && cutSprite != null ? cutSprite : lacerationSprite;
+                break;
+        }
+
+        if (targetSprite != null)
+        {
+            ApplyVisualSprite(targetSprite);
+        }
+    }
+
+    void ApplyVisualSprite(Sprite targetSprite)
+    {
+        if (woundSpriteRenderer == null || targetSprite == null)
+        {
+            return;
+        }
+
+        Sprite referenceSprite = originalVisualSprite != null ? originalVisualSprite : woundSpriteRenderer.sprite;
+        Transform visualTransform = woundSpriteRenderer.transform;
+
+        woundSpriteRenderer.sprite = targetSprite;
+
+        visualTransform.localScale = originalVisualLocalScale;
+        visualTransform.localPosition = originalVisualLocalPosition;
+
+        if (referenceSprite == null)
+        {
+            return;
+        }
+
+        Vector2 referenceSize = referenceSprite.bounds.size;
+        Vector2 targetSize = targetSprite.bounds.size;
+        Vector3 adjustedScale = originalVisualLocalScale;
+
+        if (targetSize.x > Mathf.Epsilon)
+        {
+            adjustedScale.x *= referenceSize.x / targetSize.x;
+        }
+
+        if (targetSize.y > Mathf.Epsilon)
+        {
+            adjustedScale.y *= referenceSize.y / targetSize.y;
+        }
+
+        Vector3 referenceCenter = referenceSprite.bounds.center;
+        Vector3 targetCenter = targetSprite.bounds.center;
+        Vector3 centerOffset = referenceCenter - targetCenter;
+
+        visualTransform.localScale = adjustedScale;
+        visualTransform.localPosition = originalVisualLocalPosition + centerOffset;
     }
 }
