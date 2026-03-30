@@ -12,12 +12,16 @@ public class PatientDialogueLine
 
     public bool waitForSpellSelect;
     public bool waitForSpellCast;
+    public bool waitForWoundsCleared;
+    public bool waitBeforeShowingLine;
     public SpellController.SpellType requiredSpell = SpellController.SpellType.None;
+    public CutWound.WoundLocation requiredWoundLocation = CutWound.WoundLocation.Outside;
 }
 
 public class PatientDialogueController : MonoBehaviour
 {
     [SerializeField] private SpellController spellController;
+    [SerializeField] private PatientWounds patientWounds;
     [SerializeField] private TextMeshProUGUI speakerText;
     [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private GameObject dialogueRoot;
@@ -32,9 +36,15 @@ public class PatientDialogueController : MonoBehaviour
     private bool isTyping;
     private bool isWaitingForSpellSelect;
     private bool isWaitingForSpellCast;
+    private bool isWaitingForWoundsCleared;
+    private bool isWaitingBeforeShowingLine;
+    private bool hasMatchedSpellSelection;
+    private bool hasMatchedSpellCast;
 
     void Start()
     {
+        ResolveSceneReferences();
+
         if (lines == null || lines.Length == 0)
         {
             SetDialogueVisible(false);
@@ -51,12 +61,14 @@ public class PatientDialogueController : MonoBehaviour
     {
         SpellController.SpellCastSucceeded += HandleSpellCastSucceeded;
         SpellController.SpellSelected += HandleSpellSelected;
+        CutWound.WoundCauterised += HandleWoundCauterised;
     }
 
     void OnDisable()
     {
         SpellController.SpellCastSucceeded -= HandleSpellCastSucceeded;
         SpellController.SpellSelected -= HandleSpellSelected;
+        CutWound.WoundCauterised -= HandleWoundCauterised;
     }
 
     public void NextLine()
@@ -67,7 +79,7 @@ public class PatientDialogueController : MonoBehaviour
             return;
         }
 
-        if (isWaitingForSpellSelect || isWaitingForSpellCast)
+        if (isWaitingForSpellSelect || isWaitingForSpellCast || isWaitingForWoundsCleared)
         {
             return;
         }
@@ -96,12 +108,53 @@ public class PatientDialogueController : MonoBehaviour
             return;
         }
 
+        if (TryEnterPreShowWait())
+        {
+            return;
+        }
+
         isWaitingForSpellSelect = false;
         isWaitingForSpellCast = false;
+        isWaitingForWoundsCleared = false;
+        isWaitingBeforeShowingLine = false;
+        hasMatchedSpellSelection = false;
+        hasMatchedSpellCast = false;
         SetNextButtonVisible(true);
         GameplayPause.SetPaused(true);
         speakerText.text = lines[currentLineIndex].speaker;
         StartTypewriter(lines[currentLineIndex].text);
+    }
+
+    bool TryEnterPreShowWait()
+    {
+        if (lines == null || currentLineIndex >= lines.Length)
+        {
+            return false;
+        }
+
+        PatientDialogueLine currentLine = lines[currentLineIndex];
+        if (!currentLine.waitBeforeShowingLine)
+        {
+            return false;
+        }
+
+        ResolveSceneReferences();
+        isWaitingForSpellSelect = currentLine.waitForSpellSelect;
+        isWaitingForSpellCast = currentLine.waitForSpellCast;
+        isWaitingForWoundsCleared = currentLine.waitForWoundsCleared;
+        isWaitingBeforeShowingLine = true;
+        hasMatchedSpellSelection = false;
+        hasMatchedSpellCast = false;
+
+        if (isWaitingForSpellSelect && spellController != null)
+        {
+            spellController.SetSelectedSpell(SpellController.SpellType.None);
+        }
+
+        SetNextButtonVisible(false);
+        GameplayPause.SetPaused(false);
+        TryContinueAfterWait();
+        return true;
     }
 
     void StartTypewriter(string lineText)
@@ -155,6 +208,10 @@ public class PatientDialogueController : MonoBehaviour
     {
         isWaitingForSpellSelect = false;
         isWaitingForSpellCast = false;
+        isWaitingForWoundsCleared = false;
+        isWaitingBeforeShowingLine = false;
+        hasMatchedSpellSelection = false;
+        hasMatchedSpellCast = false;
         GameplayPause.SetPaused(false);
         SetDialogueVisible(false);
     }
@@ -185,20 +242,29 @@ public class PatientDialogueController : MonoBehaviour
         if (lines[currentLineIndex].waitForSpellSelect)
         {
             isWaitingForSpellSelect = true;
+            hasMatchedSpellSelection = false;
             if (spellController != null)
             {
                 spellController.SetSelectedSpell(SpellController.SpellType.None);
             }
-            SetNextButtonVisible(false);
-            GameplayPause.SetPaused(false);
-            return;
         }
 
         if (lines[currentLineIndex].waitForSpellCast)
         {
             isWaitingForSpellCast = true;
+            hasMatchedSpellCast = false;
+        }
+
+        if (lines[currentLineIndex].waitForWoundsCleared)
+        {
+            isWaitingForWoundsCleared = true;
+        }
+
+        if (isWaitingForSpellSelect || isWaitingForSpellCast || isWaitingForWoundsCleared)
+        {
             SetNextButtonVisible(false);
             GameplayPause.SetPaused(false);
+            TryContinueAfterWait();
         }
     }
 
@@ -216,17 +282,8 @@ public class PatientDialogueController : MonoBehaviour
             return;
         }
 
-        isWaitingForSpellCast = false;
-        GameplayPause.SetPaused(true);
-        currentLineIndex++;
-
-        if (currentLineIndex >= lines.Length)
-        {
-            EndDialogue();
-            return;
-        }
-
-        ShowCurrentLine();
+        hasMatchedSpellCast = true;
+        TryContinueAfterWait();
     }
 
     void HandleSpellSelected(SpellController.SpellType spellType)
@@ -243,7 +300,69 @@ public class PatientDialogueController : MonoBehaviour
             return;
         }
 
+        hasMatchedSpellSelection = true;
+        TryContinueAfterWait();
+    }
+
+    void HandleWoundCauterised(CutWound wound)
+    {
+        if (!isWaitingForWoundsCleared || lines == null || currentLineIndex >= lines.Length)
+        {
+            return;
+        }
+
+        TryContinueAfterWait();
+    }
+
+    bool AreRequiredWoundsCleared(PatientDialogueLine line)
+    {
+        ResolveSceneReferences();
+
+        if (patientWounds == null)
+        {
+            return false;
+        }
+
+        return patientWounds.GetOpenWoundCount(line.requiredWoundLocation) == 0;
+    }
+
+    void TryContinueAfterWait()
+    {
+        if (lines == null || currentLineIndex >= lines.Length)
+        {
+            return;
+        }
+
+        PatientDialogueLine currentLine = lines[currentLineIndex];
+
+        bool spellSelectSatisfied = !currentLine.waitForSpellSelect || hasMatchedSpellSelection;
+        bool spellCastSatisfied = !currentLine.waitForSpellCast || hasMatchedSpellCast;
+        bool woundsSatisfied = !currentLine.waitForWoundsCleared || AreRequiredWoundsCleared(currentLine);
+
+        if (!spellSelectSatisfied || !spellCastSatisfied || !woundsSatisfied)
+        {
+            return;
+        }
+
+        bool shouldShowCurrentLineAfterWait = isWaitingBeforeShowingLine;
         isWaitingForSpellSelect = false;
+        isWaitingForSpellCast = false;
+        isWaitingForWoundsCleared = false;
+        isWaitingBeforeShowingLine = false;
+        hasMatchedSpellSelection = false;
+        hasMatchedSpellCast = false;
+
+        if (shouldShowCurrentLineAfterWait)
+        {
+            ShowCurrentLine();
+            return;
+        }
+
+        ContinueAfterWait();
+    }
+
+    void ContinueAfterWait()
+    {
         GameplayPause.SetPaused(true);
         currentLineIndex++;
 
@@ -254,5 +373,21 @@ public class PatientDialogueController : MonoBehaviour
         }
 
         ShowCurrentLine();
+    }
+
+    void ResolveSceneReferences()
+    {
+        if (patientWounds == null)
+        {
+            if (spellController != null && spellController.patient != null)
+            {
+                patientWounds = spellController.patient.GetComponent<PatientWounds>();
+            }
+
+            if (patientWounds == null)
+            {
+                patientWounds = FindFirstObjectByType<PatientWounds>();
+            }
+        }
     }
 }

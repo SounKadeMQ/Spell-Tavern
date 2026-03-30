@@ -7,7 +7,7 @@ public class MouseDraw : MonoBehaviour
     [SerializeField] private float time = 0;
     [SerializeField] private float minimumPointDistance = 0.15f;
     [SerializeField] private float pointSmoothing = 0.35f;
-    [SerializeField] private float minimumDirectionalDistance = 0.75f;
+    [SerializeField] private float minimumGuideLockDistance = 0.5f;
     private bool hasStroke;
     private Vector3 strokeStartWorldPosition;
     private Vector3 lastStrokeEndWorldPosition;
@@ -21,7 +21,10 @@ public class MouseDraw : MonoBehaviour
     public float LastStrokeDuration => lastStrokeDuration;
     public Vector3 LastStrokeEndWorldPosition => lastStrokeEndWorldPosition;
     public Vector3 CurrentStrokeDirection => currentStrokeDirection;
-    public bool HasDirectionalStroke => hasStroke && positionCount >= 2;
+    public bool HasDirectionalStroke =>
+        hasStroke &&
+        positionCount >= 2 &&
+        Vector3.Distance(lastStrokeEndWorldPosition, strokeStartWorldPosition) >= minimumGuideLockDistance;
 
     void Start()
     {
@@ -147,8 +150,9 @@ public class MouseDraw : MonoBehaviour
 
         if (positionCount >= 2)
         {
-            Vector3 strokeDirection = point - strokeStartWorldPosition;
-            if (strokeDirection.sqrMagnitude >= minimumDirectionalDistance * minimumDirectionalDistance)
+            Vector3 previousPoint = lineRenderer.GetPosition(positionCount - 2);
+            Vector3 strokeDirection = point - previousPoint;
+            if (strokeDirection.sqrMagnitude > Mathf.Epsilon)
             {
                 currentStrokeDirection = strokeDirection.normalized;
             }

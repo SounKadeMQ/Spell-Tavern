@@ -12,6 +12,9 @@ public class AccuracyCheck : MonoBehaviour
     [SerializeField] private int normalizedSampleCount = 64;
     [SerializeField] private float normalizedPathTolerance = 0.18f;
     [SerializeField] private float minimumPathMatchRatio = 0.85f;
+    [SerializeField] private float normalizedEndpointTolerance = 0.12f;
+    [SerializeField] private float normalizedMidpointTolerance = 0.2f;
+    [SerializeField] private float maximumPointDistance = 0.35f;
     private bool hasFreshAccuracy;
 
     public float Accuracy => accuracy;
@@ -84,7 +87,17 @@ public class AccuracyCheck : MonoBehaviour
             bool reverseMatch = ShouldUseReverseMatch(normalizedTracerPoints, normalizedDrawPoints);
             AlignPointSetToTemplate(normalizedDrawPoints, normalizedTracerPoints, reverseMatch);
 
-            if (!HasValidPathMatch(normalizedTracerPoints, normalizedDrawPoints))
+            if (!HasValidEndpoints(normalizedTracerPoints, normalizedDrawPoints, reverseMatch))
+            {
+                return;
+            }
+
+            if (!HasValidMidpoint(normalizedTracerPoints, normalizedDrawPoints, reverseMatch))
+            {
+                return;
+            }
+
+            if (!HasValidPathMatch(normalizedTracerPoints, normalizedDrawPoints, reverseMatch))
             {
                 return;
             }
@@ -150,13 +163,38 @@ public class AccuracyCheck : MonoBehaviour
         return resampledPoints;
     }
 
-    bool HasValidPathMatch(Vector2[] normalizedTracerPoints, Vector2[] normalizedDrawPoints)
+    bool HasValidEndpoints(Vector2[] normalizedTracerPoints, Vector2[] normalizedDrawPoints, bool reverseMatch)
+    {
+        Vector2 drawStart = GetAlignedDrawPoint(normalizedDrawPoints, 0, reverseMatch);
+        Vector2 drawEnd = GetAlignedDrawPoint(normalizedDrawPoints, normalizedTracerPoints.Length - 1, reverseMatch);
+
+        return Vector2.Distance(normalizedTracerPoints[0], drawStart) <= normalizedEndpointTolerance &&
+               Vector2.Distance(normalizedTracerPoints[normalizedTracerPoints.Length - 1], drawEnd) <= normalizedEndpointTolerance;
+    }
+
+    bool HasValidMidpoint(Vector2[] normalizedTracerPoints, Vector2[] normalizedDrawPoints, bool reverseMatch)
+    {
+        int midpointIndex = normalizedTracerPoints.Length / 2;
+        Vector2 drawMidpoint = GetAlignedDrawPoint(normalizedDrawPoints, midpointIndex, reverseMatch);
+        return Vector2.Distance(normalizedTracerPoints[midpointIndex], drawMidpoint) <= normalizedMidpointTolerance;
+    }
+
+    bool HasValidPathMatch(Vector2[] normalizedTracerPoints, Vector2[] normalizedDrawPoints, bool reverseMatch)
     {
         int matchingPoints = 0;
 
         for (int i = 0; i < normalizedTracerPoints.Length; i++)
         {
-            if (Vector2.Distance(normalizedTracerPoints[i], normalizedDrawPoints[i]) <= normalizedPathTolerance)
+            float pointDistance = Vector2.Distance(
+                normalizedTracerPoints[i],
+                GetAlignedDrawPoint(normalizedDrawPoints, i, reverseMatch));
+
+            if (pointDistance > maximumPointDistance)
+            {
+                return false;
+            }
+
+            if (pointDistance <= normalizedPathTolerance)
             {
                 matchingPoints++;
             }
@@ -164,6 +202,14 @@ public class AccuracyCheck : MonoBehaviour
 
         float matchRatio = (float)matchingPoints / normalizedTracerPoints.Length;
         return matchRatio >= minimumPathMatchRatio;
+    }
+
+    Vector2 GetAlignedDrawPoint(Vector2[] normalizedDrawPoints, int index, bool reverseMatch)
+    {
+        int drawIndex = reverseMatch
+            ? normalizedDrawPoints.Length - index - 1
+            : index;
+        return normalizedDrawPoints[drawIndex];
     }
 
     bool ShouldUseReverseMatch(Vector2[] normalizedTracerPoints, Vector2[] normalizedDrawPoints)

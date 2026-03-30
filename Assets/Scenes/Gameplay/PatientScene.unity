@@ -656,6 +656,9 @@ MonoBehaviour:
   normalizedSampleCount: 64
   normalizedPathTolerance: 0.18
   minimumPathMatchRatio: 0.85
+  normalizedEndpointTolerance: 0.12
+  normalizedMidpointTolerance: 0.2
+  maximumPointDistance: 0.35
 --- !u!120 &863098231
 LineRenderer:
   serializedVersion: 3
@@ -1350,6 +1353,9 @@ MonoBehaviour:
   normalizedSampleCount: 64
   normalizedPathTolerance: 0.18
   minimumPathMatchRatio: 0.85
+  normalizedEndpointTolerance: 0.12
+  normalizedMidpointTolerance: 0.2
+  maximumPointDistance: 0.35
 --- !u!120 &1430581640
 LineRenderer:
   serializedVersion: 3
@@ -1862,6 +1868,9 @@ MonoBehaviour:
   normalizedSampleCount: 64
   normalizedPathTolerance: 0.18
   minimumPathMatchRatio: 0.85
+  normalizedEndpointTolerance: 0.12
+  normalizedMidpointTolerance: 0.2
+  maximumPointDistance: 0.35
 --- !u!120 &1692664338
 LineRenderer:
   serializedVersion: 3
@@ -2110,10 +2119,21 @@ MonoBehaviour:
   spellJudgementText: {fileID: 1424066679}
   scoreText: {fileID: 1424066679}
   score: 0
-  niceThreshold: 1.6
-  greatThreshold: 1.8235
-  goodThreshold: 2.05
-  ehThreshold: 3
+  waterThresholds:
+    perfectThreshold: 0.05
+    greatThreshold: 0.07
+    goodThreshold: 0.09
+    ehThreshold: 0.12
+  earthThresholds:
+    perfectThreshold: 0.05
+    greatThreshold: 0.07
+    goodThreshold: 0.09
+    ehThreshold: 0.12
+  fireThresholds:
+    perfectThreshold: 0.05
+    greatThreshold: 0.07
+    goodThreshold: 0.09
+    ehThreshold: 0.12
   idealCastTime: 0.85
   maxCastTime: 2.2
   speedAccuracyBonus: 0.35
@@ -2506,7 +2526,7 @@ MonoBehaviour:
   time: 0
   minimumPointDistance: 0.15
   pointSmoothing: 0.35
-  minimumDirectionalDistance: 0.01
+  minimumGuideLockDistance: 0.5
 --- !u!1 &1992937018
 GameObject:
   m_ObjectHideFlags: 0
@@ -2537,56 +2557,125 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PatientDialogueController
   spellController: {fileID: 1731897578}
+  patientWounds: {fileID: 8399723548807263401}
   speakerText: {fileID: 1621598090}
   dialogueText: {fileID: 560711744}
   dialogueRoot: {fileID: 510807623}
-  nextButtonRoot: {fileID: 510807623}
+  nextButtonRoot: {fileID: 1823204387}
   lines:
   - speaker: Nurse
     text: Okay, lets see here...
     waitForSpellSelect: 0
     waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
     requiredSpell: 0
+    requiredWoundLocation: 0
   - speaker: Nurse
     text: The patient has 3 external wounds.
     waitForSpellSelect: 0
     waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
     requiredSpell: 0
+    requiredWoundLocation: 0
   - speaker: Nurse
     text: ... It seems like our patient here has a diminishing amount of blood.
     waitForSpellSelect: 0
     waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
     requiredSpell: 0
+    requiredWoundLocation: 0
   - speaker: Nurse
     text: Let's cast Water first to restore some of their blood.
     waitForSpellSelect: 0
     waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
     requiredSpell: 0
+    requiredWoundLocation: 0
   - speaker: Nurse
     text: Press the "D" button to select the Water spell.
     waitForSpellSelect: 1
     waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
     requiredSpell: 1
+    requiredWoundLocation: 0
   - speaker: Nurse
     text: Good! Now, use Left Mouse Click, and follow the symbol of the spell.
     waitForSpellSelect: 0
     waitForSpellCast: 1
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
     requiredSpell: 1
+    requiredWoundLocation: 0
   - speaker: Nurse
     text: Great work. That should stabilise our patient's blood levels an amount.
     waitForSpellSelect: 0
     waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
     requiredSpell: 1
+    requiredWoundLocation: 0
   - speaker: Nurse
     text: Now, lets look at these cuts.
     waitForSpellSelect: 0
     waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
     requiredSpell: 1
+    requiredWoundLocation: 0
   - speaker: Nurse
-    text: 'Select the Fire spell, and '
+    text: These are small abrasions. We can simply just cast a Fire spell, and cauterise
+      them.
     waitForSpellSelect: 0
     waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
     requiredSpell: 1
+    requiredWoundLocation: 0
+  - speaker: Nurse
+    text: Press the "D" button, to select the Fire spell.
+    waitForSpellSelect: 1
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    requiredSpell: 5
+    requiredWoundLocation: 0
+  - speaker: Nurse
+    text: Make sure you cast the spell ontop of the wounds...
+    waitForSpellSelect: 0
+    waitForSpellCast: 1
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    requiredSpell: 5
+    requiredWoundLocation: 0
+  - speaker: Nurse
+    text: Great work. Now cauterise the rest of the external wounds.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 1
+    waitBeforeShowingLine: 0
+    requiredSpell: 5
+    requiredWoundLocation: 0
+  - speaker: Nurse
+    text: Good job! All of the external wounds are cleared.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    requiredSpell: 5
+    requiredWoundLocation: 0
+  - speaker: Nurse
+    text: ... The patient isn't fully stabilised yet...
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    requiredSpell: 5
+    requiredWoundLocation: 0
   characterRevealInterval: 0.1
   audioSource: {fileID: 4314252904258111273}
   voiceTestClip: {fileID: 8300000, guid: 00ce4035e7551f34aa32aa956e3c7733, type: 3}
@@ -2638,19 +2727,31 @@ PrefabInstance:
       objectReference: {fileID: -7538700045611955427, guid: a0009cc6bcfb8064bb924e8ef39fa193, type: 3}
     - target: {fileID: 14184041101698072, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
       propertyPath: m_Color.b
-      value: 0.7735849
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 14184041101698072, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
       propertyPath: m_Color.g
-      value: 0.7735849
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 14184041101698072, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
       propertyPath: m_Color.r
-      value: 0.7735849
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 14184041101698072, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1624452114495907628, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Color.b
+      value: 0.26666668
+      objectReference: {fileID: 0}
+    - target: {fileID: 1624452114495907628, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Color.g
+      value: 0.26666668
+      objectReference: {fileID: 0}
+    - target: {fileID: 1624452114495907628, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+      propertyPath: m_Color.r
+      value: 0.26666668
       objectReference: {fileID: 0}
     - target: {fileID: 1914401027501521056, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
       propertyPath: m_Name
@@ -2727,6 +2828,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 6776466328048341294, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
+    - {fileID: 592875655152173114, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e7f7819ca3ee29438ccfa6c03883fdb, type: 3}

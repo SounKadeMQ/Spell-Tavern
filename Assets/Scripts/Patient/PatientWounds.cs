@@ -9,12 +9,12 @@ public class PatientWounds : MonoBehaviour
 
     void Awake()
     {
-        if (cutWounds.Count == 0)
-        {
-            cutWounds.AddRange(GetComponentsInChildren<CutWound>());
-        }
+        RebuildWoundList();
+    }
 
-        cutWounds.RemoveAll(wound => wound == null);
+    void OnTransformChildrenChanged()
+    {
+        RebuildWoundList();
     }
 
     public bool TryGetWoundAtSpellPoint(Vector2 worldPoint, out CutWound wound)
@@ -89,5 +89,28 @@ public class PatientWounds : MonoBehaviour
 
         wound = null;
         return false;
+    }
+
+    public int GetOpenWoundCount(CutWound.WoundLocation location)
+    {
+        int count = 0;
+
+        for (int i = 0; i < cutWounds.Count; i++)
+        {
+            CutWound wound = cutWounds[i];
+            if (wound != null && wound.IsOpen && wound.Location == location)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    void RebuildWoundList()
+    {
+        cutWounds.Clear();
+        cutWounds.AddRange(GetComponentsInChildren<CutWound>(true));
+        cutWounds.RemoveAll(wound => wound == null);
     }
 }

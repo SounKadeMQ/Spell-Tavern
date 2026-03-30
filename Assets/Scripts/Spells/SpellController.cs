@@ -3,11 +3,11 @@ using UnityEngine;
 //AccuracyCheck.cs
 
 /*
-0.035 or less = PERFECT!!!!
-0.04 = GREAT!!!
-0.06 = GOOD!!
-0.08 = EH...!
-0.10+ = MISS
+0.05 or less = PERFECT!!!!
+0.07 = GREAT!!!
+0.09 = GOOD!!
+0.12 = EH...!
+0.12+ = MISS
 
 effectMultiplier = 1 / 1 (1 + accuracy);
 
@@ -22,6 +22,15 @@ public class SpellController : MonoBehaviour
 {
     public static event System.Action<SpellType> SpellCastSucceeded;
     public static event System.Action<SpellType> SpellSelected;
+
+    [System.Serializable]
+    public class SpellAccuracyThresholds
+    {
+        public float perfectThreshold = 0.05f;
+        public float greatThreshold = 0.07f;
+        public float goodThreshold = 0.09f;
+        public float ehThreshold = 0.12f;
+    }
 
     public enum SpellJudgement
     {
@@ -90,6 +99,7 @@ public class SpellController : MonoBehaviour
     private Vector3 lockedRuneAnchorPosition;
     private bool hasLockedRuneDirectionMode;
     private bool lockedRuneUsesReversedTemplate;
+    private Vector3 lockedRuneStrokeDirection = Vector3.right;
 
     [Header("Feedback")]
     [SerializeField] private TextMeshProUGUI spellJudgementText;
@@ -97,10 +107,9 @@ public class SpellController : MonoBehaviour
     [SerializeField] private int score;
 
     [Header("Accuracy Tuning")]
-    [SerializeField] private float niceThreshold = 0.035f;
-    [SerializeField] private float greatThreshold = 0.04f;
-    [SerializeField] private float goodThreshold = 0.06f;
-    [SerializeField] private float ehThreshold = 0.08f;
+    [SerializeField] private SpellAccuracyThresholds waterThresholds = new SpellAccuracyThresholds();
+    [SerializeField] private SpellAccuracyThresholds earthThresholds = new SpellAccuracyThresholds();
+    [SerializeField] private SpellAccuracyThresholds fireThresholds = new SpellAccuracyThresholds();
 
     [Header("Speed Tuning")]
     [SerializeField] private float idealCastTime = 0.85f;
@@ -195,12 +204,9 @@ public class SpellController : MonoBehaviour
 
     void ApplyDefaultAccuracyThresholds()
     {
-        // Force the current normalized-accuracy bands in case older scene serialization
-        // still has the pre-normalization threshold values saved on the component.
-        niceThreshold = 0.035f;
-        greatThreshold = 0.04f;
-        goodThreshold = 0.06f;
-        ehThreshold = 0.08f;
+        waterThresholds ??= new SpellAccuracyThresholds();
+        earthThresholds ??= new SpellAccuracyThresholds();
+        fireThresholds ??= new SpellAccuracyThresholds();
     }
 
     void Update()
@@ -220,6 +226,7 @@ public class SpellController : MonoBehaviour
         {
             hasLockedRuneAnchor = false;
             hasLockedRuneDirectionMode = false;
+            lockedRuneStrokeDirection = Vector3.right;
         }
 
         HandleSpellSelectionInput();
@@ -233,7 +240,6 @@ public class SpellController : MonoBehaviour
             lockedRuneAnchorPosition = strokeStartPosition;
             hasLockedRuneAnchor = true;
             hasLockedRuneDirectionMode = false;
-            MoveSelectedRuneTo(lockedRuneAnchorPosition);
             StrokeStartIndicator.Create(strokeStartPosition, startIndicatorColor);
         }
 
@@ -247,19 +253,21 @@ public class SpellController : MonoBehaviour
             if (!hasLockedRuneDirectionMode)
             {
                 lockedRuneUsesReversedTemplate = ShouldUseReversedTemplate(mouseDraw.CurrentStrokeDirection);
+                lockedRuneStrokeDirection = mouseDraw.CurrentStrokeDirection;
                 hasLockedRuneDirectionMode = true;
             }
 
             Vector3 runeAnchorPosition = hasLockedRuneAnchor
                 ? lockedRuneAnchorPosition
                 : currentStrokeStart;
-            MoveSelectedRuneTo(runeAnchorPosition, mouseDraw.CurrentStrokeDirection, lockedRuneUsesReversedTemplate);
+            MoveSelectedRuneTo(runeAnchorPosition, lockedRuneStrokeDirection, lockedRuneUsesReversedTemplate);
         }
 
         if (TryConsumeSelectedSpellAccuracy(out float drawnAccuracy))
         {
             hasLockedRuneAnchor = false;
             hasLockedRuneDirectionMode = false;
+            lockedRuneStrokeDirection = Vector3.right;
             bool isQuickCast = IsQuickCast();
             Vector3 popupWorldPosition = GetPopupWorldPosition();
             CastSelectedSpell(drawnAccuracy, isQuickCast, popupWorldPosition);
@@ -314,7 +322,7 @@ public class SpellController : MonoBehaviour
     {
         if (patient == null) return;
 
-        SpellJudgement judgement = GetSpellJudgement(acc);
+        SpellJudgement judgement = GetSpellJudgement(SpellType.Water, acc);
         float mult = GetAccuracyMultiplier(acc);
         float totalHeal = calcWaterHeal(waterPotency, mult);
         int pointsAwarded = GetPointsForJudgement(judgement);
@@ -399,24 +407,26 @@ public class SpellController : MonoBehaviour
         }
     }
 
-    SpellJudgement GetSpellJudgement(float acc)
+    SpellJudgement GetSpellJudgement(SpellType spellType, float acc)
     {
-        if (acc <= niceThreshold)
+        SpellAccuracyThresholds thresholds = GetThresholdsForSpell(spellType);
+
+        if (acc <= thresholds.perfectThreshold)
         {
             return SpellJudgement.Nice;
         }
 
-        if (acc <= greatThreshold)
+        if (acc <= thresholds.greatThreshold)
         {
             return SpellJudgement.Great;
         }
 
-        if (acc <= goodThreshold)
+        if (acc <= thresholds.goodThreshold)
         {
             return SpellJudgement.Good;
         }
 
-        if (acc <= ehThreshold)
+        if (acc <= thresholds.ehThreshold)
         {
             return SpellJudgement.Eh;
         }
@@ -475,22 +485,25 @@ public class SpellController : MonoBehaviour
 
     float GetAccuracyMultiplier(float acc)
     {
-        if (acc <= niceThreshold)
+        SpellType spellType = selectedSpell == SpellType.None ? SpellType.Water : selectedSpell;
+        SpellAccuracyThresholds thresholds = GetThresholdsForSpell(spellType);
+
+        if (acc <= thresholds.perfectThreshold)
         {
             return 1.1f;
         }
 
-        if (acc <= greatThreshold)
+        if (acc <= thresholds.greatThreshold)
         {
             return 0.85f;
         }
 
-        if (acc <= goodThreshold)
+        if (acc <= thresholds.goodThreshold)
         {
             return 0.7f;
         }
 
-        if (acc <= ehThreshold)
+        if (acc <= thresholds.ehThreshold)
         {
             return 0.5f;
         }
@@ -516,7 +529,7 @@ public class SpellController : MonoBehaviour
             return;
         }
 
-        SpellJudgement judgement = GetSpellJudgement(acc);
+        SpellJudgement judgement = GetSpellJudgement(spellType, acc);
         int pointsAwarded = GetPointsForJudgement(judgement);
         bool treated = wound.TryApplySpell(spellType, out string outcome);
 
@@ -716,9 +729,9 @@ public class SpellController : MonoBehaviour
 
         waterRuneTemplateOffsets = new Vector3[waterRuneLine.positionCount];
         Vector3 anchor = waterRuneLine.GetPosition(0);
-        waterRuneTemplateAngle = GetRuneAngle(waterRuneLine);
+        waterRuneTemplateAngle = GetFirstSegmentAngle(waterRuneLine, false);
         waterRuneTemplateOffsetsReversed = GetReversedOffsets(waterRuneLine);
-        waterRuneTemplateAngleReversed = Mathf.Repeat(waterRuneTemplateAngle + 180f, 360f);
+        waterRuneTemplateAngleReversed = GetFirstSegmentAngle(waterRuneLine, true);
 
         for (int i = 0; i < waterRuneLine.positionCount; i++)
         {
@@ -740,9 +753,9 @@ public class SpellController : MonoBehaviour
 
         fireRuneTemplateOffsets = new Vector3[fireRuneLine.positionCount];
         Vector3 anchor = fireRuneLine.GetPosition(0);
-        fireRuneTemplateAngle = GetRuneAngle(fireRuneLine);
+        fireRuneTemplateAngle = GetFirstSegmentAngle(fireRuneLine, false);
         fireRuneTemplateOffsetsReversed = GetReversedOffsets(fireRuneLine);
-        fireRuneTemplateAngleReversed = Mathf.Repeat(fireRuneTemplateAngle + 180f, 360f);
+        fireRuneTemplateAngleReversed = GetFirstSegmentAngle(fireRuneLine, true);
 
         for (int i = 0; i < fireRuneLine.positionCount; i++)
         {
@@ -764,9 +777,9 @@ public class SpellController : MonoBehaviour
 
         earthRuneTemplateOffsets = new Vector3[earthRuneLine.positionCount];
         Vector3 anchor = earthRuneLine.GetPosition(0);
-        earthRuneTemplateAngle = GetRuneAngle(earthRuneLine);
+        earthRuneTemplateAngle = GetFirstSegmentAngle(earthRuneLine, false);
         earthRuneTemplateOffsetsReversed = GetReversedOffsets(earthRuneLine);
-        earthRuneTemplateAngleReversed = Mathf.Repeat(earthRuneTemplateAngle + 180f, 360f);
+        earthRuneTemplateAngleReversed = GetFirstSegmentAngle(earthRuneLine, true);
 
         for (int i = 0; i < earthRuneLine.positionCount; i++)
         {
@@ -844,16 +857,19 @@ public class SpellController : MonoBehaviour
         }
     }
 
-    float GetRuneAngle(LineRenderer runeLine)
+    float GetFirstSegmentAngle(LineRenderer runeLine, bool reversed)
     {
         if (runeLine == null || runeLine.positionCount < 2)
         {
             return 0f;
         }
 
-        Vector3 start = runeLine.GetPosition(0);
-        Vector3 end = runeLine.GetPosition(runeLine.positionCount - 1);
-        Vector3 direction = end - start;
+        int startIndex = reversed ? runeLine.positionCount - 1 : 0;
+        int nextIndex = reversed ? runeLine.positionCount - 2 : 1;
+
+        Vector3 start = runeLine.GetPosition(startIndex);
+        Vector3 next = runeLine.GetPosition(nextIndex);
+        Vector3 direction = next - start;
         if (direction.sqrMagnitude <= Mathf.Epsilon)
         {
             return 0f;
@@ -940,6 +956,20 @@ public class SpellController : MonoBehaviour
         for (int i = 0; i < runeTemplateOffsets.Length; i++)
         {
             runeLine.SetPosition(i, anchorPosition + (rotation * runeTemplateOffsets[i]));
+        }
+    }
+
+    SpellAccuracyThresholds GetThresholdsForSpell(SpellType spellType)
+    {
+        switch (spellType)
+        {
+            case SpellType.Earth:
+                return earthThresholds;
+            case SpellType.Fire:
+                return fireThresholds;
+            case SpellType.Water:
+            default:
+                return waterThresholds;
         }
     }
 }

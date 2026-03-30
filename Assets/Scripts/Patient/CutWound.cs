@@ -8,6 +8,14 @@ public class CutWound : MonoBehaviour
         Laceration
     }
 
+    public enum WoundLocation
+    {
+        Outside,
+        Inside
+    }
+
+    public static event System.Action<CutWound> WoundCauterised;
+
     [Header("Ownership")]
     [SerializeField] private Patient patient;
 
@@ -17,6 +25,7 @@ public class CutWound : MonoBehaviour
 
     [Header("State")]
     [SerializeField] private WoundType woundType = WoundType.Cut;
+    [SerializeField] private WoundLocation woundLocation = WoundLocation.Outside;
     [SerializeField] private bool isOpen = true;
     [SerializeField] private bool applyBleedOnStart = true;
     [SerializeField] private bool isStabilized;
@@ -27,12 +36,19 @@ public class CutWound : MonoBehaviour
     public bool IsOpen => isOpen;
     public bool IsStabilized => isStabilized;
     public WoundType Type => woundType;
+    public WoundLocation Location => woundLocation;
 
     void Start()
     {
         if (patient == null)
         {
             patient = GetComponentInParent<Patient>();
+        }
+
+        PatientWounds patientWounds = GetComponentInParent<PatientWounds>();
+        if (patientWounds != null)
+        {
+            patientWounds.Register(this);
         }
 
         if (!applyBleedOnStart || patient == null)
@@ -119,6 +135,7 @@ public class CutWound : MonoBehaviour
     void CauteriseAndRemove()
     {
         Close();
+        WoundCauterised?.Invoke(this);
         Destroy(gameObject);
     }
 
