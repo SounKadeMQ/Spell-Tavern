@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Patient : MonoBehaviour
 {
+    public static event System.Action<Patient> PatientDied;
+
     public PatientData data;
     public float bloodLevel;
     [SerializeField] private PatientWounds patientWounds;
@@ -199,6 +201,8 @@ public class Patient : MonoBehaviour
         RefreshBleedState();
     }
 
+    public bool IsDead => isDead;
+
     void RefreshBleedState()
     {
         float woundBleedRate = patientWounds != null ? patientWounds.GetTotalBleedRate() : 0f;
@@ -228,6 +232,7 @@ public class Patient : MonoBehaviour
     {
         if (isDead) return;
         isDead = true;
+        PatientDied?.Invoke(this);
         Debug.Log("patient dead :(");
     }
 }

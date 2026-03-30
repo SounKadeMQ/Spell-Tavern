@@ -394,6 +394,21 @@ public class SpellController : MonoBehaviour
         return selectedSpell;
     }
 
+    public int GetScore()
+    {
+        return score;
+    }
+
+    public int GetMissCount()
+    {
+        return missCount;
+    }
+
+    public string GetCurrentScoreRank()
+    {
+        return GetScoreRankText();
+    }
+
     void CastSelectedSpell(float acc)
     {
         CastSelectedSpell(acc, false, Vector3.zero);

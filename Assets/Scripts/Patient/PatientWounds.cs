@@ -107,6 +107,22 @@ public class PatientWounds : MonoBehaviour
         return count;
     }
 
+    public int GetOpenWoundCount()
+    {
+        int count = 0;
+
+        for (int i = 0; i < cutWounds.Count; i++)
+        {
+            CutWound wound = cutWounds[i];
+            if (wound != null && wound.IsOpen)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     void RebuildWoundList()
     {
         cutWounds.Clear();
