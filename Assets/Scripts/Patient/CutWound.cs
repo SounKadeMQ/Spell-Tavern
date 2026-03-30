@@ -11,7 +11,8 @@ public class CutWound : MonoBehaviour
     public enum WoundLocation
     {
         Outside,
-        Inside
+        Inside,
+        Part
     }
 
     public static event System.Action<CutWound> WoundCauterised;

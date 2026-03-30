@@ -15,6 +15,7 @@ public class Patient : MonoBehaviour
     private float directBleedRate;
 
     private bool isDead = false;
+    private bool godMode;
     private Coroutine bleedRoutine;
     private Coroutine healRoutine;
     private Coroutine bleedReductionRoutineRef;
@@ -87,6 +88,10 @@ public class Patient : MonoBehaviour
         while (bleed && !isDead)
         {
             bloodLevel -= getBleedRate() * Time.deltaTime;
+            if (godMode && bloodLevel <= 1f)
+            {
+                bloodLevel = 1f;
+            }
             if(bloodLevel <= 0)
             {
                 Die();
@@ -202,6 +207,12 @@ public class Patient : MonoBehaviour
     }
 
     public bool IsDead => isDead;
+    public bool GodMode => godMode;
+
+    public void SetGodMode(bool enabled)
+    {
+        godMode = enabled;
+    }
 
     void RefreshBleedState()
     {

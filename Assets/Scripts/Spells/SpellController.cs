@@ -352,14 +352,24 @@ public class SpellController : MonoBehaviour
         float mult = GetAccuracyMultiplier(acc);
         float totalHeal = calcWaterHeal(waterPotency, mult);
         int pointsAwarded = GetPointsForJudgement(judgement);
+        bool successfulWaterCast = judgement != SpellJudgement.Miss;
 
         float t = Mathf.InverseLerp(0.1f, 1.1f, mult);
         float reduction = Mathf.Lerp(0.6f, 0.3f, t);
 
-        patient.startHoT(totalHeal, waterDuration);
-        patient.bleedReduction(reduction, waterDuration); //reduces bleed based on accuracy of the spell
-        nextWaterCastTime = Time.time + waterCooldownDuration;
-        score += pointsAwarded;
+        if (successfulWaterCast)
+        {
+            patient.startHoT(totalHeal, waterDuration);
+            patient.bleedReduction(reduction, waterDuration); //reduces bleed based on accuracy of the spell
+            nextWaterCastTime = Time.time + waterCooldownDuration;
+            score += pointsAwarded;
+        }
+        else
+        {
+            totalHeal = 0f;
+            reduction = 1f;
+        }
+
         RegisterMissIfNeeded(judgement);
 
         UpdateFeedbackUI(judgement);
@@ -374,8 +384,11 @@ public class SpellController : MonoBehaviour
             audioSource.PlayOneShot(waterSFX);
         }
 
-        HideRuneAfterSuccessfulCast();
-        SpellCastSucceeded?.Invoke(SpellType.Water);
+        if (successfulWaterCast)
+        {
+            HideRuneAfterSuccessfulCast();
+            SpellCastSucceeded?.Invoke(SpellType.Water);
+        }
 
         Debug.Log(
             "water cast - acc: " + acc.ToString("F3") +
@@ -580,7 +593,18 @@ public class SpellController : MonoBehaviour
 
         SpellJudgement judgement = GetSpellJudgement(spellType, acc);
         int pointsAwarded = GetPointsForJudgement(judgement);
-        bool treated = wound.TryApplySpell(spellType, out string outcome);
+        bool treated = false;
+        string outcome;
+
+        if (judgement == SpellJudgement.Miss)
+        {
+            outcome = spellType + " missed.";
+        }
+        else
+        {
+            treated = wound.TryApplySpell(spellType, out outcome);
+        }
+
         RegisterMissIfNeeded(judgement);
 
         if (treated)

@@ -16,6 +16,7 @@ public class PatientDialogueLine
     public bool waitForWoundsCleared;
     public bool waitBeforeShowingLine;
     public bool transitionToInside;
+    public bool transitionToPart;
     public bool missionCompleteFlag;
     public SpellController.SpellType requiredSpell = SpellController.SpellType.None;
     public CutWound.WoundLocation requiredWoundLocation = CutWound.WoundLocation.Outside;
@@ -37,6 +38,7 @@ public class PatientDialogueController : MonoBehaviour
     [Header("Patient View Transition")]
     [SerializeField] private GameObject outsidePatientRoot;
     [SerializeField] private GameObject insidePatientRoot;
+    [SerializeField] private GameObject partPatientRoot;
     [SerializeField] private Image transitionFadeOverlay;
     [SerializeField] private float transitionFadeDuration = 0.35f;
     [SerializeField] private float transitionMidpointHoldDuration = 0.1f;
@@ -51,6 +53,8 @@ public class PatientDialogueController : MonoBehaviour
     private bool hasMatchedSpellSelection;
     private bool hasMatchedSpellCast;
     private bool hasTransitionedInside;
+    private bool hasTransitionedToPart;
+    private GameObject currentPatientRoot;
 
     void Start()
     {
@@ -419,6 +423,17 @@ public class PatientDialogueController : MonoBehaviour
             return;
         }
 
+        if (ShouldTransitionToPart(lines[currentLineIndex]))
+        {
+            if (transitionRoutine != null)
+            {
+                StopCoroutine(transitionRoutine);
+            }
+
+            transitionRoutine = StartCoroutine(TransitionToPartAndContinue());
+            return;
+        }
+
         ContinueAfterWait();
     }
 
@@ -432,24 +447,52 @@ public class PatientDialogueController : MonoBehaviour
                transitionFadeOverlay != null;
     }
 
+    bool ShouldTransitionToPart(PatientDialogueLine line)
+    {
+        return line != null &&
+               line.transitionToPart &&
+               !hasTransitionedToPart &&
+               partPatientRoot != null &&
+               transitionFadeOverlay != null &&
+               currentPatientRoot != null &&
+               currentPatientRoot != partPatientRoot;
+    }
+
     IEnumerator TransitionToInsideAndContinue()
+    {
+        yield return TransitionToRootAndContinue(insidePatientRoot, () =>
+        {
+            hasTransitionedInside = true;
+        });
+    }
+
+    IEnumerator TransitionToPartAndContinue()
+    {
+        yield return TransitionToRootAndContinue(partPatientRoot, () =>
+        {
+            hasTransitionedToPart = true;
+        });
+    }
+
+    IEnumerator TransitionToRootAndContinue(GameObject targetRoot, System.Action onMidTransition)
     {
         GameplayPause.SetPaused(true);
         SetNextButtonVisible(false);
 
         yield return FadeOverlay(0f, 1f);
 
-        if (insidePatientRoot != null)
+        if (targetRoot != null)
         {
-            insidePatientRoot.SetActive(true);
+            targetRoot.SetActive(true);
         }
 
-        if (outsidePatientRoot != null)
+        if (currentPatientRoot != null && currentPatientRoot != targetRoot)
         {
-            outsidePatientRoot.SetActive(false);
+            currentPatientRoot.SetActive(false);
         }
 
-        hasTransitionedInside = true;
+        currentPatientRoot = targetRoot;
+        onMidTransition?.Invoke();
 
         if (transitionMidpointHoldDuration > 0f)
         {
@@ -564,11 +607,17 @@ public class PatientDialogueController : MonoBehaviour
             if (outsidePatientRoot != null)
             {
                 outsidePatientRoot.SetActive(true);
+                currentPatientRoot = outsidePatientRoot;
             }
 
             if (insidePatientRoot != null)
             {
                 insidePatientRoot.SetActive(false);
+            }
+
+            if (partPatientRoot != null)
+            {
+                partPatientRoot.SetActive(false);
             }
         }
     }

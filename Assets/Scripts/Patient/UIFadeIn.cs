@@ -35,7 +35,7 @@ public class UIFadeIn : MonoBehaviour
         }
 
         Color c = fadeImage.color;
-        c.a -= Time.deltaTime / fadeDuration;
+        c.a -= Time.unscaledDeltaTime / fadeDuration;
         c.a = Mathf.Clamp01(c.a);
         fadeImage.color = c;
 

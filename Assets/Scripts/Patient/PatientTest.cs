@@ -25,5 +25,11 @@ public class PatientTest : MonoBehaviour
             patient.stopBleeding();
             Debug.Log("patient stopped bleeding");
         }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            patient.SetGodMode(!patient.GodMode);
+            Debug.Log("patient god mode: " + (patient.GodMode ? "ON" : "OFF"));
+        }
     }
 }
