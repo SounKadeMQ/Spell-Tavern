@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class PatientDialogueLine
@@ -14,6 +15,7 @@ public class PatientDialogueLine
     public bool waitForSpellCast;
     public bool waitForWoundsCleared;
     public bool waitBeforeShowingLine;
+    public bool transitionToInside;
     public SpellController.SpellType requiredSpell = SpellController.SpellType.None;
     public CutWound.WoundLocation requiredWoundLocation = CutWound.WoundLocation.Outside;
 }
@@ -30,9 +32,16 @@ public class PatientDialogueController : MonoBehaviour
     [SerializeField] private float characterRevealInterval = 0.05f;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip voiceTestClip;
+    [Header("Patient View Transition")]
+    [SerializeField] private GameObject outsidePatientRoot;
+    [SerializeField] private GameObject insidePatientRoot;
+    [SerializeField] private Image transitionFadeOverlay;
+    [SerializeField] private float transitionFadeDuration = 0.35f;
+    [SerializeField] private float transitionMidpointHoldDuration = 0.1f;
 
     private int currentLineIndex;
     private Coroutine typewriterRoutine;
+    private Coroutine transitionRoutine;
     private bool isTyping;
     private bool isWaitingForSpellSelect;
     private bool isWaitingForSpellCast;
@@ -40,10 +49,13 @@ public class PatientDialogueController : MonoBehaviour
     private bool isWaitingBeforeShowingLine;
     private bool hasMatchedSpellSelection;
     private bool hasMatchedSpellCast;
+    private bool hasTransitionedInside;
 
     void Start()
     {
         ResolveSceneReferences();
+        InitializePatientViewState();
+        SetTransitionOverlayAlpha(0f);
 
         if (lines == null || lines.Length == 0)
         {
@@ -79,7 +91,10 @@ public class PatientDialogueController : MonoBehaviour
             return;
         }
 
-        if (isWaitingForSpellSelect || isWaitingForSpellCast || isWaitingForWoundsCleared)
+        if (transitionRoutine != null ||
+            isWaitingForSpellSelect ||
+            isWaitingForSpellCast ||
+            isWaitingForWoundsCleared)
         {
             return;
         }
@@ -90,15 +105,7 @@ public class PatientDialogueController : MonoBehaviour
             return;
         }
 
-        currentLineIndex++;
-
-        if (currentLineIndex >= lines.Length)
-        {
-            EndDialogue();
-            return;
-        }
-
-        ShowCurrentLine();
+        ContinueFromCurrentLine();
     }
 
     void ShowCurrentLine()
@@ -206,6 +213,12 @@ public class PatientDialogueController : MonoBehaviour
 
     void EndDialogue()
     {
+        if (transitionRoutine != null)
+        {
+            StopCoroutine(transitionRoutine);
+            transitionRoutine = null;
+        }
+
         isWaitingForSpellSelect = false;
         isWaitingForSpellCast = false;
         isWaitingForWoundsCleared = false;
@@ -358,7 +371,7 @@ public class PatientDialogueController : MonoBehaviour
             return;
         }
 
-        ContinueAfterWait();
+        ContinueFromCurrentLine();
     }
 
     void ContinueAfterWait()
@@ -375,6 +388,118 @@ public class PatientDialogueController : MonoBehaviour
         ShowCurrentLine();
     }
 
+    void ContinueFromCurrentLine()
+    {
+        if (lines == null || currentLineIndex >= lines.Length)
+        {
+            EndDialogue();
+            return;
+        }
+
+        if (ShouldTransitionToInside(lines[currentLineIndex]))
+        {
+            if (transitionRoutine != null)
+            {
+                StopCoroutine(transitionRoutine);
+            }
+
+            transitionRoutine = StartCoroutine(TransitionToInsideAndContinue());
+            return;
+        }
+
+        ContinueAfterWait();
+    }
+
+    bool ShouldTransitionToInside(PatientDialogueLine line)
+    {
+        return line != null &&
+               line.transitionToInside &&
+               !hasTransitionedInside &&
+               outsidePatientRoot != null &&
+               insidePatientRoot != null &&
+               transitionFadeOverlay != null;
+    }
+
+    IEnumerator TransitionToInsideAndContinue()
+    {
+        GameplayPause.SetPaused(true);
+        SetNextButtonVisible(false);
+
+        yield return FadeOverlay(0f, 1f);
+
+        if (insidePatientRoot != null)
+        {
+            insidePatientRoot.SetActive(true);
+        }
+
+        if (outsidePatientRoot != null)
+        {
+            outsidePatientRoot.SetActive(false);
+        }
+
+        hasTransitionedInside = true;
+
+        if (transitionMidpointHoldDuration > 0f)
+        {
+            yield return new WaitForSecondsRealtime(transitionMidpointHoldDuration);
+        }
+
+        yield return FadeOverlay(1f, 0f);
+
+        transitionRoutine = null;
+        ContinueAfterWait();
+    }
+
+    IEnumerator FadeOverlay(float fromAlpha, float toAlpha)
+    {
+        if (transitionFadeOverlay == null)
+        {
+            yield break;
+        }
+
+        transitionFadeOverlay.gameObject.SetActive(true);
+        transitionFadeOverlay.raycastTarget = false;
+
+        float elapsed = 0f;
+        float duration = Mathf.Max(0.01f, transitionFadeDuration);
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            SetTransitionOverlayAlpha(Mathf.Lerp(fromAlpha, toAlpha, t));
+            yield return null;
+        }
+
+        SetTransitionOverlayAlpha(toAlpha);
+
+        if (toAlpha <= 0f)
+        {
+            transitionFadeOverlay.gameObject.SetActive(false);
+        }
+    }
+
+    void SetTransitionOverlayAlpha(float alpha)
+    {
+        if (transitionFadeOverlay == null)
+        {
+            return;
+        }
+
+        Color color = transitionFadeOverlay.color;
+        color.a = Mathf.Clamp01(alpha);
+        transitionFadeOverlay.color = color;
+
+        if (color.a <= 0f)
+        {
+            transitionFadeOverlay.gameObject.SetActive(false);
+        }
+        else if (!transitionFadeOverlay.gameObject.activeSelf)
+        {
+            transitionFadeOverlay.gameObject.SetActive(true);
+        }
+    }
+
     void ResolveSceneReferences()
     {
         if (patientWounds == null)
@@ -387,6 +512,22 @@ public class PatientDialogueController : MonoBehaviour
             if (patientWounds == null)
             {
                 patientWounds = FindAnyObjectByType<PatientWounds>();
+            }
+        }
+    }
+
+    void InitializePatientViewState()
+    {
+        if (!hasTransitionedInside)
+        {
+            if (outsidePatientRoot != null)
+            {
+                outsidePatientRoot.SetActive(true);
+            }
+
+            if (insidePatientRoot != null)
+            {
+                insidePatientRoot.SetActive(false);
             }
         }
     }
