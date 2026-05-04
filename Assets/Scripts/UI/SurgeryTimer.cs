@@ -12,6 +12,12 @@ public class SurgeryTimer : MonoBehaviour
 
     void Start()
     {
+        MissionData mission = MissionFlowState.CurrentMission;
+        if (mission != null && mission.patientData != null)
+        {
+            durationSeconds = mission.patientData.operationTimeLimit;
+        }
+
         remainingTime = Mathf.Max(0f, durationSeconds);
         UpdateTimerText();
     }

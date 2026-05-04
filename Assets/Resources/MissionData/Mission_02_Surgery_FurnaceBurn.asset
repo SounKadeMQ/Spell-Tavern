@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 372f1ca3ae1b4f42894795c0aa965f93, type: 3}
+  m_Name: Mission_02_Surgery_FurnaceBurn
+  m_EditorClassIdentifier: Assembly-CSharp::MissionData
+  missionId: ch1_surgery_02
+  displayName: "Operation 2: Furnace Backfire"
+  chapterLabel: Chapter 1
+  kind: 0
+  patientData: {fileID: 11400000, guid: 9e9f4a6105414f849aa4a1aa992d5ddf, type: 2}
+  missionSummary: Orren is bleeding faster after a kitchen charm burst. The wound is
+    simple, but sloppy rune work costs too much time.
+  sceneName: preOpScene
+  nextMissionId: ch1_intermission_01
+  unlockedByDefault: 0
+  preOpLines:
+  - speaker: Head Witch
+    text: Orren pulled three cooks out before he noticed his own wound.
+  - speaker: Orren
+    text: I am not leaving my kitchen to the apprentices. Patch me fast.
+  surgeryLines:
+  - speaker: Head Witch
+    text: His bleeding is quicker than Mira's. If your first Fire cast misses, recover
+      with Water before trying again.
+  - speaker: Head Witch
+    text: Close every open wound.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 1
+    waitBeforeShowingLine: 1
+    transitionToInside: 0
+    transitionToPart: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 2
+  - speaker: Orren
+    text: Good. Now nobody touches my stew pot.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    missionCompleteFlag: 1
+    requiredSpell: 0
+    requiredWoundLocation: 0
+  intermissionLines: []

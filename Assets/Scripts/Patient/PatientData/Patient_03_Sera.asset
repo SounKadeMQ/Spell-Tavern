@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e0cf70a9b572944abdbc5755b380948, type: 3}
+  m_Name: Patient_03_Sera
+  m_EditorClassIdentifier: Assembly-CSharp::PatientData
+  patientName: Sera
+  caseTitle: Rune-splinter trauma
+  triageSummary: Apprentice mage hit by a cracked ward-stone. Multiple tissue layers
+    are unstable, making this the chapter's first pressure test.
+  surgicalGoal: Move from outside wound control to the deeper treatment view, alternating
+    Earth stabilization, Fire closure, and Water recovery.
+  recommendedSpells: Earth, Fire, Water
+  chapterNumber: 1
+  operationNumber: 3
+  operationTimeLimit: 210
+  startingBlood: 68
+  startingBleedRate: 1.1
+  startingBleedMod: 1

@@ -28,6 +28,21 @@ public class PreOpDialogueController : MonoBehaviour
 
     void Start()
     {
+        MissionData mission = MissionFlowState.CurrentMission;
+        if (mission != null)
+        {
+            if (mission.preOpLines != null && mission.preOpLines.Length > 0)
+            {
+                lines = mission.preOpLines;
+            }
+
+            if (!string.IsNullOrEmpty(mission.sceneName) &&
+                mission.kind == MissionData.MissionKind.Surgery)
+            {
+                nextSceneName = "PatientScene";
+            }
+        }
+
         ShowCurrentLine();
     }
 

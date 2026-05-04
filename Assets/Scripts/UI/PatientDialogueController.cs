@@ -59,6 +59,7 @@ public class PatientDialogueController : MonoBehaviour
     void Start()
     {
         ResolveSceneReferences();
+        ApplyMissionDialogue();
         InitializePatientViewState();
         SetTransitionOverlayAlpha(0f);
 
@@ -72,6 +73,19 @@ public class PatientDialogueController : MonoBehaviour
         GameplayPause.SetPaused(true);
         SetDialogueVisible(true);
         ShowCurrentLine();
+    }
+
+    void ApplyMissionDialogue()
+    {
+        MissionData mission = MissionFlowState.CurrentMission;
+        if (mission == null ||
+            mission.surgeryLines == null ||
+            mission.surgeryLines.Length == 0)
+        {
+            return;
+        }
+
+        lines = mission.surgeryLines;
     }
 
     void OnEnable()

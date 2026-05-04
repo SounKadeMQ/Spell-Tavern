@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class TitleScreenUI : MonoBehaviour
 {
-    [SerializeField] private string preOpSceneName = "preOpScene";
+    [SerializeField] private string missionSelectSceneName = "ChapterSelect";
     [SerializeField] private string debugUnlockSequence = "DEBUG";
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip debugUnlockJingle;
@@ -56,7 +56,7 @@ public class TitleScreenUI : MonoBehaviour
 
     public void StartGame()
     {
-        SceneManager.LoadScene(preOpSceneName);
+        SceneManager.LoadScene(missionSelectSceneName);
     }
 
     public void QuitGame()

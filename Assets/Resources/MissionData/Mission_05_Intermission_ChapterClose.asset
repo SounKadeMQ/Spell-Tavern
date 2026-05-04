@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 372f1ca3ae1b4f42894795c0aa965f93, type: 3}
+  m_Name: Mission_05_Intermission_ChapterClose
+  m_EditorClassIdentifier: Assembly-CSharp::MissionData
+  missionId: ch1_intermission_02
+  displayName: "Intermission: Last Call"
+  chapterLabel: Chapter 1
+  kind: 1
+  patientData: {fileID: 0}
+  missionSummary: Chapter close. The clinic survives the night, but the ward-stone thread
+    points beyond the tavern.
+  sceneName: VNScene
+  nextMissionId: 
+  unlockedByDefault: 0
+  preOpLines: []
+  surgeryLines: []
+  intermissionLines:
+  - speaker: Apprentice
+    text: The injured are stable. The tavern is quiet again.
+  - speaker: Head Witch
+    text: Quiet is not the same as safe. Someone knew exactly where to split the ward.
+  - speaker: Head Witch
+    text: At dawn, we find who sent the stone. Tonight, we clean the blood from the floor.

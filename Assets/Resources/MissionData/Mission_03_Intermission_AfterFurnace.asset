@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 372f1ca3ae1b4f42894795c0aa965f93, type: 3}
+  m_Name: Mission_03_Intermission_AfterFurnace
+  m_EditorClassIdentifier: Assembly-CSharp::MissionData
+  missionId: ch1_intermission_01
+  displayName: "Intermission: Ash in the Ward"
+  chapterLabel: Chapter 1
+  kind: 1
+  patientData: {fileID: 0}
+  missionSummary: A story chapter in the tavern clinic after Orren's operation. The team
+    realizes the injuries are connected to a cracked ward-stone.
+  sceneName: VNScene
+  nextMissionId: ch1_surgery_03
+  unlockedByDefault: 0
+  preOpLines: []
+  surgeryLines: []
+  intermissionLines:
+  - speaker: Head Witch
+    text: Two unrelated accidents in one evening is bad luck. Three would be a pattern.
+  - speaker: Apprentice
+    text: The burn marks on Orren's sleeve match the glass sigils from Mira's bag.
+  - speaker: Head Witch
+    text: Then someone cracked a ward-stone and let the spellwork splinter through the
+      tavern. Prep the deeper table.

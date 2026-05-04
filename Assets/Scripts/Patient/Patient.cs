@@ -27,7 +27,12 @@ public class Patient : MonoBehaviour
             patientWounds = GetComponent<PatientWounds>();
         }
 
-        if (data != null)
+        MissionData mission = MissionFlowState.CurrentMission;
+        if (mission != null && mission.patientData != null)
+        {
+            Initialize(mission.patientData);
+        }
+        else if (data != null)
         {
             Initialize(data);
         }

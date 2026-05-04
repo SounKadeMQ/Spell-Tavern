@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e0cf70a9b572944abdbc5755b380948, type: 3}
+  m_Name: Patient_01_Mira
+  m_EditorClassIdentifier: Assembly-CSharp::PatientData
+  patientName: Mira
+  caseTitle: Glass-market laceration
+  triageSummary: Courier struck by enchanted bottle glass. She is awake, scared, and
+    losing blood from a jagged outside wound that must be sealed cleanly.
+  surgicalGoal: Keep vitals above crisis level, stabilize the laceration with Earth,
+    then finish with Fire.
+  recommendedSpells: Earth then Fire; Water if blood drops
+  chapterNumber: 1
+  operationNumber: 1
+  operationTimeLimit: 180
+  startingBlood: 82
+  startingBleedRate: 0.3
+  startingBleedMod: 1

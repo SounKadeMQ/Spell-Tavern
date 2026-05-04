@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 372f1ca3ae1b4f42894795c0aa965f93, type: 3}
+  m_Name: Mission_04_Surgery_RuneSplinter
+  m_EditorClassIdentifier: Assembly-CSharp::MissionData
+  missionId: ch1_surgery_03
+  displayName: "Operation 3: Rune-Splinter Trauma"
+  chapterLabel: Chapter 1
+  kind: 0
+  patientData: {fileID: 11400000, guid: f84b0c01159b46d1ade270960e19c2de, type: 2}
+  missionSummary: Sera's wound sits deeper than the first two cases. Use the patient
+    view transition and keep enough blood in reserve to survive mistakes.
+  sceneName: preOpScene
+  nextMissionId: ch1_intermission_02
+  unlockedByDefault: 0
+  preOpLines:
+  - speaker: Head Witch
+    text: Sera was standing closest to the ward-stone. Expect a deeper wound path.
+  - speaker: Sera
+    text: I heard the rune crack inside my ribs.
+  surgeryLines:
+  - speaker: Head Witch
+    text: Start with surface control, then move to the focused view.
+  - speaker: Head Witch
+    text: Shift to the deeper wound.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 1
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+  - speaker: Head Witch
+    text: Close the remaining wound before her pulse slips.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 1
+    waitBeforeShowingLine: 1
+    transitionToInside: 0
+    transitionToPart: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 2
+  - speaker: Sera
+    text: The ringing stopped. Was that inside the stone, or inside me?
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    missionCompleteFlag: 1
+    requiredSpell: 0
+    requiredWoundLocation: 0
+  intermissionLines: []

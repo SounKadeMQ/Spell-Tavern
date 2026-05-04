@@ -8,13 +8,14 @@ public class AccuracyCheck : MonoBehaviour
     [SerializeField] private float accuracy = 0;
     [SerializeField] private int minimumSampleCount = 3;
     [SerializeField] private float minimumStrokeLength = 2f;
-    [SerializeField] private float minimumLengthCoverage = 0.8f;
+    [SerializeField] private float minimumLengthCoverage = 0.7f;
     [SerializeField] private int normalizedSampleCount = 64;
-    [SerializeField] private float normalizedPathTolerance = 0.18f;
-    [SerializeField] private float minimumPathMatchRatio = 0.85f;
-    [SerializeField] private float normalizedEndpointTolerance = 0.12f;
-    [SerializeField] private float normalizedMidpointTolerance = 0.2f;
-    [SerializeField] private float maximumPointDistance = 0.35f;
+    [SerializeField] private float normalizedPathTolerance = 0.22f;
+    [SerializeField] private float minimumPathMatchRatio = 0.78f;
+    [SerializeField] private float normalizedEndpointTolerance = 0.18f;
+    [SerializeField] private float normalizedMidpointTolerance = 0.24f;
+    [SerializeField] private float maximumPointDistance = 0.42f;
+    [SerializeField] private float maximumAverageDistance = 0.3f;
     private bool hasFreshAccuracy;
 
     public float Accuracy => accuracy;
@@ -84,7 +85,7 @@ public class AccuracyCheck : MonoBehaviour
                 return;
             }
 
-            bool reverseMatch = ShouldUseReverseMatch(normalizedTracerPoints, normalizedDrawPoints);
+            bool reverseMatch = GetBestMatchDirection(normalizedTracerPoints, normalizedDrawPoints);
             AlignPointSetToTemplate(normalizedDrawPoints, normalizedTracerPoints, reverseMatch);
 
             if (!HasValidEndpoints(normalizedTracerPoints, normalizedDrawPoints, reverseMatch))
@@ -98,6 +99,12 @@ public class AccuracyCheck : MonoBehaviour
             }
 
             if (!HasValidPathMatch(normalizedTracerPoints, normalizedDrawPoints, reverseMatch))
+            {
+                return;
+            }
+
+            float averageDistance = GetAverageDistance(normalizedTracerPoints, normalizedDrawPoints, reverseMatch);
+            if (averageDistance > maximumAverageDistance)
             {
                 return;
             }
@@ -212,20 +219,44 @@ public class AccuracyCheck : MonoBehaviour
         return normalizedDrawPoints[drawIndex];
     }
 
-    bool ShouldUseReverseMatch(Vector2[] normalizedTracerPoints, Vector2[] normalizedDrawPoints)
+    bool GetBestMatchDirection(Vector2[] normalizedTracerPoints, Vector2[] normalizedDrawPoints)
     {
-        float forwardDistance = 0f;
-        float reverseDistance = 0f;
+        Vector2[] forwardPoints = CopyPoints(normalizedDrawPoints);
+        Vector2[] reversePoints = CopyPoints(normalizedDrawPoints);
+
+        AlignPointSetToTemplate(forwardPoints, normalizedTracerPoints, false);
+        AlignPointSetToTemplate(reversePoints, normalizedTracerPoints, true);
+
+        float forwardDistance = GetAverageDistance(normalizedTracerPoints, forwardPoints, false);
+        float reverseDistance = GetAverageDistance(normalizedTracerPoints, reversePoints, true);
+
+        return reverseDistance < forwardDistance;
+    }
+
+    Vector2[] CopyPoints(Vector2[] points)
+    {
+        Vector2[] copy = new Vector2[points.Length];
+
+        for (int i = 0; i < points.Length; i++)
+        {
+            copy[i] = points[i];
+        }
+
+        return copy;
+    }
+
+    float GetAverageDistance(Vector2[] normalizedTracerPoints, Vector2[] normalizedDrawPoints, bool reverseMatch)
+    {
+        float totalDistance = 0f;
 
         for (int i = 0; i < normalizedTracerPoints.Length; i++)
         {
-            forwardDistance += Vector2.Distance(normalizedTracerPoints[i], normalizedDrawPoints[i]);
-            reverseDistance += Vector2.Distance(
+            totalDistance += Vector2.Distance(
                 normalizedTracerPoints[i],
-                normalizedDrawPoints[normalizedDrawPoints.Length - i - 1]);
+                GetAlignedDrawPoint(normalizedDrawPoints, i, reverseMatch));
         }
 
-        return reverseDistance < forwardDistance;
+        return totalDistance / normalizedTracerPoints.Length;
     }
 
     void AlignPointSetToTemplate(Vector2[] pointsToAlign, Vector2[] templatePoints, bool reverseMatch)

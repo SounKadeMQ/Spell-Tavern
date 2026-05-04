@@ -988,17 +988,28 @@ public class SpellController : MonoBehaviour
         switch (selectedSpell)
         {
             case SpellType.Water:
-                return waterAccuracyCheck != null &&
-                       waterAccuracyCheck.TryConsumeAccuracy(out accuracy);
+                return TryConsumeAdjustedAccuracy(waterAccuracyCheck, out accuracy);
             case SpellType.Earth:
-                return earthAccuracyCheck != null &&
-                       earthAccuracyCheck.TryConsumeAccuracy(out accuracy);
+                return TryConsumeAdjustedAccuracy(earthAccuracyCheck, out accuracy);
             case SpellType.Fire:
-                return fireAccuracyCheck != null &&
-                       fireAccuracyCheck.TryConsumeAccuracy(out accuracy);
+                return TryConsumeAdjustedAccuracy(fireAccuracyCheck, out accuracy);
             default:
                 return false;
         }
+    }
+
+    bool TryConsumeAdjustedAccuracy(AccuracyCheck accuracyCheck, out float accuracy)
+    {
+        accuracy = 0f;
+
+        if (accuracyCheck == null ||
+            !accuracyCheck.TryConsumeAccuracy(out float rawAccuracy))
+        {
+            return false;
+        }
+
+        accuracy = GetSpeedAdjustedAccuracy(rawAccuracy);
+        return true;
     }
 
     float GetFirstSegmentAngle(LineRenderer runeLine, bool reversed)

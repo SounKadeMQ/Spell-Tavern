@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 372f1ca3ae1b4f42894795c0aa965f93, type: 3}
+  m_Name: Mission_01_Surgery_GlassMarket
+  m_EditorClassIdentifier: Assembly-CSharp::MissionData
+  missionId: ch1_surgery_01
+  displayName: "Operation 1: Glass-Market Cut"
+  chapterLabel: Chapter 1
+  kind: 0
+  patientData: {fileID: 11400000, guid: 0028c045fdcd440d8eef852b96b702cc, type: 2}
+  missionSummary: Mira has a single bleeding wound from enchanted bottle glass. This
+    first operation teaches spell selection, clean Fire casts, and Water timing.
+  sceneName: preOpScene
+  nextMissionId: ch1_surgery_02
+  unlockedByDefault: 1
+  preOpLines:
+  - speaker: Head Witch
+    text: "First patient of the night: Mira, courier. One ugly cut, steady pulse."
+  - speaker: Head Witch
+    text: Keep her calm, trace the Fire rune cleanly, and do not waste Water unless
+      her blood drops.
+  surgeryLines:
+  - speaker: Mira
+    text: I can still feel the glass burning. Please make it stop.
+  - speaker: Head Witch
+    text: Select Fire. A clean cautery is enough for this one.
+    waitForSpellSelect: 1
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    missionCompleteFlag: 0
+    requiredSpell: 5
+    requiredWoundLocation: 0
+  - speaker: Head Witch
+    text: Cast Fire on the wound.
+    waitForSpellSelect: 0
+    waitForSpellCast: 1
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    missionCompleteFlag: 0
+    requiredSpell: 5
+    requiredWoundLocation: 0
+  - speaker: Head Witch
+    text: Finish any open cut, then we can move her to recovery.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 1
+    waitBeforeShowingLine: 1
+    transitionToInside: 0
+    transitionToPart: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 2
+  - speaker: Mira
+    text: The sting is gone. I owe the tavern one delivery.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    missionCompleteFlag: 1
+    requiredSpell: 0
+    requiredWoundLocation: 0
+  intermissionLines: []

@@ -25,6 +25,7 @@ public class SurgeryEndController : MonoBehaviour
     [Header("Scene Flow")]
     [SerializeField] private string retrySceneName = "PatientScene";
     [SerializeField] private string titleSceneName = "TitleScene";
+    [SerializeField] private string missionSelectSceneName = "ChapterSelect";
     [SerializeField] private bool autoCompleteWhenAllWoundsClosed = true;
 
     private bool hasEnded;
@@ -79,6 +80,7 @@ public class SurgeryEndController : MonoBehaviour
         }
 
         hasEnded = true;
+        MissionFlowState.MarkCompleted(MissionFlowState.CurrentMission);
         GameplayPause.SetPaused(true);
         RefreshResultTexts(completeScoreText, completeRankText, completeMissText);
         SetPanelVisible(gameOverRoot, false);
@@ -111,6 +113,12 @@ public class SurgeryEndController : MonoBehaviour
     {
         GameplayPause.SetPaused(false);
         SceneManager.LoadScene(titleSceneName);
+    }
+
+    public void ContinueToMissionSelect()
+    {
+        GameplayPause.SetPaused(false);
+        SceneManager.LoadScene(missionSelectSceneName);
     }
 
     void HandlePatientDied(Patient deadPatient)

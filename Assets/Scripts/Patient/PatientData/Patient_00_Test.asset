@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: Patient_00_Test
   m_EditorClassIdentifier: Assembly-CSharp::PatientData
   patientName: Angie
+  caseTitle: Tutorial laceration
+  triageSummary: Stable practice patient with one shallow external wound. Use this for
+    tutorializing spell selection, wound targeting, and scoring.
+  surgicalGoal: Select the correct rune, stabilize the wound if needed, then cauterise
+    all open cuts before blood loss becomes critical.
+  recommendedSpells: Earth, Fire, Water
+  chapterNumber: 1
+  operationNumber: 0
+  operationTimeLimit: 180
   startingBlood: 70
   startingBleedRate: 0.1
   startingBleedMod: 0.5
