@@ -17,7 +17,9 @@ public class PatientData : ScriptableObject
     public int operationNumber = 1;
     public float operationTimeLimit = 180f;
     public float startingBlood = 100f;
+    public float maxBlood = 100f;
 
     public float startingBleedRate = 3f;
     public float startingBleedMod = 1f;
+    public WoundLayoutEntry[] woundLayout;
 }

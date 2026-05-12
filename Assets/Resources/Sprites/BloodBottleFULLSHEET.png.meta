@@ -1,0 +1,637 @@
+fileFormatVersion: 2
+guid: 9c16cabbc57ce9445acf4c142b7311ae
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1848001821253960436
+    second: BloodBottleFULLSHEET_0
+  - first:
+      213: -1673329346812176513
+    second: BloodBottleFULLSHEET_1
+  - first:
+      213: 4399426045848903207
+    second: BloodBottleFULLSHEET_2
+  - first:
+      213: 6408682244924634779
+    second: BloodBottleFULLSHEET_3
+  - first:
+      213: -2677410683809464922
+    second: BloodBottleFULLSHEET_4
+  - first:
+      213: -5364491505690063695
+    second: BloodBottleFULLSHEET_5
+  - first:
+      213: -2714396030689979593
+    second: BloodBottleFULLSHEET_6
+  - first:
+      213: -7534048818723592479
+    second: BloodBottleFULLSHEET_7
+  - first:
+      213: 1978601677527919400
+    second: BloodBottleFULLSHEET_8
+  - first:
+      213: -420885146935875229
+    second: BloodBottleFULLSHEET_9
+  - first:
+      213: -3075981347049773696
+    second: BloodBottleFULLSHEET_10
+  - first:
+      213: 8982970120170835818
+    second: BloodBottleFULLSHEET_11
+  - first:
+      213: -5066342218508029124
+    second: BloodBottleFULLSHEET_12
+  - first:
+      213: 6909029758058370191
+    second: BloodBottleFULLSHEET_13
+  - first:
+      213: -6543313757564922458
+    second: BloodBottleFULLSHEET_14
+  - first:
+      213: -345736558217350436
+    second: BloodBottleFULLSHEET_15
+  - first:
+      213: -8024936506558567431
+    second: BloodBottleFULLSHEET_16
+  - first:
+      213: -581402651092039450
+    second: BloodBottleFULLSHEET_17
+  - first:
+      213: -7645442875372343944
+    second: BloodBottleFULLSHEET_18
+  - first:
+      213: -6483438543227895716
+    second: BloodBottleFULLSHEET_19
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_0
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 1169
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f20e148ddb65a910800000000000000
+      internalID: 1848001821253960436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_1
+      rect:
+        serializedVersion: 2
+        x: 497
+        y: 1169
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f77160323d327c8e0800000000000000
+      internalID: -1673329346812176513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_2
+      rect:
+        serializedVersion: 2
+        x: 881
+        y: 1169
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72edc66fda6ed0d30800000000000000
+      internalID: 4399426045848903207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_3
+      rect:
+        serializedVersion: 2
+        x: 1265
+        y: 1169
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b96f51f0c8630f850800000000000000
+      internalID: 6408682244924634779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_4
+      rect:
+        serializedVersion: 2
+        x: 1649
+        y: 1169
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ad73b92b2de7dad0800000000000000
+      internalID: -2677410683809464922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_5
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 785
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bc4ebad56f7d85b0800000000000000
+      internalID: -5364491505690063695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_6
+      rect:
+        serializedVersion: 2
+        x: 497
+        y: 785
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7335efa0137845ad0800000000000000
+      internalID: -2714396030689979593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_7
+      rect:
+        serializedVersion: 2
+        x: 881
+        y: 785
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e66787348ea17790800000000000000
+      internalID: -7534048818723592479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_8
+      rect:
+        serializedVersion: 2
+        x: 1265
+        y: 785
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82b2b0d1eb7657b10800000000000000
+      internalID: 1978601677527919400
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_9
+      rect:
+        serializedVersion: 2
+        x: 1649
+        y: 785
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36926a55037b82af0800000000000000
+      internalID: -420885146935875229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_10
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 401
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 085ee59134bef45d0800000000000000
+      internalID: -3075981347049773696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_11
+      rect:
+        serializedVersion: 2
+        x: 497
+        y: 401
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6f0bb00bbbe9ac70800000000000000
+      internalID: 8982970120170835818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_12
+      rect:
+        serializedVersion: 2
+        x: 881
+        y: 401
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c33b34b489cb0b9b0800000000000000
+      internalID: -5066342218508029124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_13
+      rect:
+        serializedVersion: 2
+        x: 1265
+        y: 401
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f841ca795fdc1ef50800000000000000
+      internalID: 6909029758058370191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_14
+      rect:
+        serializedVersion: 2
+        x: 1649
+        y: 401
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a59a623eca7135a0800000000000000
+      internalID: -6543313757564922458
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_15
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 17
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd2b69d9e62b33bf0800000000000000
+      internalID: -345736558217350436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_16
+      rect:
+        serializedVersion: 2
+        x: 497
+        y: 17
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fb2385e3c2b1a090800000000000000
+      internalID: -8024936506558567431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_17
+      rect:
+        serializedVersion: 2
+        x: 881
+        y: 17
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e840368e517ee7f0800000000000000
+      internalID: -581402651092039450
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_18
+      rect:
+        serializedVersion: 2
+        x: 1265
+        y: 17
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87de3ee463ee5e590800000000000000
+      internalID: -7645442875372343944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottleFULLSHEET_19
+      rect:
+        serializedVersion: 2
+        x: 1649
+        y: 17
+        width: 158
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5043d3eef23606a0800000000000000
+      internalID: -6483438543227895716
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BloodBottleFULLSHEET_0: 1848001821253960436
+      BloodBottleFULLSHEET_1: -1673329346812176513
+      BloodBottleFULLSHEET_10: -3075981347049773696
+      BloodBottleFULLSHEET_11: 8982970120170835818
+      BloodBottleFULLSHEET_12: -5066342218508029124
+      BloodBottleFULLSHEET_13: 6909029758058370191
+      BloodBottleFULLSHEET_14: -6543313757564922458
+      BloodBottleFULLSHEET_15: -345736558217350436
+      BloodBottleFULLSHEET_16: -8024936506558567431
+      BloodBottleFULLSHEET_17: -581402651092039450
+      BloodBottleFULLSHEET_18: -7645442875372343944
+      BloodBottleFULLSHEET_19: -6483438543227895716
+      BloodBottleFULLSHEET_2: 4399426045848903207
+      BloodBottleFULLSHEET_3: 6408682244924634779
+      BloodBottleFULLSHEET_4: -2677410683809464922
+      BloodBottleFULLSHEET_5: -5364491505690063695
+      BloodBottleFULLSHEET_6: -2714396030689979593
+      BloodBottleFULLSHEET_7: -7534048818723592479
+      BloodBottleFULLSHEET_8: 1978601677527919400
+      BloodBottleFULLSHEET_9: -420885146935875229
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

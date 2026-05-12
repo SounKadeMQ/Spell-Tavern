@@ -13,44 +13,152 @@ MonoBehaviour:
   m_Name: Mission_02_Surgery_FurnaceBurn
   m_EditorClassIdentifier: Assembly-CSharp::MissionData
   missionId: ch1_surgery_02
-  displayName: "Operation 2: Furnace Backfire"
+  displayName: Rookie Sage
+  episodeCode: 1-2
+  episodeOrder: 2
   chapterLabel: Chapter 1
   kind: 0
-  patientData: {fileID: 11400000, guid: 9e9f4a6105414f849aa4a1aa992d5ddf, type: 2}
-  missionSummary: Orren is bleeding faster after a kitchen charm burst. The wound is
-    simple, but sloppy rune work costs too much time.
+  patientData: {fileID: 11400000, guid: 0028c045fdcd440d8eef852b96b702cc, type: 2}
+  missionSummary: Mira has a chest laceration for guided stabilization practice,
+    then a left-leg laceration for independent treatment.
   sceneName: preOpScene
+  surgeryMusicResource: Audio/Music/NormalSurgery
   nextMissionId: ch1_intermission_01
   unlockedByDefault: 0
   preOpLines:
-  - speaker: Head Witch
-    text: Orren pulled three cooks out before he noticed his own wound.
-  - speaker: Orren
-    text: I am not leaving my kitchen to the apprentices. Patch me fast.
+  - speaker: Nurse
+    text: Mira is next. The chest laceration is controlled enough... but there is
+      a second tear in the left leg.
+  - speaker: Mira
+    text: I can still feel the glass pulling whenever I breathe.
   surgeryLines:
-  - speaker: Head Witch
-    text: His bleeding is quicker than Mira's. If your first Fire cast misses, recover
-      with Water before trying again.
-  - speaker: Head Witch
-    text: Close every open wound.
-    waitForSpellSelect: 0
-    waitForSpellCast: 0
-    waitForWoundsCleared: 1
-    waitBeforeShowingLine: 1
-    transitionToInside: 0
-    transitionToPart: 0
-    missionCompleteFlag: 0
-    requiredSpell: 0
-    requiredWoundLocation: 2
-  - speaker: Orren
-    text: Good. Now nobody touches my stew pot.
+  - speaker: Mira
+    text: Ow...
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
     waitBeforeShowingLine: 0
     transitionToInside: 0
     transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: 
+  - speaker: Nurse
+    text: Lacerations do not close cleanly with Fire first. Select Earth.
+    waitForSpellSelect: 1
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 3
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: 
+  - speaker: Nurse
+    text: Cast Earth on the chest laceration to bind the split edges.
+    waitForSpellSelect: 0
+    waitForSpellCast: 1
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 3
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: 
+  - speaker: Nurse
+    text: Good. Now select Fire and finish the sealed chest wound.
+    waitForSpellSelect: 1
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 5
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: 
+  - speaker: Nurse
+    text: Close the chest laceration with Fire.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 1
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: 
+  - speaker: Nurse
+    text: There is another laceration in the left leg.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 1
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: 
+  - speaker: Nurse
+    text: Stabilize it with Earth, then finish with Fire.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 1
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 2
+    requiredSpawnAreaId: 
+  - speaker: Mira
+    text: I can stand again. That is enough for tonight.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
     missionCompleteFlag: 1
     requiredSpell: 0
     requiredWoundLocation: 0
+    requiredSpawnAreaId: 
   intermissionLines: []
+  woundLayout: []

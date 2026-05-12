@@ -13,15 +13,43 @@ MonoBehaviour:
   m_Name: Patient_01_Mira
   m_EditorClassIdentifier: Assembly-CSharp::PatientData
   patientName: Mira
-  caseTitle: Glass-market laceration
-  triageSummary: Courier struck by enchanted bottle glass. She is awake, scared, and
-    losing blood from a jagged outside wound that must be sealed cleanly.
-  surgicalGoal: Keep vitals above crisis level, stabilize the laceration with Earth,
-    then finish with Fire.
-  recommendedSpells: Earth then Fire; Water if blood drops
+  caseTitle: Split laceration drill
+  triageSummary: Courier struck by enchanted bottle glass. The chest wound is controlled
+    enough to teach laceration stabilization before the leg injury is handled independently.
+  surgicalGoal: Stabilize each laceration with Earth, then close it with Fire.
+  recommendedSpells: Earth, Fire; Water if blood drops
   chapterNumber: 1
-  operationNumber: 1
+  operationNumber: 2
   operationTimeLimit: 180
   startingBlood: 82
+  maxBlood: 100
   startingBleedRate: 0.3
   startingBleedMod: 1
+  woundLayout:
+  - woundName: Mira Chest Laceration
+    woundIndex: -1
+    active: 1
+    woundType: 1
+    woundLocation: 0
+    spawnAreaId: Chest
+    localPosition: {x: 0.006, y: 0.143}
+    rotationDegrees: 24
+    localScale: {x: 0.030004198, y: 0.0333768}
+  - woundName: Mira Left Leg Laceration
+    woundIndex: -1
+    active: 1
+    woundType: 1
+    woundLocation: 2
+    spawnAreaId: LeftLeg
+    localPosition: {x: 1.028, y: -0.005}
+    rotationDegrees: 50.968
+    localScale: {x: 0.030004198, y: 0.0333768}
+  - woundName: Mira Left Leg Laceration 2
+    woundIndex: -1
+    active: 1
+    woundType: 1
+    woundLocation: 2
+    spawnAreaId: LeftLeg
+    localPosition: {x: 0.763, y: -0.227}
+    rotationDegrees: 75.699
+    localScale: {x: 0.030004198, y: 0.0333768}

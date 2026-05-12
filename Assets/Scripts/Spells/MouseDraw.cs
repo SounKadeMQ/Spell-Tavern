@@ -8,11 +8,15 @@ public class MouseDraw : MonoBehaviour
     [SerializeField] private float minimumPointDistance = 0.15f;
     [SerializeField] private float pointSmoothing = 0.35f;
     [SerializeField] private float minimumGuideLockDistance = 0.5f;
+    [SerializeField] private float drawPlaneZ = -8f;
+    [SerializeField] private float referenceOrthographicSize = 5f;
+    [SerializeField] private float zoomedOrthographicSize = 2.4f;
     private bool hasStroke;
     private Vector3 strokeStartWorldPosition;
     private Vector3 lastStrokeEndWorldPosition;
     private float strokeStartTime;
     private float lastStrokeDuration;
+    private float baseWidthMultiplier = 1f;
     private bool strokeStartedThisFrame;
     private Vector3 currentStrokeDirection = Vector3.right;
 
@@ -29,6 +33,7 @@ public class MouseDraw : MonoBehaviour
     void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
+        baseWidthMultiplier = lineRenderer != null ? lineRenderer.widthMultiplier : 1f;
         lineRenderer.positionCount = 0; // Start with no points //deprec - manually set
     }
 
@@ -44,41 +49,58 @@ public class MouseDraw : MonoBehaviour
             return;
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (!TouchPointerInput.TryGetPrimaryPointer(
+                out Vector2 screenPosition,
+                out bool pointerBegan,
+                out bool pointerHeld,
+                out bool pointerEnded))
+        {
+            pointerHeld = false;
+            pointerEnded = false;
+        }
+
+        if (pointerBegan)
         {
             BeginStroke();
         }
 
         strokeStartedThisFrame = false;
 
-        if (Input.GetMouseButton(0)) // While left mouse button is held
+        if (pointerHeld)
         {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePos.z = 0f; // Set z to 0 for 2D
+            Camera camera = Camera.main;
+            if (camera == null)
+            {
+                return;
+            }
+
+            Vector3 pointerWorldPosition = camera.ScreenToWorldPoint(screenPosition);
+            pointerWorldPosition.z = drawPlaneZ;
 
             // Sample points more densely and interpolate long cursor jumps to avoid a stepped line.
             if (positionCount == 0)
             {
-                strokeStartWorldPosition = mousePos;
-                lastStrokeEndWorldPosition = mousePos;
+                strokeStartWorldPosition = pointerWorldPosition;
+                lastStrokeEndWorldPosition = pointerWorldPosition;
                 hasStroke = true;
                 strokeStartedThisFrame = true;
-                AddPoint(mousePos);
+                AddPoint(pointerWorldPosition);
                 return;
             }
 
             Vector3 previousPoint = lineRenderer.GetPosition(positionCount - 1);
-            float distanceToMouse = Vector3.Distance(mousePos, previousPoint);
-            if (distanceToMouse < minimumPointDistance)
+            float scaledMinimumPointDistance = GetScaledMinimumPointDistance();
+            float distanceToPointer = Vector3.Distance(pointerWorldPosition, previousPoint);
+            if (distanceToPointer < scaledMinimumPointDistance)
             {
                 return;
             }
 
-            int interpolationSteps = Mathf.Max(1, Mathf.CeilToInt(distanceToMouse / minimumPointDistance));
+            int interpolationSteps = Mathf.Max(1, Mathf.CeilToInt(distanceToPointer / scaledMinimumPointDistance));
             for (int i = 1; i <= interpolationSteps; i++)
             {
                 float t = (float)i / interpolationSteps;
-                Vector3 targetPoint = Vector3.Lerp(previousPoint, mousePos, t);
+                Vector3 targetPoint = Vector3.Lerp(previousPoint, pointerWorldPosition, t);
                 Vector3 smoothedPoint = Vector3.Lerp(previousPoint, targetPoint, 1f - pointSmoothing);
                 AddPoint(smoothedPoint);
                 previousPoint = smoothedPoint;
@@ -93,13 +115,13 @@ public class MouseDraw : MonoBehaviour
                 positionCount = 0;
                 hasStroke = false;
             }
-            time += Time.deltaTime;
+            time += Time.unscaledDeltaTime;
         }
-        if (Input.GetMouseButtonUp(0)) 
+        if (pointerEnded)
         {
             if (hasStroke)
             {
-                lastStrokeDuration = Time.time - strokeStartTime;
+                lastStrokeDuration = Time.unscaledTime - strokeStartTime;
             }
 
             time = 0;
@@ -127,7 +149,7 @@ public class MouseDraw : MonoBehaviour
     void BeginStroke()
     {
         ClearStroke();
-        strokeStartTime = Time.time;
+        strokeStartTime = Time.unscaledTime;
         lastStrokeDuration = 0f;
         currentStrokeDirection = Vector3.right;
     }
@@ -135,6 +157,7 @@ public class MouseDraw : MonoBehaviour
     void ClearStroke()
     {
         lineRenderer.positionCount = 0;
+        lineRenderer.widthMultiplier = baseWidthMultiplier * GetCameraScale();
         positionCount = 0;
         time = 0f;
         hasStroke = false;
@@ -143,6 +166,8 @@ public class MouseDraw : MonoBehaviour
 
     void AddPoint(Vector3 point)
     {
+        ApplyLineCameraScale();
+
         positionCount++;
         lineRenderer.positionCount = positionCount;
         lineRenderer.SetPosition(positionCount - 1, point);
@@ -157,5 +182,34 @@ public class MouseDraw : MonoBehaviour
                 currentStrokeDirection = strokeDirection.normalized;
             }
         }
+    }
+
+    void ApplyLineCameraScale()
+    {
+        if (lineRenderer == null)
+        {
+            return;
+        }
+
+        lineRenderer.widthMultiplier = baseWidthMultiplier * GetCameraScale();
+    }
+
+    float GetScaledMinimumPointDistance()
+    {
+        return minimumPointDistance * GetCameraScale();
+    }
+
+    float GetCameraScale()
+    {
+        Camera camera = Camera.main;
+        if (camera == null || !camera.orthographic)
+        {
+            return 1f;
+        }
+
+        float referenceSize = Mathf.Max(0.01f, referenceOrthographicSize);
+        float targetSize = Mathf.Max(0.01f, zoomedOrthographicSize);
+        float cameraSize = Mathf.Max(targetSize, camera.orthographicSize);
+        return Mathf.Max(0.01f, cameraSize / referenceSize);
     }
 }

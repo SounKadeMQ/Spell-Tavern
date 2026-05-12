@@ -13,15 +13,35 @@ MonoBehaviour:
   m_Name: Patient_00_Test
   m_EditorClassIdentifier: Assembly-CSharp::PatientData
   patientName: Angie
-  caseTitle: Tutorial laceration
-  triageSummary: Stable practice patient with one shallow external wound. Use this for
-    tutorializing spell selection, wound targeting, and scoring.
-  surgicalGoal: Select the correct rune, stabilize the wound if needed, then cauterise
-    all open cuts before blood loss becomes critical.
-  recommendedSpells: Earth, Fire, Water
+  caseTitle: Simple outside cuts
+  triageSummary: Stable practice patient with two shallow outside wounds. This first
+    operation is a clean Fire-only case.
+  surgicalGoal: Close both normal outside wounds with Fire before blood loss becomes
+    critical.
+  recommendedSpells: Fire
   chapterNumber: 1
-  operationNumber: 0
+  operationNumber: 1
   operationTimeLimit: 180
   startingBlood: 70
-  startingBleedRate: 0.1
+  maxBlood: 100
+  startingBleedRate: 0.3
   startingBleedMod: 0.5
+  woundLayout:
+  - woundName: Angie Normal Wound 1
+    woundIndex: -1
+    active: 1
+    woundType: 0
+    woundLocation: 0
+    spawnAreaId: Chest
+    localPosition: {x: 0.1079, y: 0.1053}
+    rotationDegrees: -22
+    localScale: {x: 0.030004198, y: 0.0333768}
+  - woundName: Angie Normal Wound 2
+    woundIndex: -1
+    active: 1
+    woundType: 0
+    woundLocation: 0
+    spawnAreaId: Chest
+    localPosition: {x: -0.002252233, y: 0.0177475}
+    rotationDegrees: 18
+    localScale: {x: 0.030004198, y: 0.0333768}

@@ -10,6 +10,7 @@ public class Patient : MonoBehaviour
     [SerializeField] private PatientWounds patientWounds;
     private float bleedMod; //1 = full bleed
     private float defaultBleedMod = 1f;
+    private float maxBlood = 100f;
     public bool bleed; //init false
     public float currentBleedRate;
     private float directBleedRate;
@@ -31,10 +32,18 @@ public class Patient : MonoBehaviour
         if (mission != null && mission.patientData != null)
         {
             Initialize(mission.patientData);
+            if (patientWounds != null)
+            {
+                ApplyWoundLayout(mission);
+            }
         }
         else if (data != null)
         {
             Initialize(data);
+            if (patientWounds != null)
+            {
+                patientWounds.ApplyPatientLayout(data);
+            }
         }
     }
 
@@ -64,7 +73,8 @@ public class Patient : MonoBehaviour
         }
 
         data = patientData;
-        bloodLevel = data.startingBlood;
+        maxBlood = Mathf.Max(1f, data.maxBlood);
+        bloodLevel = Mathf.Clamp(data.startingBlood, 0f, maxBlood);
         directBleedRate = data.startingBleedRate;
         defaultBleedMod = data.startingBleedMod;
         bleedMod = defaultBleedMod;
@@ -72,6 +82,22 @@ public class Patient : MonoBehaviour
         RefreshBleedState();
 
         Debug.Log($"Loaded {data.patientName}: blood {bloodLevel}, stored bleed rate {currentBleedRate}");
+    }
+
+    void ApplyWoundLayout(MissionData mission)
+    {
+        if (patientWounds == null || mission == null)
+        {
+            return;
+        }
+
+        if (mission.woundLayout != null && mission.woundLayout.Length > 0)
+        {
+            patientWounds.ApplyMissionLayout(mission);
+            return;
+        }
+
+        patientWounds.ApplyPatientLayout(mission.patientData);
     }
 
     public void applyDamage(float amt) 
@@ -132,9 +158,9 @@ public class Patient : MonoBehaviour
     {
         if (isDead) return;
         bloodLevel += amt;
-        if(bloodLevel > 100f)
+        if(bloodLevel > maxBlood)
         {
-            bloodLevel = 100f;
+            bloodLevel = maxBlood;
         }
     }
 
@@ -213,6 +239,7 @@ public class Patient : MonoBehaviour
 
     public bool IsDead => isDead;
     public bool GodMode => godMode;
+    public float MaxBlood => maxBlood;
 
     public void SetGodMode(bool enabled)
     {

@@ -8,6 +8,7 @@ public class AccuracyCheck : MonoBehaviour
     [SerializeField] private float accuracy = 0;
     [SerializeField] private int minimumSampleCount = 3;
     [SerializeField] private float minimumStrokeLength = 2f;
+    [SerializeField] private float referenceOrthographicSize = 5f;
     [SerializeField] private float minimumLengthCoverage = 0.7f;
     [SerializeField] private int normalizedSampleCount = 64;
     [SerializeField] private float normalizedPathTolerance = 0.22f;
@@ -34,7 +35,7 @@ public class AccuracyCheck : MonoBehaviour
             return;
         }
 
-        if (Input.GetMouseButtonUp(0)) 
+        if (TouchPointerInput.WasPrimaryPointerReleased())
         {
             accuracy = 0;
             hasFreshAccuracy = false;
@@ -62,7 +63,7 @@ public class AccuracyCheck : MonoBehaviour
             }
 
             float drawLength = GetLineLength(drawLine, drawLine.positionCount);
-            if (drawLength < minimumStrokeLength)
+            if (drawLength < GetScaledMinimumStrokeLength())
             {
                 return;
             }
@@ -301,13 +302,13 @@ public class AccuracyCheck : MonoBehaviour
         float targetLength = 0f;
         int sampleIndex = 0;
 
-        Vector3 previousPoint = targetLine.GetPosition(0);
+        Vector2 previousPoint = GetRecognitionPoint(targetLine.GetPosition(0));
         sampledPoints[sampleIndex++] = previousPoint;
 
         for (int i = 1; i < targetLine.positionCount && sampleIndex < sampleCount - 1; i++)
         {
-            Vector3 currentPoint = targetLine.GetPosition(i);
-            float segmentLength = Vector3.Distance(previousPoint, currentPoint);
+            Vector2 currentPoint = GetRecognitionPoint(targetLine.GetPosition(i));
+            float segmentLength = Vector2.Distance(previousPoint, currentPoint);
 
             while (traversedLength + segmentLength >= targetLength + stepLength &&
                    sampleIndex < sampleCount - 1)
@@ -315,15 +316,27 @@ public class AccuracyCheck : MonoBehaviour
                 targetLength += stepLength;
                 float distanceIntoSegment = targetLength - traversedLength;
                 float t = segmentLength <= Mathf.Epsilon ? 0f : distanceIntoSegment / segmentLength;
-                sampledPoints[sampleIndex++] = Vector3.Lerp(previousPoint, currentPoint, t);
+                sampledPoints[sampleIndex++] = Vector2.Lerp(previousPoint, currentPoint, t);
             }
 
             traversedLength += segmentLength;
             previousPoint = currentPoint;
         }
 
-        sampledPoints[sampleCount - 1] = targetLine.GetPosition(targetLine.positionCount - 1);
+        sampledPoints[sampleCount - 1] = GetRecognitionPoint(targetLine.GetPosition(targetLine.positionCount - 1));
         return sampledPoints;
+    }
+
+    Vector2 GetRecognitionPoint(Vector3 worldPoint)
+    {
+        Camera camera = Camera.main;
+        if (camera == null)
+        {
+            return worldPoint;
+        }
+
+        Vector3 cameraLocalPoint = camera.transform.InverseTransformPoint(worldPoint);
+        return new Vector2(cameraLocalPoint.x, cameraLocalPoint.y);
     }
 
     float GetDistanceToLine(Vector3 point, LineRenderer targetLine)
@@ -379,9 +392,23 @@ public class AccuracyCheck : MonoBehaviour
 
         for (int i = 1; i < sampleCount; i++)
         {
-            length += Vector3.Distance(targetLine.GetPosition(i - 1), targetLine.GetPosition(i));
+            length += Vector2.Distance(
+                GetRecognitionPoint(targetLine.GetPosition(i - 1)),
+                GetRecognitionPoint(targetLine.GetPosition(i)));
         }
 
         return length;
+    }
+
+    float GetScaledMinimumStrokeLength()
+    {
+        Camera camera = Camera.main;
+        if (camera == null || !camera.orthographic || referenceOrthographicSize <= Mathf.Epsilon)
+        {
+            return minimumStrokeLength;
+        }
+
+        float cameraScale = Mathf.Max(0.01f, camera.orthographicSize / referenceOrthographicSize);
+        return minimumStrokeLength * cameraScale;
     }
 }

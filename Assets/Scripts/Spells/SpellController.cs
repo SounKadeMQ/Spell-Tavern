@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 //AccuracyCheck.cs
 
@@ -82,6 +83,20 @@ public class SpellController : MonoBehaviour
     [SerializeField] private Color waterRuneReadyColor = Color.white;
     [SerializeField] private Color waterRuneCooldownColor = new Color(1f, 0.25f, 0.25f, 0.55f);
 
+    [Header("Touch Controls")]
+    [SerializeField] private bool createTouchSpellButtons = true;
+    [SerializeField] private bool alwaysShowTouchSpellButtons = true;
+    [SerializeField] private Vector2 touchSpellButtonSize = new Vector2(220f, 92f);
+    [SerializeField] private Vector2 touchSpellButtonOffset = new Vector2(48f, 48f);
+    [SerializeField] private float touchSpellButtonSpacing = 18f;
+    [SerializeField] private Color touchButtonColor = new Color(0.08f, 0.11f, 0.12f, 0.82f);
+    [SerializeField] private Color touchButtonSelectedColor = new Color(0.88f, 0.62f, 0.22f, 0.95f);
+    [SerializeField] private Color touchButtonDisabledColor = new Color(0.35f, 0.12f, 0.12f, 0.78f);
+    private Canvas touchControlsCanvas;
+    private Button touchWaterButton;
+    private Button touchEarthButton;
+    private Button touchFireButton;
+
     private LineRenderer waterRuneLine;
     private LineRenderer earthRuneLine;
     private LineRenderer fireRuneLine;
@@ -103,6 +118,10 @@ public class SpellController : MonoBehaviour
     private float waterRuneAngleVelocity;
     private float earthRuneAngleVelocity;
     private float fireRuneAngleVelocity;
+    private float referenceCameraOrthographicSize = 5f;
+    private float waterRuneBaseWidthMultiplier = 1f;
+    private float earthRuneBaseWidthMultiplier = 1f;
+    private float fireRuneBaseWidthMultiplier = 1f;
     private bool hasLockedRuneAnchor;
     private Vector3 lockedRuneAnchorPosition;
     private bool hasLockedRuneDirectionMode;
@@ -119,6 +138,10 @@ public class SpellController : MonoBehaviour
     [SerializeField] private int scoreMeterMax = 2400;
     [SerializeField] private int score;
     [SerializeField] private int missCount;
+    [SerializeField] private Vector2 mobileScoreTextOffset = new Vector2(0f, -26f);
+    [SerializeField] private Vector2 mobileScoreTextSize = new Vector2(320f, 80f);
+    [SerializeField] private Vector2 mobileScoreMeterOffset = new Vector2(0f, -128f);
+    [SerializeField] private Vector2 mobileScoreMeterSize = new Vector2(520f, 34f);
 
     [Header("Accuracy Tuning")]
     [SerializeField] private SpellAccuracyThresholds waterThresholds = new SpellAccuracyThresholds();
@@ -134,6 +157,8 @@ public class SpellController : MonoBehaviour
 
     [Header("Rune Smoothing")]
     [SerializeField] private float runeRotationSmoothTime = 0.12f;
+    [SerializeField] private float spellForegroundZ = -8f;
+    [SerializeField, Range(0f, 1f)] private float runeCastAlpha = 0.65f;
 
     [Header("Cast Popup")]
     [SerializeField] private float popupHeightOffset = 1.25f;
@@ -164,6 +189,7 @@ public class SpellController : MonoBehaviour
     public float firePotency = 100f;
     public float fireDuration = 2f;
     public float fireTestAccuracy = 0.38f;
+    [SerializeField] private float fireDrawFlameInterval = 0.08f;
 
     [Header("Audio")]
     public AudioSource audioSource;
@@ -172,6 +198,7 @@ public class SpellController : MonoBehaviour
     public AudioClip fireSFX;
 
     private float nextWaterCastTime;
+    private float nextFireDrawFlameTime;
 
     void Awake()
     {
@@ -181,6 +208,8 @@ public class SpellController : MonoBehaviour
 
     void Start()
     {
+        CacheReferenceCameraSize();
+
         if (waterRuneVisual == null && waterAccuracyCheck != null)
         {
             waterRuneVisual = waterAccuracyCheck.gameObject;
@@ -189,7 +218,9 @@ public class SpellController : MonoBehaviour
         if (waterAccuracyCheck != null)
         {
             waterRuneLine = waterAccuracyCheck.GetComponent<LineRenderer>();
+            waterRuneBaseWidthMultiplier = GetLineWidthMultiplier(waterRuneLine);
             CacheWaterRuneTemplate();
+            ApplyRuneCastOpacity(waterRuneLine);
         }
 
         if (fireRuneVisual == null && fireAccuracyCheck != null)
@@ -205,13 +236,17 @@ public class SpellController : MonoBehaviour
         if (earthAccuracyCheck != null)
         {
             earthRuneLine = earthAccuracyCheck.GetComponent<LineRenderer>();
+            earthRuneBaseWidthMultiplier = GetLineWidthMultiplier(earthRuneLine);
             CacheEarthRuneTemplate();
+            ApplyRuneCastOpacity(earthRuneLine);
         }
 
         if (fireAccuracyCheck != null)
         {
             fireRuneLine = fireAccuracyCheck.GetComponent<LineRenderer>();
+            fireRuneBaseWidthMultiplier = GetLineWidthMultiplier(fireRuneLine);
             CacheFireRuneTemplate();
+            ApplyRuneCastOpacity(fireRuneLine);
         }
 
         if (requireSpellSelection)
@@ -219,6 +254,9 @@ public class SpellController : MonoBehaviour
             selectedSpell = SpellType.None;
         }
 
+        EnsureTouchSpellControls();
+        SetTouchControlsVisible(!GameplayPause.IsPaused);
+        ApplyMobileHudPlacement();
         UpdateRuneVisibility();
         UpdateSpellSelectionUI();
         UpdateScoreUI();
@@ -231,9 +269,26 @@ public class SpellController : MonoBehaviour
         fireThresholds ??= new SpellAccuracyThresholds();
     }
 
+    void CacheReferenceCameraSize()
+    {
+        Camera camera = Camera.main;
+        if (camera != null && camera.orthographic && camera.orthographicSize > 0f)
+        {
+            referenceCameraOrthographicSize = camera.orthographicSize;
+        }
+    }
+
+    float GetLineWidthMultiplier(LineRenderer runeLine)
+    {
+        return runeLine != null ? runeLine.widthMultiplier : 1f;
+    }
+
     void Update()
     //todo: implement later
     {
+        SetTouchControlsVisible(!GameplayPause.IsPaused);
+        ApplyMobileHudPlacement();
+
         if (GameplayPause.IsPaused)
         {
             return;
@@ -276,6 +331,8 @@ public class SpellController : MonoBehaviour
             mouseDraw.HasDirectionalStroke &&
             mouseDraw.TryGetStrokeStart(out Vector3 currentStrokeStart))
         {
+            EmitFireDrawFlameIfNeeded();
+
             if (!hasLockedRuneDirectionMode)
             {
                 lockedRuneUsesReversedTemplate = ShouldUseReversedTemplate(mouseDraw.CurrentStrokeDirection);
@@ -361,6 +418,7 @@ public class SpellController : MonoBehaviour
         {
             patient.startHoT(totalHeal, waterDuration);
             patient.bleedReduction(reduction, waterDuration); //reduces bleed based on accuracy of the spell
+            SpellVisualEffects.PlayWaterSplash(GetWaterSplashPosition(popupWorldPosition));
             nextWaterCastTime = Time.time + waterCooldownDuration;
             score += pointsAwarded;
         }
@@ -545,6 +603,20 @@ public class SpellController : MonoBehaviour
         UpdateScoreUI();
     }
 
+    void EmitFireDrawFlameIfNeeded()
+    {
+        if (selectedSpell != SpellType.Fire ||
+            mouseDraw == null ||
+            !mouseDraw.HasStroke ||
+            Time.unscaledTime < nextFireDrawFlameTime)
+        {
+            return;
+        }
+
+        nextFireDrawFlameTime = Time.unscaledTime + fireDrawFlameInterval;
+        SpellVisualEffects.PlayFireDrawFlame(mouseDraw.LastStrokeEndWorldPosition);
+    }
+
     float GetAccuracyMultiplier(float acc)
     {
         SpellType spellType = selectedSpell == SpellType.None ? SpellType.Water : selectedSpell;
@@ -594,6 +666,8 @@ public class SpellController : MonoBehaviour
         SpellJudgement judgement = GetSpellJudgement(spellType, acc);
         int pointsAwarded = GetPointsForJudgement(judgement);
         bool treated = false;
+        Vector3 targetEffectPosition = GetWoundEffectPosition(wound);
+        float targetEffectRadius = GetWoundEffectRadius(wound);
         string outcome;
 
         if (judgement == SpellJudgement.Miss)
@@ -605,17 +679,19 @@ public class SpellController : MonoBehaviour
             treated = wound.TryApplySpell(spellType, out outcome);
         }
 
-        RegisterMissIfNeeded(judgement);
+        SpellJudgement displayedJudgement = treated ? judgement : SpellJudgement.Miss;
+        RegisterMissIfNeeded(displayedJudgement);
 
         if (treated)
         {
             score += pointsAwarded;
             HideRuneAfterSuccessfulCast();
             PlaySpellSfx(spellType);
+            PlayTargetedSpellEffect(spellType, wound, targetEffectPosition, targetEffectRadius);
             SpellCastSucceeded?.Invoke(spellType);
         }
 
-        ShowCastPopup(judgement, IsQuickCast(), GetPopupWorldPosition());
+        ShowCastPopup(displayedJudgement, IsQuickCast(), GetPopupWorldPosition());
 
         if (spellJudgementText != null)
         {
@@ -628,6 +704,57 @@ public class SpellController : MonoBehaviour
             spellType + " cast - acc: " + acc.ToString("F3") +
             " - outcome: " + outcome +
             " - points: " + (treated ? pointsAwarded : 0));
+    }
+
+    Vector3 GetWaterSplashPosition(Vector3 popupWorldPosition)
+    {
+        if (popupWorldPosition != Vector3.zero)
+        {
+            return popupWorldPosition - (Vector3.up * popupHeightOffset);
+        }
+
+        if (mouseDraw != null && mouseDraw.LastStrokeEndWorldPosition != Vector3.zero)
+        {
+            return mouseDraw.LastStrokeEndWorldPosition;
+        }
+
+        return patient != null ? patient.transform.position : transform.position;
+    }
+
+    Vector3 GetWoundEffectPosition(CutWound wound)
+    {
+        SpriteRenderer renderer = wound != null ? wound.GetComponentInChildren<SpriteRenderer>(true) : null;
+        if (renderer != null)
+        {
+            return renderer.bounds.center;
+        }
+
+        return wound != null ? wound.transform.position : transform.position;
+    }
+
+    float GetWoundEffectRadius(CutWound wound)
+    {
+        SpriteRenderer renderer = wound != null ? wound.GetComponentInChildren<SpriteRenderer>(true) : null;
+        if (renderer == null)
+        {
+            return 0.25f;
+        }
+
+        Vector3 extents = renderer.bounds.extents;
+        return Mathf.Max(0.12f, Mathf.Max(extents.x, extents.y));
+    }
+
+    void PlayTargetedSpellEffect(SpellType spellType, CutWound wound, Vector3 position, float radius)
+    {
+        switch (spellType)
+        {
+            case SpellType.Earth:
+                SpellVisualEffects.PlayEarthSqueeze(wound);
+                break;
+            case SpellType.Fire:
+                SpellVisualEffects.PlayFireDots(position, radius);
+                break;
+        }
     }
 
     void UpdateScoreUI()
@@ -652,6 +779,58 @@ public class SpellController : MonoBehaviour
             scoreMeter.maxValue = Mathf.Max(1, scoreMeterMax);
             scoreMeter.value = Mathf.Clamp(score, 0, scoreMeter.maxValue);
         }
+    }
+
+    void ApplyMobileHudPlacement()
+    {
+        if (!Application.isMobilePlatform && Screen.width <= Screen.height)
+        {
+            return;
+        }
+
+        PlaceTopCenterText(scoreText, mobileScoreTextOffset, mobileScoreTextSize);
+        PlaceTopCenterText(scoreRankText, mobileScoreTextOffset + new Vector2(0f, -46f), new Vector2(520f, 56f));
+        PlaceTopCenterText(missCountText, mobileScoreTextOffset + new Vector2(0f, -92f), new Vector2(360f, 48f));
+
+        if (scoreMeter != null)
+        {
+            RectTransform meterRect = scoreMeter.transform as RectTransform;
+            PlaceTopCenterRect(meterRect, mobileScoreMeterOffset, mobileScoreMeterSize);
+        }
+    }
+
+    void PlaceTopCenterText(TextMeshProUGUI text, Vector2 offset, Vector2 size)
+    {
+        if (text == null)
+        {
+            return;
+        }
+
+        PlaceTopCenterRect(text.rectTransform, offset, size);
+        text.alignment = TextAlignmentOptions.Center;
+        text.enableWordWrapping = false;
+    }
+
+    void PlaceTopCenterRect(RectTransform rect, Vector2 offset, Vector2 size)
+    {
+        if (rect == null)
+        {
+            return;
+        }
+
+        Canvas canvas = rect.GetComponentInParent<Canvas>();
+        RectTransform canvasRect = canvas != null ? canvas.transform as RectTransform : null;
+        if (canvasRect != null && rect.parent != canvasRect)
+        {
+            rect.SetParent(canvasRect, false);
+        }
+
+        rect.anchorMin = new Vector2(0.5f, 1f);
+        rect.anchorMax = new Vector2(0.5f, 1f);
+        rect.pivot = new Vector2(0.5f, 1f);
+        rect.anchoredPosition = offset;
+        rect.sizeDelta = size;
+        rect.SetAsLastSibling();
     }
 
     void RegisterMissIfNeeded(SpellJudgement judgement)
@@ -786,10 +965,26 @@ public class SpellController : MonoBehaviour
     {
         if (mouseDraw == null)
         {
-            return transform.position + (Vector3.up * popupHeightOffset);
+            Vector3 fallbackPosition = transform.position + (Vector3.up * GetScaledPopupHeightOffset());
+            fallbackPosition.z = spellForegroundZ;
+            return fallbackPosition;
         }
 
-        return mouseDraw.LastStrokeEndWorldPosition + (Vector3.up * popupHeightOffset);
+        Vector3 popupPosition = mouseDraw.LastStrokeEndWorldPosition + (Vector3.up * GetScaledPopupHeightOffset());
+        popupPosition.z = spellForegroundZ;
+        return popupPosition;
+    }
+
+    float GetScaledPopupHeightOffset()
+    {
+        Camera camera = Camera.main;
+        if (camera == null || !camera.orthographic || referenceCameraOrthographicSize <= 0f)
+        {
+            return popupHeightOffset;
+        }
+
+        float cameraScale = Mathf.Clamp(camera.orthographicSize / referenceCameraOrthographicSize, 0.42f, 1.25f);
+        return popupHeightOffset * cameraScale;
     }
 
     void ShowCastPopup(SpellJudgement judgement, bool isQuickCast, Vector3 popupWorldPosition)
@@ -852,6 +1047,7 @@ public class SpellController : MonoBehaviour
         SetRuneVisible(earthRuneIcon, selectedSpell == SpellType.Earth);
         SetRuneVisible(fireRuneIcon, selectedSpell == SpellType.Fire);
         UpdateWaterCooldownVisual();
+        UpdateTouchSpellButtonStates();
     }
 
     void SetRuneVisible(GameObject runeVisual, bool visible)
@@ -860,6 +1056,38 @@ public class SpellController : MonoBehaviour
         {
             runeVisual.SetActive(visible);
         }
+    }
+
+    void ApplyRuneCastOpacity(LineRenderer runeLine)
+    {
+        if (runeLine == null)
+        {
+            return;
+        }
+
+        Gradient gradient = runeLine.colorGradient;
+        GradientColorKey[] colorKeys = gradient.colorKeys;
+        GradientAlphaKey[] alphaKeys = gradient.alphaKeys;
+        float alpha = Mathf.Clamp01(runeCastAlpha);
+
+        if (alphaKeys == null || alphaKeys.Length == 0)
+        {
+            alphaKeys = new[]
+            {
+                new GradientAlphaKey(alpha, 0f),
+                new GradientAlphaKey(alpha, 1f)
+            };
+        }
+        else
+        {
+            for (int i = 0; i < alphaKeys.Length; i++)
+            {
+                alphaKeys[i].alpha = alpha;
+            }
+        }
+
+        gradient.SetKeys(colorKeys, alphaKeys);
+        runeLine.colorGradient = gradient;
     }
 
     void CacheWaterRuneTemplate()
@@ -950,6 +1178,7 @@ public class SpellController : MonoBehaviour
                     anchorPosition,
                     useReversedTemplate ? waterRuneTemplateAngleReversed : waterRuneTemplateAngle,
                     strokeDirection,
+                    waterRuneBaseWidthMultiplier,
                     ref waterRuneCurrentAngle,
                     ref waterRuneAngleVelocity);
                 break;
@@ -960,6 +1189,7 @@ public class SpellController : MonoBehaviour
                     anchorPosition,
                     useReversedTemplate ? earthRuneTemplateAngleReversed : earthRuneTemplateAngle,
                     strokeDirection,
+                    earthRuneBaseWidthMultiplier,
                     ref earthRuneCurrentAngle,
                     ref earthRuneAngleVelocity);
                 break;
@@ -970,6 +1200,7 @@ public class SpellController : MonoBehaviour
                     anchorPosition,
                     useReversedTemplate ? fireRuneTemplateAngleReversed : fireRuneTemplateAngle,
                     strokeDirection,
+                    fireRuneBaseWidthMultiplier,
                     ref fireRuneCurrentAngle,
                     ref fireRuneAngleVelocity);
                 break;
@@ -1086,6 +1317,7 @@ public class SpellController : MonoBehaviour
         Vector3 anchorPosition,
         float templateAngle,
         Vector3 strokeDirection,
+        float baseWidthMultiplier,
         ref float currentAngle,
         ref float angleVelocity)
     {
@@ -1107,11 +1339,26 @@ public class SpellController : MonoBehaviour
             runeRotationSmoothTime);
 
         Quaternion rotation = Quaternion.Euler(0f, 0f, currentAngle - templateAngle);
+        float cameraScale = GetRuneCameraScale();
+        runeLine.widthMultiplier = baseWidthMultiplier * cameraScale;
 
         for (int i = 0; i < runeTemplateOffsets.Length; i++)
         {
-            runeLine.SetPosition(i, anchorPosition + (rotation * runeTemplateOffsets[i]));
+            Vector3 point = anchorPosition + (rotation * (runeTemplateOffsets[i] * cameraScale));
+            point.z = spellForegroundZ;
+            runeLine.SetPosition(i, point);
         }
+    }
+
+    float GetRuneCameraScale()
+    {
+        Camera camera = Camera.main;
+        if (camera == null || !camera.orthographic || referenceCameraOrthographicSize <= Mathf.Epsilon)
+        {
+            return 1f;
+        }
+
+        return Mathf.Max(0.01f, camera.orthographicSize / referenceCameraOrthographicSize);
     }
 
     SpellAccuracyThresholds GetThresholdsForSpell(SpellType spellType)
@@ -1154,6 +1401,7 @@ public class SpellController : MonoBehaviour
         }
 
         ApplyIconColor(waterRuneIcon, targetColor);
+        UpdateTouchSpellButtonStates();
     }
 
     void ShowWaterCooldownFeedback()
@@ -1212,5 +1460,124 @@ public class SpellController : MonoBehaviour
         {
             spriteRenderer.color = color;
         }
+    }
+
+    void EnsureTouchSpellControls()
+    {
+        if (!ShouldCreateTouchSpellControls() || touchControlsCanvas != null)
+        {
+            return;
+        }
+
+        EnsureEventSystem();
+
+        GameObject canvasObject = new GameObject("TouchSpellControls", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+        touchControlsCanvas = canvasObject.GetComponent<Canvas>();
+        touchControlsCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        touchControlsCanvas.sortingOrder = 100;
+
+        CanvasScaler scaler = canvasObject.GetComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(2560f, 1440f);
+        scaler.matchWidthOrHeight = 0.5f;
+
+        RectTransform root = canvasObject.GetComponent<RectTransform>();
+        touchWaterButton = CreateTouchSpellButton(root, "TouchWaterSpellButton", "Water", 0, SpellType.Water);
+        touchEarthButton = CreateTouchSpellButton(root, "TouchEarthSpellButton", "Earth", 1, SpellType.Earth);
+        touchFireButton = CreateTouchSpellButton(root, "TouchFireSpellButton", "Fire", 2, SpellType.Fire);
+    }
+
+    void SetTouchControlsVisible(bool visible)
+    {
+        if (touchControlsCanvas != null && touchControlsCanvas.gameObject.activeSelf != visible)
+        {
+            touchControlsCanvas.gameObject.SetActive(visible);
+        }
+    }
+
+    bool ShouldCreateTouchSpellControls()
+    {
+        return createTouchSpellButtons &&
+               (alwaysShowTouchSpellButtons || Application.isMobilePlatform || Input.touchSupported);
+    }
+
+    Button CreateTouchSpellButton(RectTransform parent, string objectName, string labelText, int index, SpellType spellType)
+    {
+        GameObject buttonObject = new GameObject(objectName, typeof(RectTransform), typeof(Image), typeof(Button));
+        buttonObject.transform.SetParent(parent, false);
+
+        RectTransform rect = buttonObject.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0f, 0f);
+        rect.anchorMax = new Vector2(0f, 0f);
+        rect.pivot = new Vector2(0f, 0f);
+        rect.sizeDelta = touchSpellButtonSize;
+        rect.anchoredPosition = touchSpellButtonOffset + new Vector2(index * (touchSpellButtonSize.x + touchSpellButtonSpacing), 0f);
+
+        Image image = buttonObject.GetComponent<Image>();
+        image.color = touchButtonColor;
+
+        Button button = buttonObject.GetComponent<Button>();
+        button.targetGraphic = image;
+        button.onClick.AddListener(() => SetSelectedSpell(spellType));
+
+        GameObject labelObject = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
+        labelObject.transform.SetParent(rect, false);
+
+        RectTransform labelRect = labelObject.GetComponent<RectTransform>();
+        labelRect.anchorMin = Vector2.zero;
+        labelRect.anchorMax = Vector2.one;
+        labelRect.offsetMin = Vector2.zero;
+        labelRect.offsetMax = Vector2.zero;
+
+        TextMeshProUGUI label = labelObject.GetComponent<TextMeshProUGUI>();
+        label.text = labelText;
+        label.fontSize = 34f;
+        label.alignment = TextAlignmentOptions.Center;
+        label.color = Color.white;
+        label.raycastTarget = false;
+
+        return button;
+    }
+
+    void UpdateTouchSpellButtonStates()
+    {
+        UpdateTouchSpellButton(touchWaterButton, SpellType.Water, IsWaterOnCooldown());
+        UpdateTouchSpellButton(touchEarthButton, SpellType.Earth, false);
+        UpdateTouchSpellButton(touchFireButton, SpellType.Fire, false);
+    }
+
+    void UpdateTouchSpellButton(Button button, SpellType spellType, bool disabled)
+    {
+        if (button == null)
+        {
+            return;
+        }
+
+        button.interactable = true;
+
+        Graphic graphic = button.targetGraphic;
+        if (graphic == null)
+        {
+            return;
+        }
+
+        if (disabled)
+        {
+            graphic.color = touchButtonDisabledColor;
+        }
+        else
+        {
+            graphic.color = selectedSpell == spellType ? touchButtonSelectedColor : touchButtonColor;
+        }
+    }
+
+    void EnsureEventSystem()
+    {
+        if (FindAnyObjectByType<EventSystem>() != null)
+        {
+            return;
+        }
+
+        new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
     }
 }

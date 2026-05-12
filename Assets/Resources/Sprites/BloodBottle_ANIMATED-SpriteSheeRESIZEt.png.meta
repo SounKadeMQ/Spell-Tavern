@@ -1,0 +1,637 @@
+fileFormatVersion: 2
+guid: f65955a521bda194aa6c10a485172c89
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7923251928014615503
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_0
+  - first:
+      213: 5174230820547769181
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_1
+  - first:
+      213: 4991750779226362772
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_2
+  - first:
+      213: 1284009235677599998
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_3
+  - first:
+      213: -5157542569275529989
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_4
+  - first:
+      213: -5614299452323162029
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_5
+  - first:
+      213: -7792099511947426586
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_6
+  - first:
+      213: 4330324066636212180
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_7
+  - first:
+      213: -7886257766308291073
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_8
+  - first:
+      213: -1227419697819404289
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_9
+  - first:
+      213: -604703429149985081
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_10
+  - first:
+      213: 3382113996657296074
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_11
+  - first:
+      213: -1041736108893970938
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_12
+  - first:
+      213: 6792201677873476490
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_13
+  - first:
+      213: -1796432601967858443
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_14
+  - first:
+      213: -481017876414937666
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_15
+  - first:
+      213: 6600309339551136215
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_16
+  - first:
+      213: -7285300912986427485
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_17
+  - first:
+      213: 2501806964207963227
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_18
+  - first:
+      213: 673592900105975560
+    second: BloodBottle_ANIMATED-SpriteSheeRESIZEt_19
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_0
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc37d3b36ab05fd60800000000000000
+      internalID: 7923251928014615503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_1
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d53b0ac548f8ec740800000000000000
+      internalID: 5174230820547769181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_2
+      rect:
+        serializedVersion: 2
+        x: 587
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4931113e2e2464540800000000000000
+      internalID: 4991750779226362772
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_3
+      rect:
+        serializedVersion: 2
+        x: 843
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef852ecc897b1d110800000000000000
+      internalID: 1284009235677599998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_4
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf4606ceb5abc68b0800000000000000
+      internalID: -5157542569275529989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_5
+      rect:
+        serializedVersion: 2
+        x: 1355
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3589b99d4600612b0800000000000000
+      internalID: -5614299452323162029
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_6
+      rect:
+        serializedVersion: 2
+        x: 1611
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e401e737c6ecd390800000000000000
+      internalID: -7792099511947426586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_7
+      rect:
+        serializedVersion: 2
+        x: 1867
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d72d2aabc6681c30800000000000000
+      internalID: 4330324066636212180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_8
+      rect:
+        serializedVersion: 2
+        x: 2123
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ffd570048526e8290800000000000000
+      internalID: -7886257766308291073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_9
+      rect:
+        serializedVersion: 2
+        x: 2379
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff73829b94457fee0800000000000000
+      internalID: -1227419697819404289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_10
+      rect:
+        serializedVersion: 2
+        x: 2635
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c6fd0f5f69ab97f0800000000000000
+      internalID: -604703429149985081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_11
+      rect:
+        serializedVersion: 2
+        x: 2891
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac282a0c2ceafee20800000000000000
+      internalID: 3382113996657296074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_12
+      rect:
+        serializedVersion: 2
+        x: 3147
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60e5daf37820b81f0800000000000000
+      internalID: -1041736108893970938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_13
+      rect:
+        serializedVersion: 2
+        x: 3403
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a83f57c707fb24e50800000000000000
+      internalID: 6792201677873476490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_14
+      rect:
+        serializedVersion: 2
+        x: 3659
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fc66c0011ac117e0800000000000000
+      internalID: -1796432601967858443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_15
+      rect:
+        serializedVersion: 2
+        x: 3915
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb5cca93ac41359f0800000000000000
+      internalID: -481017876414937666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_16
+      rect:
+        serializedVersion: 2
+        x: 4171
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d973a7df52099b50800000000000000
+      internalID: 6600309339551136215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_17
+      rect:
+        serializedVersion: 2
+        x: 4427
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3af6d973b6965ea90800000000000000
+      internalID: -7285300912986427485
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_18
+      rect:
+        serializedVersion: 2
+        x: 4683
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5cc636cd2438b220800000000000000
+      internalID: 2501806964207963227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BloodBottle_ANIMATED-SpriteSheeRESIZEt_19
+      rect:
+        serializedVersion: 2
+        x: 4939
+        y: 11
+        width: 106
+        height: 214
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 807ba0e7c25195900800000000000000
+      internalID: 673592900105975560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_0: 7923251928014615503
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_1: 5174230820547769181
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_10: -604703429149985081
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_11: 3382113996657296074
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_12: -1041736108893970938
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_13: 6792201677873476490
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_14: -1796432601967858443
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_15: -481017876414937666
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_16: 6600309339551136215
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_17: -7285300912986427485
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_18: 2501806964207963227
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_19: 673592900105975560
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_2: 4991750779226362772
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_3: 1284009235677599998
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_4: -5157542569275529989
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_5: -5614299452323162029
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_6: -7792099511947426586
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_7: 4330324066636212180
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_8: -7886257766308291073
+      BloodBottle_ANIMATED-SpriteSheeRESIZEt_9: -1227419697819404289
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

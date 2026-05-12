@@ -13,66 +13,139 @@ MonoBehaviour:
   m_Name: Mission_01_Surgery_GlassMarket
   m_EditorClassIdentifier: Assembly-CSharp::MissionData
   missionId: ch1_surgery_01
-  displayName: "Operation 1: Glass-Market Cut"
+  displayName: Under The Spell
+  episodeCode: 1-1
+  episodeOrder: 1
   chapterLabel: Chapter 1
   kind: 0
-  patientData: {fileID: 11400000, guid: 0028c045fdcd440d8eef852b96b702cc, type: 2}
-  missionSummary: Mira has a single bleeding wound from enchanted bottle glass. This
-    first operation teaches spell selection, clean Fire casts, and Water timing.
+  patientData: {fileID: 11400000, guid: d76f5b62e52517145b650e24ea3e9016, type: 2}
+  missionSummary: Angie has two simple outside cuts. This first operation teaches
+    spell selection, clean Fire casts, and basic wound targeting.
   sceneName: preOpScene
+  surgeryMusicResource: Audio/Music/NormalSurgery
   nextMissionId: ch1_surgery_02
-  unlockedByDefault: 1
+  unlockedByDefault: 0
   preOpLines:
-  - speaker: Head Witch
-    text: "First patient of the night: Mira, courier. One ugly cut, steady pulse."
-  - speaker: Head Witch
+  - speaker: Nurse
+    text: 'First patient of the night: Angie. Two outside cuts, steady pulse.'
+  - speaker: Nurse
     text: Keep her calm, trace the Fire rune cleanly, and do not waste Water unless
       her blood drops.
   surgeryLines:
-  - speaker: Mira
-    text: I can still feel the glass burning. Please make it stop.
-  - speaker: Head Witch
-    text: Select Fire. A clean cautery is enough for this one.
+  - speaker: Angie
+    text: I can feel the cut pulsing. Please make it quick.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: 
+  - speaker: Angie
+    text: 'Let''s cast some Water first, to top up the blood of our patient.
+
+      Select
+      the Water spell.'
     waitForSpellSelect: 1
     waitForSpellCast: 0
     waitForWoundsCleared: 0
     waitBeforeShowingLine: 0
     transitionToInside: 0
     transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
     missionCompleteFlag: 0
-    requiredSpell: 5
+    requiredSpell: 1
     requiredWoundLocation: 0
-  - speaker: Head Witch
-    text: Cast Fire on the wound.
+    requiredSpawnAreaId: 
+  - speaker: Angie
+    text: Great! Now just follow the rune, and cast the spell.
     waitForSpellSelect: 0
     waitForSpellCast: 1
     waitForWoundsCleared: 0
     waitBeforeShowingLine: 0
     transitionToInside: 0
     transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
     missionCompleteFlag: 0
-    requiredSpell: 5
+    requiredSpell: 1
     requiredWoundLocation: 0
-  - speaker: Head Witch
-    text: Finish any open cut, then we can move her to recovery.
-    waitForSpellSelect: 0
-    waitForSpellCast: 0
-    waitForWoundsCleared: 1
-    waitBeforeShowingLine: 1
-    transitionToInside: 0
-    transitionToPart: 0
-    missionCompleteFlag: 0
-    requiredSpell: 0
-    requiredWoundLocation: 2
-  - speaker: Mira
-    text: The sting is gone. I owe the tavern one delivery.
+    requiredSpawnAreaId: 
+  - speaker: Angie
+    text: Great work! Let's deal with the cuts now.
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
     waitBeforeShowingLine: 0
     transitionToInside: 0
     transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: 
+  - speaker: Nurse
+    text: Select Fire. This is an outside wound, so keep the work clean and direct.
+    waitForSpellSelect: 1
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 5
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: 
+  - speaker: Nurse
+    text: Close both outside cuts with Fire.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 1
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 5
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: 
+  - speaker: Angie
+    text: The sting is gone. I can breathe again.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
     missionCompleteFlag: 1
     requiredSpell: 0
     requiredWoundLocation: 0
+    requiredSpawnAreaId: 
   intermissionLines: []
+  woundLayout: []

@@ -13,15 +13,79 @@ MonoBehaviour:
   m_Name: Patient_03_Sera
   m_EditorClassIdentifier: Assembly-CSharp::PatientData
   patientName: Sera
-  caseTitle: Rune-splinter trauma
-  triageSummary: Apprentice mage hit by a cracked ward-stone. Multiple tissue layers
-    are unstable, making this the chapter's first pressure test.
-  surgicalGoal: Move from outside wound control to the deeper treatment view, alternating
-    Earth stabilization, Fire closure, and Water recovery.
+  caseTitle: Full patient check
+  triageSummary: A multi-part trauma check covering the chest, leg, and right arm.
+    Keep the bleeding controlled while each region is cleared in sequence.
+  surgicalGoal: Clear the chest wounds, move to the leg, then finish the right arm.
   recommendedSpells: Earth, Fire, Water
   chapterNumber: 1
   operationNumber: 3
-  operationTimeLimit: 210
+  operationTimeLimit: 240
   startingBlood: 68
-  startingBleedRate: 1.1
-  startingBleedMod: 1
+  maxBlood: 100
+  startingBleedRate: 0.5
+  startingBleedMod: 1.05
+  woundLayout:
+  - woundName: Sera Chest Cut 1
+    woundIndex: -1
+    active: 1
+    woundType: 0
+    woundLocation: 0
+    spawnAreaId: Chest
+    localPosition: {x: 0.12, y: 0.017}
+    rotationDegrees: 22
+    localScale: {x: 0.030004198, y: 0.0333768}
+  - woundName: Sera Chest Cut 2
+    woundIndex: -1
+    active: 1
+    woundType: 0
+    woundLocation: 0
+    spawnAreaId: Chest
+    localPosition: {x: 0.002, y: 0.017}
+    rotationDegrees: 78
+    localScale: {x: 0.030004198, y: 0.0333768}
+  - woundName: Sera Chest Laceration
+    woundIndex: -1
+    active: 1
+    woundType: 1
+    woundLocation: 0
+    spawnAreaId: Chest
+    localPosition: {x: -0.098, y: -0.098}
+    rotationDegrees: 86
+    localScale: {x: 0.030004198, y: 0.0333768}
+  - woundName: Sera Leg Cut 1
+    woundIndex: -1
+    active: 0
+    woundType: 0
+    woundLocation: 0
+    spawnAreaId: LeftLeg
+    localPosition: {x: -0.185, y: -0.382}
+    rotationDegrees: 3
+    localScale: {x: 0.030004198, y: 0.0333768}
+  - woundName: Sera Leg Laceration
+    woundIndex: -1
+    active: 0
+    woundType: 1
+    woundLocation: 0
+    spawnAreaId: LeftLeg
+    localPosition: {x: -0.155, y: -0.529}
+    rotationDegrees: -12
+    localScale: {x: 0.030004198, y: 0.0333768}
+  - woundName: Sera Right Arm Cut 1
+    woundIndex: -1
+    active: 0
+    woundType: 0
+    woundLocation: 0
+    spawnAreaId: RightArm
+    localPosition: {x: 0.39, y: 0.215}
+    rotationDegrees: 8
+    localScale: {x: 0.030004198, y: 0.0333768}
+  - woundName: Sera Right Arm Cut 2
+    woundIndex: -1
+    active: 0
+    woundType: 0
+    woundLocation: 0
+    spawnAreaId: RightArm
+    localPosition: {x: 0.49, y: 0.1296}
+    rotationDegrees: -18
+    localScale: {x: 0.030004198, y: 0.0333768}

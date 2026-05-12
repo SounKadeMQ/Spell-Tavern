@@ -13,54 +13,151 @@ MonoBehaviour:
   m_Name: Mission_04_Surgery_RuneSplinter
   m_EditorClassIdentifier: Assembly-CSharp::MissionData
   missionId: ch1_surgery_03
-  displayName: "Operation 3: Rune-Splinter Trauma"
+  displayName: Just a Checkup
+  episodeCode: 1-3
+  episodeOrder: 4
   chapterLabel: Chapter 1
   kind: 0
   patientData: {fileID: 11400000, guid: f84b0c01159b46d1ade270960e19c2de, type: 2}
-  missionSummary: Sera's wound sits deeper than the first two cases. Use the patient
-    view transition and keep enough blood in reserve to survive mistakes.
+  missionSummary: Sera is a full patient check across chest, leg, and right arm wounds.
+    Clear each region before moving to the next.
   sceneName: preOpScene
+  surgeryMusicResource: 
   nextMissionId: ch1_intermission_02
   unlockedByDefault: 0
   preOpLines:
-  - speaker: Head Witch
-    text: Sera was standing closest to the ward-stone. Expect a deeper wound path.
+  - speaker: Nurse
+    text: Sera needs a full check. Chest, leg, and right arm, in that order.
   - speaker: Sera
-    text: I heard the rune crack inside my ribs.
+    text: I can stay still. Just tell me when to breathe.
   surgeryLines:
-  - speaker: Head Witch
-    text: Start with surface control, then move to the focused view.
-  - speaker: Head Witch
-    text: Shift to the deeper wound.
+  - speaker: Nurse
+    text: Okay doctor, I need to leave you alone with the patient.
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
     waitBeforeShowingLine: 0
     transitionToInside: 0
-    transitionToPart: 1
+    transitionToPart: 0
+    focusSpawnAreaId: Chest
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
     missionCompleteFlag: 0
     requiredSpell: 0
     requiredWoundLocation: 0
-  - speaker: Head Witch
-    text: Close the remaining wound before her pulse slips.
+    requiredSpawnAreaId: Chest
+  - speaker: 
+    text: Chest first. Two cuts and one laceration.
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 1
-    waitBeforeShowingLine: 1
+    waitBeforeShowingLine: 0
     transitionToInside: 0
     transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
     missionCompleteFlag: 0
     requiredSpell: 0
-    requiredWoundLocation: 2
-  - speaker: Sera
-    text: The ringing stopped. Was that inside the stone, or inside me?
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: Chest
+  - speaker: 
+    text: Chest is clear. Move to the leg.
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
     waitBeforeShowingLine: 0
     transitionToInside: 0
     transitionToPart: 0
+    focusSpawnAreaId: LeftLeg
+    activateSpawnAreaId: LeftLeg
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: LeftLeg
+  - speaker: Sera
+    text: I feel it in my leg now.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 1
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: LeftLeg
+  - speaker: 
+    text: Leg is clear. Move to the right arm.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: RightArm
+    activateSpawnAreaId: RightArm
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: RightArm
+  - speaker: 
+    text: Two cuts on the arm.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 1
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: RightArm
+  - speaker: Sera
+    text: My hand stopped shaking.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: RightArm
+  - speaker: 
+    text: I'm back... Oh? Well done!
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
     missionCompleteFlag: 1
     requiredSpell: 0
     requiredWoundLocation: 0
+    requiredSpawnAreaId: RightArm
   intermissionLines: []
+  woundLayout: []

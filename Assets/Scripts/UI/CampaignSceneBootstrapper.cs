@@ -18,6 +18,12 @@ public static class CampaignSceneBootstrapper
 
     static void BootstrapScene(Scene scene)
     {
+        if (scene.name == "TitleScene" &&
+            Object.FindAnyObjectByType<TitleOpeningController>() == null)
+        {
+            new GameObject("TitleOpeningController").AddComponent<TitleOpeningController>();
+        }
+
         if (scene.name == "ChapterSelect" &&
             Object.FindAnyObjectByType<MissionSelectController>() == null)
         {
@@ -28,6 +34,25 @@ public static class CampaignSceneBootstrapper
             Object.FindAnyObjectByType<IntermissionChapterController>() == null)
         {
             new GameObject("IntermissionChapterController").AddComponent<IntermissionChapterController>();
+        }
+
+        if (scene.name == "PatientScene")
+        {
+            if (Object.FindAnyObjectByType<SurgeryCameraTurnIn>() == null &&
+                Camera.main != null)
+            {
+                Camera.main.gameObject.AddComponent<SurgeryCameraTurnIn>();
+            }
+
+            if (Object.FindAnyObjectByType<SurgeryForegroundLayer>() == null)
+            {
+                new GameObject("SurgeryForegroundLayer").AddComponent<SurgeryForegroundLayer>();
+            }
+
+            if (Object.FindAnyObjectByType<SurgeryLatticeBackground>() == null)
+            {
+                new GameObject("SurgeryLatticeBackground").AddComponent<SurgeryLatticeBackground>();
+            }
         }
     }
 }

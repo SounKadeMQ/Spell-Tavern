@@ -13,15 +13,71 @@ MonoBehaviour:
   m_Name: Patient_02_Orren
   m_EditorClassIdentifier: Assembly-CSharp::PatientData
   patientName: Orren
-  caseTitle: Furnace burn incision
-  triageSummary: Tavern cook with a clean but fast-bleeding cut after a furnace charm
-    backfired. The wound is simple, but the clock is less forgiving.
-  surgicalGoal: Use Fire accurately on the cut and use Water only when vitals justify
-    the cooldown.
-  recommendedSpells: Fire; Water as emergency support
+  caseTitle: Furnace backfire trauma
+  triageSummary: Tavern cook caught in a furnace charm backfire. The outside injury
+    is already complicated, with multiple cuts and a laceration spread across the torso.
+  surgicalGoal: Stabilize lacerations with Earth, close cuts with Fire, and use Water
+    only when vitals justify the cooldown.
+  recommendedSpells: Earth, Fire, Water
   chapterNumber: 1
-  operationNumber: 2
-  operationTimeLimit: 150
+  operationNumber: 3
+  operationTimeLimit: 210
   startingBlood: 74
-  startingBleedRate: 0.8
+  maxBlood: 100
+  startingBleedRate: 1.1
   startingBleedMod: 1
+  woundLayout:
+  - woundName: Orren Backfire Cut 1
+    woundIndex: -1
+    active: 1
+    woundType: 0
+    woundLocation: 2
+    spawnAreaId: Chest
+    localPosition: {x: -2, y: -5.5}
+    rotationDegrees: 22
+    localScale: {x: 0.030004198, y: 0.0333768}
+  - woundName: Orren Backfire Cut 2
+    woundIndex: -1
+    active: 1
+    woundType: 0
+    woundLocation: 2
+    spawnAreaId: Chest
+    localPosition: {x: 2.2, y: -5.9}
+    rotationDegrees: 78
+    localScale: {x: 0.030004198, y: 0.0333768}
+  - woundName: Orren Backfire Laceration
+    woundIndex: -1
+    active: 1
+    woundType: 1
+    woundLocation: 2
+    spawnAreaId: Chest
+    localPosition: {x: 6, y: -6.6}
+    rotationDegrees: 86
+    localScale: {x: 0.04, y: 0.044}
+  - woundName: Orren Splinter Cut 1
+    woundIndex: -1
+    active: 1
+    woundType: 0
+    woundLocation: 2
+    spawnAreaId: Chest
+    localPosition: {x: -1.4, y: -10}
+    rotationDegrees: 3
+    localScale: {x: 0.030004198, y: 0.0333768}
+  - woundName: Orren Splinter Cut 2
+    woundIndex: -1
+    active: 1
+    woundType: 0
+    woundLocation: 2
+    spawnAreaId: Chest
+    localPosition: {x: 3, y: -10.8}
+    rotationDegrees: -58
+    localScale: {x: 0.030004198, y: 0.0333768}
+  - woundName: Orren Splinter Cut 3
+    woundIndex: -1
+    active: 1
+    woundType: 0
+    woundLocation: 2
+    spawnAreaId: Chest
+    localPosition: {x: 6.8, y: -12}
+    rotationDegrees: 8
+    localScale: {x: 0.042569954, y: 0.040482726}

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 372f1ca3ae1b4f42894795c0aa965f93, type: 3}
+  m_Name: Mission_00_Prologue
+  m_EditorClassIdentifier: Assembly-CSharp::MissionData
+  missionId: ch1_prologue
+  displayName: Prologue
+  episodeCode: P-0
+  episodeOrder: 0
+  chapterLabel: Chapter 1
+  kind: 1
+  patientData: {fileID: 0}
+  missionSummary: The tavern clinic opens for the evening shift. The nurse introduces
+    the operating table, the rune tools, and the rule that every spell has a cost.
+  sceneName: VNScene
+  surgeryMusicResource: 
+  nextMissionId: ch1_surgery_01
+  unlockedByDefault: 1
+  preOpLines: []
+  surgeryLines: []
+  intermissionLines:
+  - speaker: Nurse
+    text: "It's certainly \t\t... a tavern."
+  - speaker: Player
+    text: Yeah, thats correct...?
+  - speaker: Nurse
+    text: Let's just get our job started...
+  woundLayout: []

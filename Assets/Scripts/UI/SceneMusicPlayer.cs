@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SceneMusicPlayer : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class SceneMusicPlayer : MonoBehaviour
             audioSource = GetComponent<AudioSource>();
         }
 
+        ApplyMissionMusicOverride();
+
         if (!playOnStart || audioSource == null || musicClip == null)
         {
             return;
@@ -22,5 +25,26 @@ public class SceneMusicPlayer : MonoBehaviour
         audioSource.clip = musicClip;
         audioSource.loop = loop;
         audioSource.Play();
+    }
+
+    void ApplyMissionMusicOverride()
+    {
+        MissionData mission = MissionFlowState.CurrentMission;
+        if (mission == null ||
+            string.IsNullOrWhiteSpace(mission.surgeryMusicResource) ||
+            SceneManager.GetActiveScene().name != "PatientScene")
+        {
+            return;
+        }
+
+        AudioClip missionClip = Resources.Load<AudioClip>(mission.surgeryMusicResource);
+        if (missionClip != null)
+        {
+            musicClip = missionClip;
+        }
+        else
+        {
+            Debug.LogWarning("Mission surgery music not found at Resources/" + mission.surgeryMusicResource + ".");
+        }
     }
 }

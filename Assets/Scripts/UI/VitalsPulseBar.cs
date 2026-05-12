@@ -10,9 +10,6 @@ public class VitalsPulseBar : MonoBehaviour
     [SerializeField] private float criticalBloodLevel = 20f;
     [SerializeField] private Color healthyColor = new Color(0.2f, 0.85f, 0.3f, 0.9f);
     [SerializeField] private Color criticalColor = new Color(0.9f, 0.15f, 0.15f, 0.95f);
-    [SerializeField] private float healthyPulseSpeed = 1.2f;
-    [SerializeField] private float criticalPulseSpeed = 4f;
-    [SerializeField] private float pulseScaleAmount = 0.08f;
 
     private Vector3 baseScale = Vector3.one;
 
@@ -50,10 +47,6 @@ public class VitalsPulseBar : MonoBehaviour
         float danger = 1f - Mathf.InverseLerp(criticalBloodLevel, healthyBloodLevel, blood);
 
         pulseBarImage.color = Color.Lerp(healthyColor, criticalColor, danger);
-
-        float pulseSpeed = Mathf.Lerp(healthyPulseSpeed, criticalPulseSpeed, danger);
-        float pulse = 1f + (Mathf.Sin(Time.unscaledTime * pulseSpeed * Mathf.PI * 2f) * pulseScaleAmount);
-
-        pulseBarRect.localScale = new Vector3(baseScale.x * pulse, baseScale.y, baseScale.z);
+        pulseBarRect.localScale = baseScale;
     }
 }

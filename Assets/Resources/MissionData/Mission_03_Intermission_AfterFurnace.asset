@@ -13,22 +13,27 @@ MonoBehaviour:
   m_Name: Mission_03_Intermission_AfterFurnace
   m_EditorClassIdentifier: Assembly-CSharp::MissionData
   missionId: ch1_intermission_01
-  displayName: "Intermission: Ash in the Ward"
+  displayName: The Issue Within
+  episodeCode: INT-1
+  episodeOrder: 3
   chapterLabel: Chapter 1
   kind: 1
   patientData: {fileID: 0}
-  missionSummary: A story chapter in the tavern clinic after Orren's operation. The team
-    realizes the injuries are connected to a cracked ward-stone.
+  missionSummary: A story chapter in the tavern clinic after Mira's operation. The
+    team realizes the injuries are connected to a cracked ward-stone.
   sceneName: VNScene
+  surgeryMusicResource: 
   nextMissionId: ch1_surgery_03
   unlockedByDefault: 0
   preOpLines: []
   surgeryLines: []
   intermissionLines:
-  - speaker: Head Witch
-    text: Two unrelated accidents in one evening is bad luck. Three would be a pattern.
-  - speaker: Apprentice
-    text: The burn marks on Orren's sleeve match the glass sigils from Mira's bag.
-  - speaker: Head Witch
-    text: Then someone cracked a ward-stone and let the spellwork splinter through the
-      tavern. Prep the deeper table.
+  - speaker: Nurse
+    text: Two unrelated accidents in one evening is bad luck...
+  - speaker: Player
+    text: Really now?
+  - speaker: Nurse
+    text: Yes, REALLY.
+  - speaker: Player
+    text: Huh. Okay then.
+  woundLayout: []

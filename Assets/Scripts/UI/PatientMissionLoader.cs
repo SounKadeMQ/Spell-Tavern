@@ -6,15 +6,6 @@ public class PatientMissionLoader : MonoBehaviour
 
     void Awake()
     {
-        if (patient == null)
-        {
-            patient = FindAnyObjectByType<Patient>();
-        }
-
-        MissionData mission = MissionFlowState.CurrentMission;
-        if (patient != null && mission != null && mission.patientData != null)
-        {
-            patient.Initialize(mission.patientData);
-        }
+        // Patient.Awake owns mission patient initialization and wound layout application.
     }
 }

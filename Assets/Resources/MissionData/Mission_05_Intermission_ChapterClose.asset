@@ -13,21 +13,27 @@ MonoBehaviour:
   m_Name: Mission_05_Intermission_ChapterClose
   m_EditorClassIdentifier: Assembly-CSharp::MissionData
   missionId: ch1_intermission_02
-  displayName: "Intermission: Last Call"
+  displayName: Chaos at the INN
+  episodeCode: INT-4
+  episodeOrder: 5
   chapterLabel: Chapter 1
   kind: 1
   patientData: {fileID: 0}
-  missionSummary: Chapter close. The clinic survives the night, but the ward-stone thread
-    points beyond the tavern.
+  missionSummary: A headache hits between patients, then an emergency case breaks
+    the quiet before the chapter can close.
   sceneName: VNScene
-  nextMissionId: 
+  surgeryMusicResource: 
+  nextMissionId: ch1_surgery_final
   unlockedByDefault: 0
   preOpLines: []
   surgeryLines: []
   intermissionLines:
-  - speaker: Apprentice
-    text: The injured are stable. The tavern is quiet again.
-  - speaker: Head Witch
-    text: Quiet is not the same as safe. Someone knew exactly where to split the ward.
-  - speaker: Head Witch
-    text: At dawn, we find who sent the stone. Tonight, we clean the blood from the floor.
+  - speaker: 
+    text: You feel a headache settle behind your eyes.
+  - speaker: Player
+    text: Another day... Ugh... what a horrible headache...
+  - speaker: Nurse
+    text: You alright there? Take a breather.
+  - speaker: Player
+    text: I'm okay... don't worry.
+  woundLayout: []

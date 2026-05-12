@@ -1,0 +1,195 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 372f1ca3ae1b4f42894795c0aa965f93, type: 3}
+  m_Name: Mission_06_Surgery_EmergencyRupture
+  m_EditorClassIdentifier: Assembly-CSharp::MissionData
+  missionId: ch1_surgery_final
+  displayName: A Real Sage
+  episodeCode: 1-F
+  episodeOrder: 6
+  chapterLabel: Chapter 1
+  kind: 0
+  patientData: {fileID: 11400000, guid: 9c0d8ddc9a304418bb7ddc6e81fb73a5, type: 2}
+  missionSummary: A low-blood emergency patient arrives as the doctor's headache
+    peaks. Clear the first chest wounds, then survive the rupture under slowed time.
+  sceneName: preOpScene
+  surgeryMusicResource: 
+  nextMissionId: 
+  unlockedByDefault: 0
+  preOpLines:
+  - speaker: Player
+    text: He is crashing. Thirty blood at most, and the chest is open everywhere.
+  - speaker: Nurse
+    text: Your headache does not matter. Keep your hands steady.
+  surgeryLines:
+  - speaker: Nurse
+    text: Oh my...! We need to cast water, NOW! Select Water with D!
+    waitForSpellSelect: 1
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 1
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: Chest
+  - speaker: Nurse
+    text: Good, now cast water, so we can restore some of the patients blood!
+    waitForSpellSelect: 0
+    waitForSpellCast: 1
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: FinalRupture
+  - speaker: Nurse
+    text: Great work... We need to deal with these sudden cuts now....
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: FinalRupture
+  - speaker: Nurse
+    text: 'Seven cuts on the chest we need to clear. Keep water on standby! '
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 1
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: Chest
+  - speaker: Emergency Patient
+    text: 'Ugh..... '
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: Rupture
+    triggerEmergencyTimeDilation: 1
+    triggerEmergencyImpact: 1
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: Rupture
+  - speaker: Nurse
+    text: What the...!? Are you o-...
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 1
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: Rupture
+  - speaker: Emergency Patient
+    text: Hey, PLAYER!? What's happening!?
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: FinalRupture
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 1
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: FinalRupture
+  - speaker: Nurse
+    text: O-one more giant laceration!
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 1
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 0
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: FinalRupture
+  - speaker: Nurse
+    text: W-what was that? You cleared all those wounds in an instant...
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 1
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: FinalRupture
+  - speaker: Nurse
+    text: ...! You're gonna fall-
+    waitForSpellSelect: 1
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 1
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: FinalRupture
+  intermissionLines: []
+  woundLayout: []

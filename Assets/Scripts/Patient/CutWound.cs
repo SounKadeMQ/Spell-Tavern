@@ -28,6 +28,9 @@ public class CutWound : MonoBehaviour
     [SerializeField] private SpriteRenderer woundSpriteRenderer;
     [SerializeField] private Sprite cutSprite;
     [SerializeField] private Sprite lacerationSprite;
+    [SerializeField] private Sprite stabilizedLacerationSprite;
+    [SerializeField] private string stabilizedLacerationSpriteResource = "Sprites/CutVerticalSheet(2)";
+    [SerializeField] private Vector2 stabilizedLacerationSqueeze = new Vector2(0.82f, 1.06f);
 
     [Header("State")]
     [SerializeField] private WoundType woundType = WoundType.Cut;
@@ -35,6 +38,7 @@ public class CutWound : MonoBehaviour
     [SerializeField] private bool isOpen = true;
     [SerializeField] private bool applyBleedOnStart = true;
     [SerializeField] private bool isStabilized;
+    [SerializeField] private string spawnAreaId;
 
     public Patient Patient => patient;
     public Collider2D CutHitbox => cutHitbox;
@@ -43,10 +47,17 @@ public class CutWound : MonoBehaviour
     public bool IsStabilized => isStabilized;
     public WoundType Type => woundType;
     public WoundLocation Location => woundLocation;
+    public string SpawnAreaId => spawnAreaId;
+
+    public void SetPatient(Patient owner)
+    {
+        patient = owner;
+    }
 
     private Sprite originalVisualSprite;
     private Vector3 originalVisualLocalPosition;
     private Vector3 originalVisualLocalScale;
+    private bool hasCachedVisualDefaults;
 
     void Start()
     {
@@ -60,12 +71,7 @@ public class CutWound : MonoBehaviour
             woundSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
         }
 
-        if (woundSpriteRenderer != null)
-        {
-            originalVisualSprite = woundSpriteRenderer.sprite;
-            originalVisualLocalPosition = woundSpriteRenderer.transform.localPosition;
-            originalVisualLocalScale = woundSpriteRenderer.transform.localScale;
-        }
+        CacheVisualDefaults();
 
         PatientWounds patientWounds = GetComponentInParent<PatientWounds>();
         if (patientWounds != null)
@@ -153,6 +159,44 @@ public class CutWound : MonoBehaviour
     {
         isOpen = false;
         isStabilized = false;
+        NotifyPatient();
+    }
+
+    public void ApplyMissionLayout(WoundType type, WoundLocation location, bool active)
+    {
+        ApplyMissionLayout(type, location, active, spawnAreaId);
+    }
+
+    public void ApplyMissionLayout(WoundType type, WoundLocation location, bool active, string areaId)
+    {
+        if (patient == null)
+        {
+            patient = GetComponentInParent<Patient>();
+        }
+
+        if (woundSpriteRenderer == null)
+        {
+            woundSpriteRenderer = GetComponentInChildren<SpriteRenderer>(true);
+        }
+
+        woundType = type;
+        woundLocation = location;
+        spawnAreaId = areaId;
+        isOpen = active;
+        isStabilized = false;
+
+        gameObject.SetActive(true);
+        CacheVisualDefaults();
+        RefreshVisualState();
+        SetLayoutVisibility(active);
+        NotifyPatient();
+    }
+
+    public void SetLayoutActive(bool active)
+    {
+        isOpen = active;
+        gameObject.SetActive(true);
+        SetLayoutVisibility(active);
         NotifyPatient();
     }
 
@@ -254,17 +298,84 @@ public class CutWound : MonoBehaviour
                 targetSprite = cutSprite;
                 break;
             case WoundType.Laceration:
-                targetSprite = isStabilized && cutSprite != null ? cutSprite : lacerationSprite;
+                targetSprite = isStabilized ? GetStabilizedLacerationSprite() : lacerationSprite;
                 break;
         }
 
         if (targetSprite != null)
         {
-            ApplyVisualSprite(targetSprite);
+            Vector2 scaleMultiplier = isStabilized && woundType == WoundType.Laceration
+                ? stabilizedLacerationSqueeze
+                : Vector2.one;
+            ApplyVisualSprite(targetSprite, scaleMultiplier);
         }
     }
 
-    void ApplyVisualSprite(Sprite targetSprite)
+    Sprite GetStabilizedLacerationSprite()
+    {
+        if (stabilizedLacerationSprite != null)
+        {
+            return stabilizedLacerationSprite;
+        }
+
+        Sprite[] sprites = Resources.LoadAll<Sprite>(stabilizedLacerationSpriteResource);
+        if (sprites != null && sprites.Length > 0)
+        {
+            stabilizedLacerationSprite = sprites[0];
+            return stabilizedLacerationSprite;
+        }
+
+        stabilizedLacerationSprite = Resources.Load<Sprite>(stabilizedLacerationSpriteResource);
+        if (stabilizedLacerationSprite != null)
+        {
+            return stabilizedLacerationSprite;
+        }
+
+        return cutSprite != null ? cutSprite : lacerationSprite;
+    }
+
+    void CacheVisualDefaults()
+    {
+        if (hasCachedVisualDefaults)
+        {
+            return;
+        }
+
+        if (woundSpriteRenderer == null)
+        {
+            woundSpriteRenderer = GetComponentInChildren<SpriteRenderer>(true);
+        }
+
+        if (woundSpriteRenderer == null)
+        {
+            return;
+        }
+
+        originalVisualSprite = woundSpriteRenderer.sprite;
+        originalVisualLocalPosition = woundSpriteRenderer.transform.localPosition;
+        originalVisualLocalScale = woundSpriteRenderer.transform.localScale;
+        hasCachedVisualDefaults = true;
+    }
+
+    void SetLayoutVisibility(bool visible)
+    {
+        if (woundSpriteRenderer != null)
+        {
+            woundSpriteRenderer.enabled = visible;
+        }
+
+        if (cutHitbox != null)
+        {
+            cutHitbox.enabled = visible;
+        }
+
+        if (spellBoundsHitbox != null)
+        {
+            spellBoundsHitbox.enabled = visible;
+        }
+    }
+
+    void ApplyVisualSprite(Sprite targetSprite, Vector2 scaleMultiplier)
     {
         if (woundSpriteRenderer == null || targetSprite == null)
         {
@@ -297,6 +408,9 @@ public class CutWound : MonoBehaviour
         {
             adjustedScale.y *= referenceSize.y / targetSize.y;
         }
+
+        adjustedScale.x *= scaleMultiplier.x;
+        adjustedScale.y *= scaleMultiplier.y;
 
         Vector3 referenceCenter = referenceSprite.bounds.center;
         Vector3 targetCenter = targetSprite.bounds.center;

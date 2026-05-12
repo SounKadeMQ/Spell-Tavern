@@ -17,9 +17,14 @@ public class PatientDialogueLine
     public bool waitBeforeShowingLine;
     public bool transitionToInside;
     public bool transitionToPart;
+    public string focusSpawnAreaId;
+    public string activateSpawnAreaId;
+    public bool triggerEmergencyTimeDilation;
+    public bool triggerEmergencyImpact;
     public bool missionCompleteFlag;
     public SpellController.SpellType requiredSpell = SpellController.SpellType.None;
     public CutWound.WoundLocation requiredWoundLocation = CutWound.WoundLocation.Outside;
+    public string requiredSpawnAreaId;
 }
 
 public class PatientDialogueController : MonoBehaviour
@@ -54,6 +59,7 @@ public class PatientDialogueController : MonoBehaviour
     private bool hasMatchedSpellCast;
     private bool hasTransitionedInside;
     private bool hasTransitionedToPart;
+    private int lastAdvanceFrame = -1;
     private GameObject currentPatientRoot;
 
     void Start()
@@ -73,6 +79,14 @@ public class PatientDialogueController : MonoBehaviour
         GameplayPause.SetPaused(true);
         SetDialogueVisible(true);
         ShowCurrentLine();
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) || (CanAcceptAdvanceTap() && WasAdvanceTap()))
+        {
+            NextLine();
+        }
     }
 
     void ApplyMissionDialogue()
@@ -104,6 +118,13 @@ public class PatientDialogueController : MonoBehaviour
 
     public void NextLine()
     {
+        if (lastAdvanceFrame == Time.frameCount)
+        {
+            return;
+        }
+
+        lastAdvanceFrame = Time.frameCount;
+
         if (lines == null || lines.Length == 0)
         {
             EndDialogue();
@@ -127,8 +148,41 @@ public class PatientDialogueController : MonoBehaviour
         ContinueFromCurrentLine();
     }
 
+    bool WasAdvanceTap()
+    {
+        if (Input.GetMouseButtonUp(0))
+        {
+            return true;
+        }
+
+        for (int i = 0; i < Input.touchCount; i++)
+        {
+            Touch touch = Input.GetTouch(i);
+            if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool CanAcceptAdvanceTap()
+    {
+        return GameplayPause.IsPaused &&
+               dialogueRoot != null &&
+               dialogueRoot.activeInHierarchy &&
+               (nextButtonRoot == null || nextButtonRoot.activeInHierarchy) &&
+               transitionRoutine == null &&
+               !isWaitingForSpellSelect &&
+               !isWaitingForSpellCast &&
+               !isWaitingForWoundsCleared;
+    }
+
     void ShowCurrentLine()
     {
+        SetDialogueVisible(true);
+
         if (speakerText == null || dialogueText == null)
         {
             return;
@@ -147,6 +201,7 @@ public class PatientDialogueController : MonoBehaviour
         hasMatchedSpellCast = false;
         SetNextButtonVisible(true);
         GameplayPause.SetPaused(true);
+        lastAdvanceFrame = Time.frameCount;
         speakerText.text = lines[currentLineIndex].speaker;
         StartTypewriter(lines[currentLineIndex].text);
     }
@@ -305,10 +360,26 @@ public class PatientDialogueController : MonoBehaviour
 
         if (isWaitingForSpellSelect || isWaitingForSpellCast || isWaitingForWoundsCleared)
         {
+            ClearDialogueForOperationWait();
             SetNextButtonVisible(false);
             GameplayPause.SetPaused(false);
             TryContinueAfterWait();
         }
+    }
+
+    void ClearDialogueForOperationWait()
+    {
+        if (dialogueText != null)
+        {
+            dialogueText.text = string.Empty;
+        }
+
+        if (speakerText != null)
+        {
+            speakerText.text = string.Empty;
+        }
+
+        SetDialogueVisible(false);
     }
 
     void HandleSpellCastSucceeded(SpellController.SpellType spellType)
@@ -349,9 +420,16 @@ public class PatientDialogueController : MonoBehaviour
 
     void HandleWoundCauterised(CutWound wound)
     {
-        if (!isWaitingForWoundsCleared || lines == null || currentLineIndex >= lines.Length)
+        if (lines == null || currentLineIndex >= lines.Length)
         {
             return;
+        }
+
+        PatientDialogueLine currentLine = lines[currentLineIndex];
+        if (isWaitingForSpellCast &&
+            currentLine.requiredSpell == SpellController.SpellType.Fire)
+        {
+            hasMatchedSpellCast = true;
         }
 
         TryContinueAfterWait();
@@ -366,7 +444,7 @@ public class PatientDialogueController : MonoBehaviour
             return false;
         }
 
-        return patientWounds.GetOpenWoundCount(line.requiredWoundLocation) == 0;
+        return patientWounds.GetOpenWoundCount(line.requiredWoundLocation, line.requiredSpawnAreaId) == 0;
     }
 
     void TryContinueAfterWait()
@@ -377,6 +455,11 @@ public class PatientDialogueController : MonoBehaviour
         }
 
         PatientDialogueLine currentLine = lines[currentLineIndex];
+        ResolveSceneReferences();
+        if (!string.IsNullOrWhiteSpace(currentLine.activateSpawnAreaId) && patientWounds != null)
+        {
+            patientWounds.SetWoundsActiveBySpawnArea(currentLine.activateSpawnAreaId, true);
+        }
 
         bool spellSelectSatisfied = !currentLine.waitForSpellSelect || hasMatchedSpellSelection;
         bool spellCastSatisfied = !currentLine.waitForSpellCast || hasMatchedSpellCast;
@@ -397,6 +480,7 @@ public class PatientDialogueController : MonoBehaviour
 
         if (shouldShowCurrentLineAfterWait)
         {
+            SetDialogueVisible(true);
             ShowCurrentLine();
             return;
         }
@@ -448,6 +532,8 @@ public class PatientDialogueController : MonoBehaviour
             return;
         }
 
+        ApplyLineAdvanceActions(lines[currentLineIndex]);
+
         ContinueAfterWait();
     }
 
@@ -474,7 +560,7 @@ public class PatientDialogueController : MonoBehaviour
 
     IEnumerator TransitionToInsideAndContinue()
     {
-        yield return TransitionToRootAndContinue(insidePatientRoot, () =>
+        yield return TransitionToRootAndContinue(insidePatientRoot, CutWound.WoundLocation.Inside, () =>
         {
             hasTransitionedInside = true;
         });
@@ -482,13 +568,13 @@ public class PatientDialogueController : MonoBehaviour
 
     IEnumerator TransitionToPartAndContinue()
     {
-        yield return TransitionToRootAndContinue(partPatientRoot, () =>
+        yield return TransitionToRootAndContinue(partPatientRoot, CutWound.WoundLocation.Part, () =>
         {
             hasTransitionedToPart = true;
         });
     }
 
-    IEnumerator TransitionToRootAndContinue(GameObject targetRoot, System.Action onMidTransition)
+    IEnumerator TransitionToRootAndContinue(GameObject targetRoot, CutWound.WoundLocation targetWoundLocation, System.Action onMidTransition)
     {
         GameplayPause.SetPaused(true);
         SetNextButtonVisible(false);
@@ -515,8 +601,81 @@ public class PatientDialogueController : MonoBehaviour
 
         yield return FadeOverlay(1f, 0f);
 
+        PatientDialogueLine currentLine = lines != null && currentLineIndex < lines.Length
+            ? lines[currentLineIndex]
+            : null;
+
+        if (currentLine != null && !string.IsNullOrWhiteSpace(currentLine.focusSpawnAreaId))
+        {
+            ApplyLineAdvanceActions(currentLine);
+        }
+        else
+        {
+            MoveCameraToWoundLocation(targetWoundLocation, targetRoot);
+        }
+
         transitionRoutine = null;
         ContinueAfterWait();
+    }
+
+    void ApplyLineAdvanceActions(PatientDialogueLine line)
+    {
+        if (line == null)
+        {
+            return;
+        }
+
+        ResolveSceneReferences();
+
+        if (!string.IsNullOrWhiteSpace(line.activateSpawnAreaId) && patientWounds != null)
+        {
+            patientWounds.SetWoundsActiveBySpawnArea(line.activateSpawnAreaId, true);
+        }
+
+        if (line.triggerEmergencyTimeDilation)
+        {
+            EmergencyTimeDilationEffect.Activate();
+        }
+
+        if (line.triggerEmergencyImpact)
+        {
+            EmergencyTimeDilationEffect.PlayImpact();
+        }
+
+        if (!string.IsNullOrWhiteSpace(line.focusSpawnAreaId))
+        {
+            MoveCameraToSpawnArea(line.focusSpawnAreaId);
+        }
+    }
+
+    void MoveCameraToWoundLocation(CutWound.WoundLocation woundLocation, GameObject targetRoot)
+    {
+        SurgeryCameraTurnIn surgeryCamera = Camera.main != null
+            ? Camera.main.GetComponent<SurgeryCameraTurnIn>()
+            : FindAnyObjectByType<SurgeryCameraTurnIn>();
+
+        if (surgeryCamera == null)
+        {
+            return;
+        }
+
+        Transform focusRoot = targetRoot != null ? targetRoot.transform : null;
+        surgeryCamera.FocusForWoundLocation(woundLocation, focusRoot);
+    }
+
+    void MoveCameraToSpawnArea(string spawnAreaId)
+    {
+        SurgeryCameraTurnIn surgeryCamera = Camera.main != null
+            ? Camera.main.GetComponent<SurgeryCameraTurnIn>()
+            : FindAnyObjectByType<SurgeryCameraTurnIn>();
+
+        if (surgeryCamera == null)
+        {
+            return;
+        }
+
+        Transform focusRoot = currentPatientRoot != null ? currentPatientRoot.transform : null;
+        surgeryCamera.FocusForSpawnArea(spawnAreaId, focusRoot);
     }
 
     IEnumerator CompleteMissionAfterLine()
@@ -535,6 +694,7 @@ public class PatientDialogueController : MonoBehaviour
 
         if (surgeryEndController != null)
         {
+            EmergencyTimeDilationEffect.Deactivate();
             surgeryEndController.ShowMissionComplete();
         }
         else
