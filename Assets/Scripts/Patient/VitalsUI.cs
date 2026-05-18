@@ -26,20 +26,26 @@ public class VitalsUI : MonoBehaviour
     [SerializeField] private bool hideBloodSlidersWhenUsingBottle = true;
     [SerializeField] private bool hideOldVitalsTextWhenUsingBottle = true;
     [SerializeField] private bool hideOldVitalsPanelWhenUsingBottle = true;
+    [SerializeField] private float bleedPulseScale = 0.035f;
+    [SerializeField] private float bleedPulseSpeedMultiplier = 0.85f;
+    [SerializeField] private float heavyBleedRate = 3f;
 
     [Header("Danger Vignette")]
     [SerializeField] private bool useDangerVignette = true;
-    [SerializeField] private float dangerBloodThreshold = 40f;
+    [SerializeField, Range(0f, 1f)] private float dangerBloodThresholdPercent = 0.55f;
     [SerializeField] private Color dangerVignetteColor = new Color(0.55f, 0.02f, 0.015f, 1f);
     [SerializeField] private float dangerVignetteMinAlpha = 0f;
-    [SerializeField] private float dangerVignetteMaxAlpha = 0.28f;
-    [SerializeField] private float dangerVignettePulseSpeed = 1.35f;
-    [SerializeField] private float dangerVignettePulseSharpness = 2.4f;
+    [SerializeField] private float dangerVignetteMaxAlpha = 0.68f;
+    [SerializeField] private float dangerVignettePulseSpeed = 2.1f;
+    [SerializeField] private float dangerVignettePulseSharpness = 1.7f;
+    [SerializeField] private Color lowHealthTintColor = new Color(0.75f, 0.03f, 0.02f, 1f);
+    [SerializeField] private float lowHealthTintMaxAlpha = 0.48f;
 
     private Sprite[] bloodBottleFrames;
     private int currentBottleFrame = -1;
     private RectTransform bloodBottleRect;
     private Image dangerVignetteImage;
+    private Image lowHealthTintImage;
 
     void Start()
     {
@@ -65,6 +71,16 @@ public class VitalsUI : MonoBehaviour
 
     void Update()
     {
+        if (patient == null)
+        {
+            patient = FindAnyObjectByType<Patient>();
+        }
+
+        if (useBloodBottle)
+        {
+            EnsureBloodBottleReady();
+        }
+
         if (patient == null) return;
 
         if (bloodBar != null)
@@ -93,7 +109,7 @@ public class VitalsUI : MonoBehaviour
 
     private void EnsureBloodBottleImage()
     {
-        if (bloodBottleImage != null) return;
+        if (bloodBottleImage != null && bloodBottleImage.gameObject.activeInHierarchy) return;
 
         RectTransform parentRect = GetCanvasRect();
         if (parentRect == null)
@@ -103,6 +119,9 @@ public class VitalsUI : MonoBehaviour
         }
 
         if (parentRect == null) return;
+
+        bloodBottleImage = null;
+        bloodBottleRect = null;
 
         GameObject bottleObject = new GameObject("BloodBottleVitals", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         RectTransform bottleRect = bottleObject.GetComponent<RectTransform>();
@@ -118,9 +137,46 @@ public class VitalsUI : MonoBehaviour
         ApplyBottleRectSize();
     }
 
+    private void EnsureBloodBottleReady()
+    {
+        if (bloodBottleFrames == null || bloodBottleFrames.Length == 0)
+        {
+            bloodBottleFrames = LoadBottleFrames();
+            currentBottleFrame = -1;
+        }
+
+        EnsureBloodBottleImage();
+
+        if (bloodBottleImage == null)
+        {
+            return;
+        }
+
+        RectTransform canvasRect = GetCanvasRect();
+        if (canvasRect != null && bloodBottleImage.rectTransform.parent != canvasRect)
+        {
+            bloodBottleImage.rectTransform.SetParent(canvasRect, false);
+        }
+
+        if (!bloodBottleImage.gameObject.activeSelf)
+        {
+            bloodBottleImage.gameObject.SetActive(true);
+        }
+
+        bloodBottleImage.enabled = true;
+        bloodBottleImage.preserveAspect = true;
+        bloodBottleImage.raycastTarget = false;
+
+        if (bloodBottleImage.sprite == null)
+        {
+            currentBottleFrame = -1;
+            UpdateBloodBottle();
+        }
+    }
+
     private void EnsureDangerVignette()
     {
-        if (!useDangerVignette || dangerVignetteImage != null) return;
+        if (!useDangerVignette || (dangerVignetteImage != null && lowHealthTintImage != null)) return;
 
         Canvas canvas = GetComponentInParent<Canvas>();
         if (canvas == null)
@@ -130,19 +186,38 @@ public class VitalsUI : MonoBehaviour
 
         if (canvas == null) return;
 
-        GameObject vignetteObject = new GameObject("PatientDangerVignette", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        RectTransform vignetteRect = vignetteObject.GetComponent<RectTransform>();
-        vignetteRect.SetParent(canvas.transform, false);
-        vignetteRect.anchorMin = Vector2.zero;
-        vignetteRect.anchorMax = Vector2.one;
-        vignetteRect.offsetMin = Vector2.zero;
-        vignetteRect.offsetMax = Vector2.zero;
-        vignetteRect.SetAsLastSibling();
+        if (lowHealthTintImage == null)
+        {
+            GameObject tintObject = new GameObject("PatientLowHealthTint", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            RectTransform tintRect = tintObject.GetComponent<RectTransform>();
+            tintRect.SetParent(canvas.transform, false);
+            tintRect.anchorMin = Vector2.zero;
+            tintRect.anchorMax = Vector2.one;
+            tintRect.offsetMin = Vector2.zero;
+            tintRect.offsetMax = Vector2.zero;
+            tintRect.SetAsFirstSibling();
 
-        dangerVignetteImage = vignetteObject.GetComponent<Image>();
-        dangerVignetteImage.sprite = CreateVignetteSprite(256);
-        dangerVignetteImage.color = WithAlpha(dangerVignetteColor, 0f);
-        dangerVignetteImage.raycastTarget = false;
+            lowHealthTintImage = tintObject.GetComponent<Image>();
+            lowHealthTintImage.color = WithAlpha(lowHealthTintColor, 0f);
+            lowHealthTintImage.raycastTarget = false;
+        }
+
+        if (dangerVignetteImage == null)
+        {
+            GameObject vignetteObject = new GameObject("PatientDangerVignette", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            RectTransform vignetteRect = vignetteObject.GetComponent<RectTransform>();
+            vignetteRect.SetParent(canvas.transform, false);
+            vignetteRect.anchorMin = Vector2.zero;
+            vignetteRect.anchorMax = Vector2.one;
+            vignetteRect.offsetMin = Vector2.zero;
+            vignetteRect.offsetMax = Vector2.zero;
+            vignetteRect.SetAsLastSibling();
+
+            dangerVignetteImage = vignetteObject.GetComponent<Image>();
+            dangerVignetteImage.sprite = CreateVignetteSprite(256);
+            dangerVignetteImage.color = WithAlpha(dangerVignetteColor, 0f);
+            dangerVignetteImage.raycastTarget = false;
+        }
     }
 
     private void LateUpdate()
@@ -150,6 +225,7 @@ public class VitalsUI : MonoBehaviour
         if (useBloodBottle)
         {
             ApplyBottleRectSize();
+            ApplyBleedPulse();
         }
     }
 
@@ -243,7 +319,9 @@ public class VitalsUI : MonoBehaviour
             return;
         }
 
-        float bloodPercent = Mathf.Clamp01(patient.bloodLevel / Mathf.Max(1f, patient.MaxBlood));
+        float bloodPercent = patient != null
+            ? Mathf.Clamp01(patient.bloodLevel / Mathf.Max(1f, patient.MaxBlood))
+            : 1f;
         int frame = Mathf.RoundToInt((1f - bloodPercent) * (bloodBottleFrames.Length - 1));
         frame = Mathf.Clamp(frame, 0, bloodBottleFrames.Length - 1);
         if (frame == currentBottleFrame) return;
@@ -260,31 +338,56 @@ public class VitalsUI : MonoBehaviour
             return;
         }
 
-        if (dangerVignetteImage == null)
+        if (dangerVignetteImage == null || lowHealthTintImage == null)
         {
             EnsureDangerVignette();
         }
 
-        if (dangerVignetteImage == null)
+        if (dangerVignetteImage == null || lowHealthTintImage == null)
         {
             return;
         }
 
-        bool shouldShow = patient != null &&
-                          patient.bloodLevel < dangerBloodThreshold &&
-                          patient.getBleedRate() > 0f;
+        float bloodPercent = patient != null
+            ? Mathf.Clamp01(patient.bloodLevel / Mathf.Max(1f, patient.MaxBlood))
+            : 1f;
+        float dangerThreshold = Mathf.Clamp01(dangerBloodThresholdPercent);
+        float tintDanger = 1f - Mathf.Clamp01(bloodPercent / Mathf.Max(0.01f, dangerThreshold));
+        lowHealthTintImage.color = WithAlpha(lowHealthTintColor, tintDanger * lowHealthTintMaxAlpha);
+
+        bool shouldShow = patient != null && bloodPercent <= dangerThreshold;
 
         float targetAlpha = 0f;
         if (shouldShow)
         {
-            float dangerThreshold = Mathf.Min(dangerBloodThreshold, patient.MaxBlood);
-            float danger = 1f - Mathf.Clamp01(patient.bloodLevel / Mathf.Max(0.01f, dangerThreshold));
+            float danger = tintDanger;
             float pulse = Mathf.Pow((Mathf.Sin(Time.unscaledTime * dangerVignettePulseSpeed * Mathf.PI * 2f) * 0.5f) + 0.5f, dangerVignettePulseSharpness);
-            float pulseAlpha = Mathf.Lerp(0.65f, 1f, pulse);
+            float pulseAlpha = Mathf.Lerp(0.78f, 1f, pulse);
             targetAlpha = Mathf.Lerp(dangerVignetteMinAlpha, dangerVignetteMaxAlpha, danger) * pulseAlpha;
         }
 
         dangerVignetteImage.color = WithAlpha(dangerVignetteColor, targetAlpha);
+    }
+
+    private void ApplyBleedPulse()
+    {
+        if (bloodBottleRect == null || patient == null)
+        {
+            return;
+        }
+
+        float bleedRate = Mathf.Max(0f, patient.getBleedRate());
+        if (bleedRate <= 0f)
+        {
+            bloodBottleRect.localScale = Vector3.one;
+            return;
+        }
+
+        float bleedIntensity = Mathf.Clamp01(bleedRate / Mathf.Max(0.01f, heavyBleedRate));
+        float pulseSpeed = Mathf.Lerp(1.2f, 3.8f, bleedIntensity) * bleedPulseSpeedMultiplier;
+        float pulse = (Mathf.Sin(Time.unscaledTime * pulseSpeed * Mathf.PI * 2f) * 0.5f) + 0.5f;
+        float scale = 1f + (pulse * bleedPulseScale * bleedIntensity);
+        bloodBottleRect.localScale = new Vector3(scale, scale, 1f);
     }
 
     private Sprite[] LoadBottleFrames()

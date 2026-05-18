@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -92,10 +93,25 @@ public class SpellController : MonoBehaviour
     [SerializeField] private Color touchButtonColor = new Color(0.08f, 0.11f, 0.12f, 0.82f);
     [SerializeField] private Color touchButtonSelectedColor = new Color(0.88f, 0.62f, 0.22f, 0.95f);
     [SerializeField] private Color touchButtonDisabledColor = new Color(0.35f, 0.12f, 0.12f, 0.78f);
+    [SerializeField] private Vector2 spellGuideSize = new Vector2(320f, 220f);
+    [SerializeField] private Vector2 spellGuideOffset = new Vector2(48f, 168f);
+    [SerializeField] private Color spellGuidePanelColor = new Color(0.03f, 0.045f, 0.05f, 0.72f);
+    [SerializeField] private Color spellGuideLineColor = new Color(0.8f, 0.95f, 1f, 0.9f);
+    [SerializeField] private Color spellGuideStartColor = new Color(1f, 0.78f, 0.24f, 0.95f);
+    [SerializeField] private Color spellGuideTraceDotColor = new Color(1f, 0.78f, 0.24f, 1f);
+    [SerializeField] private float spellGuideTraceDuration = 1.4f;
     private Canvas touchControlsCanvas;
     private Button touchWaterButton;
     private Button touchEarthButton;
     private Button touchFireButton;
+    private RectTransform spellGuideRoot;
+    private RectTransform spellGuideDrawingRoot;
+    private TextMeshProUGUI spellGuideLabel;
+    private Image spellGuideStartDot;
+    private Image spellGuideTraceDot;
+    private readonly List<Image> spellGuideSegments = new List<Image>();
+    private Vector2[] currentGuidePoints;
+    private float currentGuidePathLength;
 
     private LineRenderer waterRuneLine;
     private LineRenderer earthRuneLine;
@@ -138,6 +154,14 @@ public class SpellController : MonoBehaviour
     [SerializeField] private int scoreMeterMax = 2400;
     [SerializeField] private int score;
     [SerializeField] private int missCount;
+    private int perfectCount;
+    private int greatCount;
+    private int goodCount;
+    private int ehCount;
+    private int successfulWaterCasts;
+    private int stabilizedLacerations;
+    private int closedCuts;
+    private int closedLacerations;
     [SerializeField] private Vector2 mobileScoreTextOffset = new Vector2(0f, -26f);
     [SerializeField] private Vector2 mobileScoreTextSize = new Vector2(320f, 80f);
     [SerializeField] private Vector2 mobileScoreMeterOffset = new Vector2(0f, -128f);
@@ -267,6 +291,23 @@ public class SpellController : MonoBehaviour
         waterThresholds ??= new SpellAccuracyThresholds();
         earthThresholds ??= new SpellAccuracyThresholds();
         fireThresholds ??= new SpellAccuracyThresholds();
+
+        ApplyThresholdDefaults(waterThresholds, 0.04f, 0.065f, 0.09f, 0.12f);
+        ApplyThresholdDefaults(earthThresholds, 0.045f, 0.075f, 0.105f, 0.14f);
+        ApplyThresholdDefaults(fireThresholds, 0.05f, 0.08f, 0.115f, 0.15f);
+    }
+
+    void ApplyThresholdDefaults(SpellAccuracyThresholds thresholds, float perfect, float great, float good, float eh)
+    {
+        if (thresholds == null)
+        {
+            return;
+        }
+
+        thresholds.perfectThreshold = perfect;
+        thresholds.greatThreshold = great;
+        thresholds.goodThreshold = good;
+        thresholds.ehThreshold = eh;
     }
 
     void CacheReferenceCameraSize()
@@ -421,6 +462,8 @@ public class SpellController : MonoBehaviour
             SpellVisualEffects.PlayWaterSplash(GetWaterSplashPosition(popupWorldPosition));
             nextWaterCastTime = Time.time + waterCooldownDuration;
             score += pointsAwarded;
+            successfulWaterCasts++;
+            RegisterJudgementScore(judgement);
         }
         else
         {
@@ -496,6 +539,31 @@ public class SpellController : MonoBehaviour
     public string GetCurrentScoreRank()
     {
         return GetScoreRankText();
+    }
+
+    public string GetScoreBreakdown()
+    {
+        return "Scoring: Perfect 300, Great 250, Good 150, Eh 50. Misses lower rank.";
+    }
+
+    public string GetMissionCompleteBreakdown()
+    {
+        return
+            "Score sources\n" +
+            "Perfect " + perfectCount + "  Great " + greatCount + "  Good " + goodCount + "  Eh " + ehCount + "\n" +
+            "Cleaned\n" +
+            "Cuts closed " + closedCuts + "  Lacerations stabilised " + stabilizedLacerations + "  Lacerations closed " + closedLacerations + "\n" +
+            "Water casts " + successfulWaterCasts + "  Misses " + missCount;
+    }
+
+    public string GetGameOverBreakdown()
+    {
+        return
+            "Score sources\n" +
+            "Perfect " + perfectCount + "  Great " + greatCount + "  Good " + goodCount + "  Eh " + ehCount + "\n" +
+            "Progress\n" +
+            "Cuts closed " + closedCuts + "  Lacerations stabilised " + stabilizedLacerations + "  Lacerations closed " + closedLacerations + "\n" +
+            "Water casts " + successfulWaterCasts + "  Misses " + missCount;
     }
 
     void CastSelectedSpell(float acc)
@@ -581,11 +649,11 @@ public class SpellController : MonoBehaviour
             case SpellJudgement.Nice:
                 return "PERFECT!!!! (300 points)";
             case SpellJudgement.Great:
-                return "GREAT!!!";
+                return "GREAT!!! (250 points)";
             case SpellJudgement.Good:
-                return "GOOD!!";
+                return "GOOD!! (150 points)";
             case SpellJudgement.Eh:
-                return "EH...!";
+                return "EH...! (50 points)";
             default:
                 return "MISS!";
         }
@@ -654,9 +722,13 @@ public class SpellController : MonoBehaviour
     {
         if (!TryGetTargetWound(out CutWound wound))
         {
+            RegisterMissIfNeeded(SpellJudgement.Miss);
+            ShowCastPopup(SpellJudgement.Miss, IsQuickCast(), GetPopupWorldPosition());
+            UpdateScoreUI();
+
             if (spellJudgementText != null)
             {
-                spellJudgementText.text = "No wound targeted.";
+                spellJudgementText.text = "Draw the spell over a wound.";
             }
 
             Debug.Log(spellType + " cast failed: no wound targeted.");
@@ -666,6 +738,7 @@ public class SpellController : MonoBehaviour
         SpellJudgement judgement = GetSpellJudgement(spellType, acc);
         int pointsAwarded = GetPointsForJudgement(judgement);
         bool treated = false;
+        CutWound.WoundType woundTypeBeforeCast = wound.Type;
         Vector3 targetEffectPosition = GetWoundEffectPosition(wound);
         float targetEffectRadius = GetWoundEffectRadius(wound);
         string outcome;
@@ -685,6 +758,8 @@ public class SpellController : MonoBehaviour
         if (treated)
         {
             score += pointsAwarded;
+            RegisterJudgementScore(judgement);
+            RegisterWoundCleanup(spellType, woundTypeBeforeCast);
             HideRuneAfterSuccessfulCast();
             PlaySpellSfx(spellType);
             PlayTargetedSpellEffect(spellType, wound, targetEffectPosition, targetEffectRadius);
@@ -841,6 +916,48 @@ public class SpellController : MonoBehaviour
         }
     }
 
+    void RegisterJudgementScore(SpellJudgement judgement)
+    {
+        switch (judgement)
+        {
+            case SpellJudgement.Nice:
+                perfectCount++;
+                break;
+            case SpellJudgement.Great:
+                greatCount++;
+                break;
+            case SpellJudgement.Good:
+                goodCount++;
+                break;
+            case SpellJudgement.Eh:
+                ehCount++;
+                break;
+        }
+    }
+
+    void RegisterWoundCleanup(SpellType spellType, CutWound.WoundType woundType)
+    {
+        if (spellType == SpellType.Earth && woundType == CutWound.WoundType.Laceration)
+        {
+            stabilizedLacerations++;
+            return;
+        }
+
+        if (spellType != SpellType.Fire)
+        {
+            return;
+        }
+
+        if (woundType == CutWound.WoundType.Cut)
+        {
+            closedCuts++;
+        }
+        else if (woundType == CutWound.WoundType.Laceration)
+        {
+            closedLacerations++;
+        }
+    }
+
     string GetScoreRankText()
     {
         if (score >= 2200 && missCount <= 1)
@@ -880,14 +997,9 @@ public class SpellController : MonoBehaviour
             return false;
         }
 
-        if (mouseDraw != null &&
-            mouseDraw.CurrentLine != null &&
-            patientWounds.TryGetWoundTouchedByLine(mouseDraw.CurrentLine, out wound))
-        {
-            return true;
-        }
-
-        return patientWounds.TryGetFirstOpenWound(out wound);
+        return mouseDraw != null &&
+               mouseDraw.CurrentLine != null &&
+               patientWounds.TryGetWoundTouchedByLine(mouseDraw.CurrentLine, out wound);
     }
 
     Vector3 GetRuneAnchorPosition(Vector3 fallbackPosition)
@@ -907,11 +1019,6 @@ public class SpellController : MonoBehaviour
         if (patientWounds.TryGetWoundAtSpellPoint(fallbackPosition, out CutWound pointTouchedWound))
         {
             return pointTouchedWound.GetSpellAnchorPosition(fallbackPosition);
-        }
-
-        if (patientWounds.TryGetFirstOpenWound(out CutWound openWound))
-        {
-            return openWound.GetSpellAnchorPosition(fallbackPosition);
         }
 
         return fallbackPosition;
@@ -943,8 +1050,7 @@ public class SpellController : MonoBehaviour
             return baseAccuracy;
         }
 
-        float quickness = Mathf.InverseLerp(maxCastTime, idealCastTime, strokeDuration);
-        float adjustedAccuracy = baseAccuracy - (speedAccuracyBonus * quickness);
+        float adjustedAccuracy = baseAccuracy;
 
         if (strokeDuration > maxCastTime)
         {
@@ -989,11 +1095,7 @@ public class SpellController : MonoBehaviour
 
     void ShowCastPopup(SpellJudgement judgement, bool isQuickCast, Vector3 popupWorldPosition)
     {
-        string popupText = isQuickCast
-            ? "QUICK " + GetPopupText(judgement)
-            : GetPopupText(judgement);
-
-        SpellCastPopup.Create(popupWorldPosition, popupText, popupColor);
+        SpellCastPopup.Create(popupWorldPosition, GetPopupText(judgement), popupColor);
     }
 
     string GetPopupText(SpellJudgement judgement)
@@ -1048,6 +1150,8 @@ public class SpellController : MonoBehaviour
         SetRuneVisible(fireRuneIcon, selectedSpell == SpellType.Fire);
         UpdateWaterCooldownVisual();
         UpdateTouchSpellButtonStates();
+        UpdateSpellGuide();
+        AnimateSpellGuideTraceDot();
     }
 
     void SetRuneVisible(GameObject runeVisual, bool visible)
@@ -1485,6 +1589,8 @@ public class SpellController : MonoBehaviour
         touchWaterButton = CreateTouchSpellButton(root, "TouchWaterSpellButton", "Water", 0, SpellType.Water);
         touchEarthButton = CreateTouchSpellButton(root, "TouchEarthSpellButton", "Earth", 1, SpellType.Earth);
         touchFireButton = CreateTouchSpellButton(root, "TouchFireSpellButton", "Fire", 2, SpellType.Fire);
+        CreateSpellGuide(root);
+        UpdateSpellGuide();
     }
 
     void SetTouchControlsVisible(bool visible)
@@ -1537,6 +1643,239 @@ public class SpellController : MonoBehaviour
         label.raycastTarget = false;
 
         return button;
+    }
+
+    void CreateSpellGuide(RectTransform parent)
+    {
+        if (parent == null || spellGuideRoot != null)
+        {
+            return;
+        }
+
+        GameObject guideObject = new GameObject("SpellShapeGuide", typeof(RectTransform), typeof(Image));
+        guideObject.transform.SetParent(parent, false);
+
+        spellGuideRoot = guideObject.GetComponent<RectTransform>();
+        spellGuideRoot.anchorMin = new Vector2(0f, 0f);
+        spellGuideRoot.anchorMax = new Vector2(0f, 0f);
+        spellGuideRoot.pivot = new Vector2(0f, 0f);
+        spellGuideRoot.sizeDelta = spellGuideSize;
+        spellGuideRoot.anchoredPosition = spellGuideOffset;
+
+        Image panelImage = guideObject.GetComponent<Image>();
+        panelImage.color = spellGuidePanelColor;
+        panelImage.raycastTarget = false;
+
+        GameObject labelObject = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
+        labelObject.transform.SetParent(spellGuideRoot, false);
+        RectTransform labelRect = labelObject.GetComponent<RectTransform>();
+        labelRect.anchorMin = new Vector2(0f, 1f);
+        labelRect.anchorMax = new Vector2(1f, 1f);
+        labelRect.pivot = new Vector2(0.5f, 1f);
+        labelRect.offsetMin = new Vector2(12f, -44f);
+        labelRect.offsetMax = new Vector2(-12f, -8f);
+
+        spellGuideLabel = labelObject.GetComponent<TextMeshProUGUI>();
+        spellGuideLabel.fontSize = 26f;
+        spellGuideLabel.alignment = TextAlignmentOptions.Center;
+        spellGuideLabel.color = Color.white;
+        spellGuideLabel.enableWordWrapping = false;
+        spellGuideLabel.raycastTarget = false;
+
+        GameObject drawingObject = new GameObject("Drawing", typeof(RectTransform));
+        drawingObject.transform.SetParent(spellGuideRoot, false);
+        spellGuideDrawingRoot = drawingObject.GetComponent<RectTransform>();
+        spellGuideDrawingRoot.anchorMin = new Vector2(0f, 0f);
+        spellGuideDrawingRoot.anchorMax = new Vector2(1f, 1f);
+        spellGuideDrawingRoot.offsetMin = new Vector2(22f, 20f);
+        spellGuideDrawingRoot.offsetMax = new Vector2(-22f, -56f);
+
+        spellGuideStartDot = CreateGuideDot(spellGuideDrawingRoot, "StartDot", spellGuideStartColor);
+        spellGuideTraceDot = CreateGuideDot(spellGuideDrawingRoot, "TraceDot", spellGuideTraceDotColor);
+        spellGuideTraceDot.rectTransform.sizeDelta = new Vector2(14f, 14f);
+        spellGuideRoot.gameObject.SetActive(false);
+    }
+
+    Image CreateGuideDot(RectTransform parent, string objectName, Color color)
+    {
+        GameObject dotObject = new GameObject(objectName, typeof(RectTransform), typeof(Image));
+        dotObject.transform.SetParent(parent, false);
+        RectTransform rect = dotObject.GetComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(18f, 18f);
+
+        Image image = dotObject.GetComponent<Image>();
+        image.color = color;
+        image.raycastTarget = false;
+        return image;
+    }
+
+    void UpdateSpellGuide()
+    {
+        if (spellGuideRoot == null || spellGuideDrawingRoot == null)
+        {
+            return;
+        }
+
+        Vector3[] template = GetSelectedGuideTemplate();
+        bool showGuide = selectedSpell == SpellType.Water ||
+                         selectedSpell == SpellType.Earth ||
+                         selectedSpell == SpellType.Fire;
+
+        spellGuideRoot.gameObject.SetActive(showGuide && template != null && template.Length >= 2);
+        if (!spellGuideRoot.gameObject.activeSelf)
+        {
+            return;
+        }
+
+        if (spellGuideLabel != null)
+        {
+            spellGuideLabel.text = selectedSpell.ToString();
+        }
+
+        currentGuidePoints = GetGuidePoints(template, spellGuideDrawingRoot.rect.size);
+        currentGuidePathLength = GetGuidePathLength(currentGuidePoints);
+        EnsureGuideSegmentCount(currentGuidePoints.Length - 1);
+
+        for (int i = 0; i < spellGuideSegments.Count; i++)
+        {
+            bool active = i < currentGuidePoints.Length - 1;
+            spellGuideSegments[i].gameObject.SetActive(active);
+            if (active)
+            {
+                PositionGuideSegment(spellGuideSegments[i].rectTransform, currentGuidePoints[i], currentGuidePoints[i + 1]);
+            }
+        }
+
+        if (spellGuideStartDot != null)
+        {
+            spellGuideStartDot.rectTransform.anchoredPosition = currentGuidePoints[0];
+            spellGuideStartDot.transform.SetAsLastSibling();
+        }
+
+        if (spellGuideTraceDot != null)
+        {
+            spellGuideTraceDot.transform.SetAsLastSibling();
+            AnimateSpellGuideTraceDot();
+        }
+    }
+
+    Vector3[] GetSelectedGuideTemplate()
+    {
+        switch (selectedSpell)
+        {
+            case SpellType.Water:
+                return waterRuneTemplateOffsets;
+            case SpellType.Earth:
+                return earthRuneTemplateOffsets;
+            case SpellType.Fire:
+                return fireRuneTemplateOffsets;
+            default:
+                return null;
+        }
+    }
+
+    Vector2[] GetGuidePoints(Vector3[] template, Vector2 drawingSize)
+    {
+        Vector2 min = new Vector2(float.MaxValue, float.MaxValue);
+        Vector2 max = new Vector2(float.MinValue, float.MinValue);
+
+        for (int i = 0; i < template.Length; i++)
+        {
+            Vector2 point = template[i];
+            min = Vector2.Min(min, point);
+            max = Vector2.Max(max, point);
+        }
+
+        Vector2 boundsSize = max - min;
+        float scale = Mathf.Min(
+            drawingSize.x / Mathf.Max(0.01f, boundsSize.x),
+            drawingSize.y / Mathf.Max(0.01f, boundsSize.y)) * 0.78f;
+        Vector2 centerOffset = drawingSize * 0.5f;
+        Vector2 boundsCenter = (min + max) * 0.5f;
+        Vector2[] points = new Vector2[template.Length];
+
+        for (int i = 0; i < template.Length; i++)
+        {
+            points[i] = ((Vector2)template[i] - boundsCenter) * scale + centerOffset;
+        }
+
+        return points;
+    }
+
+    void EnsureGuideSegmentCount(int requiredCount)
+    {
+        while (spellGuideSegments.Count < requiredCount)
+        {
+            GameObject segmentObject = new GameObject("Segment", typeof(RectTransform), typeof(Image));
+            segmentObject.transform.SetParent(spellGuideDrawingRoot, false);
+
+            Image image = segmentObject.GetComponent<Image>();
+            image.color = spellGuideLineColor;
+            image.raycastTarget = false;
+            spellGuideSegments.Add(image);
+        }
+    }
+
+    void PositionGuideSegment(RectTransform rect, Vector2 start, Vector2 end)
+    {
+        Vector2 delta = end - start;
+        float length = Mathf.Max(1f, delta.magnitude);
+        rect.anchorMin = new Vector2(0f, 0f);
+        rect.anchorMax = new Vector2(0f, 0f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.anchoredPosition = (start + end) * 0.5f;
+        rect.sizeDelta = new Vector2(length, 6f);
+        rect.localRotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg);
+    }
+
+    float GetGuidePathLength(Vector2[] points)
+    {
+        if (points == null || points.Length < 2)
+        {
+            return 0f;
+        }
+
+        float length = 0f;
+        for (int i = 1; i < points.Length; i++)
+        {
+            length += Vector2.Distance(points[i - 1], points[i]);
+        }
+
+        return length;
+    }
+
+    void AnimateSpellGuideTraceDot()
+    {
+        if (spellGuideRoot == null ||
+            !spellGuideRoot.gameObject.activeSelf ||
+            spellGuideTraceDot == null ||
+            currentGuidePoints == null ||
+            currentGuidePoints.Length < 2 ||
+            currentGuidePathLength <= Mathf.Epsilon)
+        {
+            return;
+        }
+
+        float duration = Mathf.Max(0.1f, spellGuideTraceDuration);
+        float targetDistance = Mathf.Repeat(Time.unscaledTime / duration, 1f) * currentGuidePathLength;
+        float traversed = 0f;
+
+        for (int i = 1; i < currentGuidePoints.Length; i++)
+        {
+            Vector2 start = currentGuidePoints[i - 1];
+            Vector2 end = currentGuidePoints[i];
+            float segmentLength = Vector2.Distance(start, end);
+            if (traversed + segmentLength >= targetDistance)
+            {
+                float t = segmentLength <= Mathf.Epsilon ? 0f : (targetDistance - traversed) / segmentLength;
+                spellGuideTraceDot.rectTransform.anchoredPosition = Vector2.Lerp(start, end, t);
+                return;
+            }
+
+            traversed += segmentLength;
+        }
+
+        spellGuideTraceDot.rectTransform.anchoredPosition = currentGuidePoints[currentGuidePoints.Length - 1];
     }
 
     void UpdateTouchSpellButtonStates()

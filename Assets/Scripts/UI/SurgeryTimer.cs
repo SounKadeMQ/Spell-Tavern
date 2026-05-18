@@ -11,6 +11,7 @@ public class SurgeryTimer : MonoBehaviour
 
     private float remainingTime;
     private bool finished;
+    public float RemainingTime => remainingTime;
 
     void Start()
     {

@@ -245,7 +245,7 @@ public class MissionSelectController : MonoBehaviour
         selectedSummaryText.rectTransform.offsetMin = new Vector2(26f, 0f);
         selectedSummaryText.rectTransform.offsetMax = new Vector2(-26f, 0f);
 
-        beginButton = CreateButton("BeginButton", root, "OK", new Vector2(0.68f, 0.025f), new Vector2(0.81f, 0.075f));
+        beginButton = CreateButton("BeginButton", root, "Play", new Vector2(0.68f, 0.025f), new Vector2(0.81f, 0.075f));
         beginButton.onClick.AddListener(BeginSelectedMission);
 
         Button backButton = CreateButton("BackButton", root, "Back", new Vector2(0.83f, 0.025f), new Vector2(0.96f, 0.075f));

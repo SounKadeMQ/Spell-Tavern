@@ -36,7 +36,7 @@ public class PatientDialogueController : MonoBehaviour
     [SerializeField] private GameObject dialogueRoot;
     [SerializeField] private GameObject nextButtonRoot;
     [SerializeField] private PatientDialogueLine[] lines;
-    [SerializeField] private float characterRevealInterval = 0.05f;
+    [SerializeField] private float characterRevealInterval = 0.035f;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip voiceTestClip;
     [SerializeField] private SurgeryEndController surgeryEndController;
@@ -57,6 +57,7 @@ public class PatientDialogueController : MonoBehaviour
     private bool isWaitingBeforeShowingLine;
     private bool hasMatchedSpellSelection;
     private bool hasMatchedSpellCast;
+    private bool hasCompletedCurrentLineWait;
     private bool hasTransitionedInside;
     private bool hasTransitionedToPart;
     private int lastAdvanceFrame = -1;
@@ -131,10 +132,13 @@ public class PatientDialogueController : MonoBehaviour
             return;
         }
 
-        if (transitionRoutine != null ||
-            isWaitingForSpellSelect ||
-            isWaitingForSpellCast ||
-            isWaitingForWoundsCleared)
+        if (transitionRoutine != null)
+        {
+            return;
+        }
+
+        if ((isWaitingForSpellSelect || isWaitingForSpellCast || isWaitingForWoundsCleared) &&
+            !GameplayPause.IsPaused)
         {
             return;
         }
@@ -182,6 +186,8 @@ public class PatientDialogueController : MonoBehaviour
     void ShowCurrentLine()
     {
         SetDialogueVisible(true);
+        SetDialogueRaycasts(true);
+        SetDialogueAlpha(1f);
 
         if (speakerText == null || dialogueText == null)
         {
@@ -226,6 +232,7 @@ public class PatientDialogueController : MonoBehaviour
         isWaitingBeforeShowingLine = true;
         hasMatchedSpellSelection = false;
         hasMatchedSpellCast = false;
+        hasCompletedCurrentLineWait = false;
 
         if (isWaitingForSpellSelect && spellController != null)
         {
@@ -233,6 +240,8 @@ public class PatientDialogueController : MonoBehaviour
         }
 
         SetNextButtonVisible(false);
+        SetDialogueRaycasts(false);
+        SetDialogueVisible(false);
         GameplayPause.SetPaused(false);
         TryContinueAfterWait();
         return true;
@@ -299,7 +308,9 @@ public class PatientDialogueController : MonoBehaviour
         isWaitingBeforeShowingLine = false;
         hasMatchedSpellSelection = false;
         hasMatchedSpellCast = false;
+        hasCompletedCurrentLineWait = false;
         GameplayPause.SetPaused(false);
+        SetDialogueAlpha(1f);
         SetDialogueVisible(false);
     }
 
@@ -309,6 +320,39 @@ public class PatientDialogueController : MonoBehaviour
         {
             dialogueRoot.SetActive(visible);
         }
+    }
+
+    void SetDialogueRaycasts(bool enabled)
+    {
+        if (dialogueRoot == null)
+        {
+            return;
+        }
+
+        CanvasGroup canvasGroup = dialogueRoot.GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            canvasGroup = dialogueRoot.AddComponent<CanvasGroup>();
+        }
+
+        canvasGroup.interactable = enabled;
+        canvasGroup.blocksRaycasts = enabled;
+    }
+
+    void SetDialogueAlpha(float alpha)
+    {
+        if (dialogueRoot == null)
+        {
+            return;
+        }
+
+        CanvasGroup canvasGroup = dialogueRoot.GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            canvasGroup = dialogueRoot.AddComponent<CanvasGroup>();
+        }
+
+        canvasGroup.alpha = Mathf.Clamp01(alpha);
     }
 
     void SetNextButtonVisible(bool visible)
@@ -358,28 +402,8 @@ public class PatientDialogueController : MonoBehaviour
             return;
         }
 
-        if (isWaitingForSpellSelect || isWaitingForSpellCast || isWaitingForWoundsCleared)
-        {
-            ClearDialogueForOperationWait();
-            SetNextButtonVisible(false);
-            GameplayPause.SetPaused(false);
-            TryContinueAfterWait();
-        }
-    }
-
-    void ClearDialogueForOperationWait()
-    {
-        if (dialogueText != null)
-        {
-            dialogueText.text = string.Empty;
-        }
-
-        if (speakerText != null)
-        {
-            speakerText.text = string.Empty;
-        }
-
-        SetDialogueVisible(false);
+        SetNextButtonVisible(true);
+        GameplayPause.SetPaused(true);
     }
 
     void HandleSpellCastSucceeded(SpellController.SpellType spellType)
@@ -477,6 +501,7 @@ public class PatientDialogueController : MonoBehaviour
         isWaitingBeforeShowingLine = false;
         hasMatchedSpellSelection = false;
         hasMatchedSpellCast = false;
+        hasCompletedCurrentLineWait = true;
 
         if (shouldShowCurrentLineAfterWait)
         {
@@ -491,6 +516,7 @@ public class PatientDialogueController : MonoBehaviour
     void ContinueAfterWait()
     {
         GameplayPause.SetPaused(true);
+        hasCompletedCurrentLineWait = false;
         currentLineIndex++;
 
         if (currentLineIndex >= lines.Length)
@@ -507,6 +533,12 @@ public class PatientDialogueController : MonoBehaviour
         if (lines == null || currentLineIndex >= lines.Length)
         {
             EndDialogue();
+            return;
+        }
+
+        if (LineRequiresOperationWait(lines[currentLineIndex]) && !hasCompletedCurrentLineWait)
+        {
+            EnterOperationWait(lines[currentLineIndex]);
             return;
         }
 
@@ -537,14 +569,47 @@ public class PatientDialogueController : MonoBehaviour
         ContinueAfterWait();
     }
 
+    bool LineRequiresOperationWait(PatientDialogueLine line)
+    {
+        return line != null &&
+               (line.waitForSpellSelect ||
+                line.waitForSpellCast ||
+                line.waitForWoundsCleared);
+    }
+
+    void EnterOperationWait(PatientDialogueLine line)
+    {
+        if (line == null)
+        {
+            return;
+        }
+
+        ResolveSceneReferences();
+        isWaitingForSpellSelect = line.waitForSpellSelect;
+        isWaitingForSpellCast = line.waitForSpellCast;
+        isWaitingForWoundsCleared = line.waitForWoundsCleared;
+        hasMatchedSpellSelection = false;
+        hasMatchedSpellCast = false;
+
+        if (isWaitingForSpellSelect && spellController != null)
+        {
+            spellController.SetSelectedSpell(SpellController.SpellType.None);
+        }
+
+        SetNextButtonVisible(false);
+        SetDialogueRaycasts(false);
+        SetDialogueVisible(false);
+        GameplayPause.SetPaused(false);
+        TryContinueAfterWait();
+    }
+
     bool ShouldTransitionToInside(PatientDialogueLine line)
     {
         return line != null &&
                line.transitionToInside &&
                !hasTransitionedInside &&
                outsidePatientRoot != null &&
-               insidePatientRoot != null &&
-               transitionFadeOverlay != null;
+               insidePatientRoot != null;
     }
 
     bool ShouldTransitionToPart(PatientDialogueLine line)
@@ -553,7 +618,6 @@ public class PatientDialogueController : MonoBehaviour
                line.transitionToPart &&
                !hasTransitionedToPart &&
                partPatientRoot != null &&
-               transitionFadeOverlay != null &&
                currentPatientRoot != null &&
                currentPatientRoot != partPatientRoot;
     }
@@ -650,9 +714,7 @@ public class PatientDialogueController : MonoBehaviour
 
     void MoveCameraToWoundLocation(CutWound.WoundLocation woundLocation, GameObject targetRoot)
     {
-        SurgeryCameraTurnIn surgeryCamera = Camera.main != null
-            ? Camera.main.GetComponent<SurgeryCameraTurnIn>()
-            : FindAnyObjectByType<SurgeryCameraTurnIn>();
+        SurgeryCameraTurnIn surgeryCamera = ResolveSurgeryCamera();
 
         if (surgeryCamera == null)
         {
@@ -665,9 +727,7 @@ public class PatientDialogueController : MonoBehaviour
 
     void MoveCameraToSpawnArea(string spawnAreaId)
     {
-        SurgeryCameraTurnIn surgeryCamera = Camera.main != null
-            ? Camera.main.GetComponent<SurgeryCameraTurnIn>()
-            : FindAnyObjectByType<SurgeryCameraTurnIn>();
+        SurgeryCameraTurnIn surgeryCamera = ResolveSurgeryCamera();
 
         if (surgeryCamera == null)
         {
@@ -676,6 +736,15 @@ public class PatientDialogueController : MonoBehaviour
 
         Transform focusRoot = currentPatientRoot != null ? currentPatientRoot.transform : null;
         surgeryCamera.FocusForSpawnArea(spawnAreaId, focusRoot);
+    }
+
+    SurgeryCameraTurnIn ResolveSurgeryCamera()
+    {
+        SurgeryCameraTurnIn surgeryCamera = Camera.main != null
+            ? Camera.main.GetComponent<SurgeryCameraTurnIn>()
+            : null;
+
+        return surgeryCamera != null ? surgeryCamera : FindAnyObjectByType<SurgeryCameraTurnIn>(FindObjectsInactive.Include);
     }
 
     IEnumerator CompleteMissionAfterLine()

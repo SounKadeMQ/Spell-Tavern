@@ -27,6 +27,7 @@ public class SurgeryEndController : MonoBehaviour
     [SerializeField] private string retrySceneName = "PatientScene";
     [SerializeField] private string titleSceneName = "TitleScene";
     [SerializeField] private string missionSelectSceneName = "ChapterSelect";
+    [SerializeField] private string resultSceneName = "SurgeryResultScene";
     [SerializeField] private bool autoCompleteWhenAllWoundsClosed = true;
 
     private bool hasEnded;
@@ -87,12 +88,10 @@ public class SurgeryEndController : MonoBehaviour
         hasEnded = true;
         string rank = spellController != null ? spellController.GetCurrentScoreRank() : string.Empty;
         MissionFlowState.MarkCompleted(MissionFlowState.CurrentMission, rank);
+        SurgeryTimer timer = FindAnyObjectByType<SurgeryTimer>();
+        SurgeryResultState.Capture(MissionFlowState.CurrentMission, spellController, patient, timer, retrySceneName);
         GameplayPause.SetPaused(true);
-        RefreshResultTexts(completeScoreText, completeRankText, completeMissText);
-        EnsureMissionCompleteNavigation();
-        SetPanelVisible(gameOverRoot, false);
-        SetPanelVisible(missionCompleteRoot, true);
-        BringPanelToFront(missionCompleteRoot);
+        SceneManager.LoadScene(resultSceneName);
     }
 
     public void ShowGameOver()
@@ -105,7 +104,7 @@ public class SurgeryEndController : MonoBehaviour
         EmergencyTimeDilationEffect.Deactivate();
         hasEnded = true;
         GameplayPause.SetPaused(true);
-        RefreshResultTexts(gameOverScoreText, gameOverRankText, gameOverMissText);
+        RefreshResultTexts(gameOverScoreText, gameOverRankText, ref gameOverMissText, false);
         SetPanelVisible(missionCompleteRoot, false);
         SetPanelVisible(gameOverRoot, true);
         BringPanelToFront(gameOverRoot);
@@ -132,6 +131,21 @@ public class SurgeryEndController : MonoBehaviour
         SceneManager.LoadScene(missionSelectSceneName);
     }
 
+    public void ContinueToNextMission()
+    {
+        MissionData nextMission = FindNextMission();
+        if (nextMission == null)
+        {
+            ContinueToMissionSelect();
+            return;
+        }
+
+        EmergencyTimeDilationEffect.Deactivate();
+        GameplayPause.SetPaused(false);
+        MissionFlowState.SetCurrentMission(nextMission);
+        SceneManager.LoadScene(nextMission.sceneName);
+    }
+
     void HandlePatientDied(Patient deadPatient)
     {
         if (patient != null && deadPatient != patient)
@@ -142,26 +156,36 @@ public class SurgeryEndController : MonoBehaviour
         ShowGameOver();
     }
 
-    void RefreshResultTexts(TextMeshProUGUI scoreText, TextMeshProUGUI rankText, TextMeshProUGUI missText)
+    void RefreshResultTexts(TextMeshProUGUI scoreText, TextMeshProUGUI rankText, ref TextMeshProUGUI detailText, bool missionComplete)
     {
         if (spellController == null)
         {
             return;
         }
 
+        detailText = EnsureResultDetailText(detailText, rankText, missionComplete ? "CompleteBreakdownText" : "GameOverBreakdownText");
+
+        PrepareResultText(scoreText, 26f, 40f, TextAlignmentOptions.Center);
+        PrepareResultText(rankText, 22f, 34f, TextAlignmentOptions.Center);
+        PrepareResultText(detailText, 15f, 22f, TextAlignmentOptions.TopLeft);
+
         if (scoreText != null)
         {
-            scoreText.text = "Score: " + spellController.GetScore();
+            scoreText.text = (missionComplete ? "Mission Complete" : "Game Over") +
+                             "\nScore " + spellController.GetScore();
         }
 
         if (rankText != null)
         {
-            rankText.text = spellController.GetCurrentScoreRank();
+            rankText.text = "Rank " + spellController.GetCurrentScoreRank() +
+                            "   Misses " + spellController.GetMissCount();
         }
 
-        if (missText != null)
+        if (detailText != null)
         {
-            missText.text = "Misses: " + spellController.GetMissCount();
+            detailText.text = missionComplete
+                ? spellController.GetMissionCompleteBreakdown()
+                : spellController.GetGameOverBreakdown();
         }
     }
 
@@ -262,15 +286,45 @@ public class SurgeryEndController : MonoBehaviour
             mainMenuButton.pivot = new Vector2(0.5f, 0.5f);
             mainMenuButton.anchoredPosition = new Vector2(-140f, -150f);
             mainMenuButton.sizeDelta = new Vector2(220f, 64f);
+            MissionData nextMission = FindNextMission();
+            SetButtonLabel(mainMenuButton, nextMission != null ? "Next" : "Chapter Select");
+            Button nextButton = mainMenuButton.GetComponent<Button>();
+            if (nextButton != null)
+            {
+                nextButton.onClick.RemoveAllListeners();
+                nextButton.onClick.AddListener(ContinueToNextMission);
+            }
         }
 
-        if (FindChildRect(rootRect, "ChapterSelectButton") == null)
+        if (FindChildRect(rootRect, "RetryButton") == null)
         {
-            Button chapterSelectButton = CreateNavigationButton(rootRect, "ChapterSelectButton", "Chapter Select", new Vector2(140f, -150f));
-            chapterSelectButton.onClick.AddListener(ContinueToMissionSelect);
+            Button retryButton = CreateNavigationButton(rootRect, "RetryButton", "Retry", new Vector2(140f, -150f));
+            retryButton.onClick.AddListener(RetrySurgery);
         }
 
         missionCompleteNavigationBuilt = true;
+    }
+
+    MissionData FindNextMission()
+    {
+        MissionData currentMission = MissionFlowState.CurrentMission;
+        if (currentMission == null || string.IsNullOrWhiteSpace(currentMission.nextMissionId))
+        {
+            return null;
+        }
+
+        MissionData[] missions = Resources.LoadAll<MissionData>("MissionData");
+        for (int i = 0; i < missions.Length; i++)
+        {
+            MissionData mission = missions[i];
+            if (mission != null &&
+                string.Equals(mission.missionId, currentMission.nextMissionId, System.StringComparison.Ordinal))
+            {
+                return mission;
+            }
+        }
+
+        return null;
     }
 
     RectTransform FindChildRect(Transform root, string childName)
@@ -323,5 +377,70 @@ public class SurgeryEndController : MonoBehaviour
         label.enableWordWrapping = false;
 
         return button;
+    }
+
+    void SetButtonLabel(RectTransform buttonRect, string labelText)
+    {
+        if (buttonRect == null)
+        {
+            return;
+        }
+
+        TextMeshProUGUI label = buttonRect.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (label != null)
+        {
+            label.text = labelText;
+        }
+    }
+
+    TextMeshProUGUI EnsureResultDetailText(TextMeshProUGUI detailText, TextMeshProUGUI anchorText, string objectName)
+    {
+        if (detailText != null)
+        {
+            return detailText;
+        }
+
+        Transform parent = anchorText != null ? anchorText.transform.parent : null;
+        if (parent == null)
+        {
+            return null;
+        }
+
+        Transform existing = parent.Find(objectName);
+        if (existing != null && existing.TryGetComponent(out TextMeshProUGUI existingText))
+        {
+            return existingText;
+        }
+
+        GameObject textObject = new GameObject(objectName, typeof(RectTransform), typeof(TextMeshProUGUI));
+        textObject.transform.SetParent(parent, false);
+
+        RectTransform rect = textObject.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.5f, 0.5f);
+        rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.anchoredPosition = new Vector2(0f, -42f);
+        rect.sizeDelta = new Vector2(760f, 170f);
+
+        TextMeshProUGUI text = textObject.GetComponent<TextMeshProUGUI>();
+        text.color = new Color(0.92f, 0.86f, 0.76f, 1f);
+        return text;
+    }
+
+    void PrepareResultText(TextMeshProUGUI text, float minSize, float maxSize, TextAlignmentOptions alignment)
+    {
+        if (text == null)
+        {
+            return;
+        }
+
+        text.rectTransform.localScale = Vector3.one;
+        text.enableAutoSizing = true;
+        text.fontSizeMin = minSize;
+        text.fontSizeMax = maxSize;
+        text.enableWordWrapping = true;
+        text.overflowMode = TextOverflowModes.Overflow;
+        text.alignment = alignment;
+        text.color = new Color(0.92f, 0.86f, 0.76f, 1f);
     }
 }

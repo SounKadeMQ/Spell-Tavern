@@ -19,7 +19,7 @@ public class PreOpDialogueController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private string nextSceneName = "PatientScene";
     [SerializeField] private DialogueLine[] lines;
-    [SerializeField] private float characterRevealInterval = 0.5f;
+    [SerializeField] private float characterRevealInterval = 0.035f;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip voiceTestClip;
     [SerializeField] private Color backgroundBaseColor = new Color(0.07f, 0.13f, 0.16f, 1f);

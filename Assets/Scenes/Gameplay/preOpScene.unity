@@ -415,7 +415,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.08
+  m_Volume: 0.22
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1033,7 +1033,7 @@ MonoBehaviour:
     text: The patient has three external wounds that we know of.
   - speaker: Nurse
     text: Come follow me into the operation area.
-  characterRevealInterval: 0.1
+  characterRevealInterval: 0.035
   audioSource: {fileID: 1546726103}
   voiceTestClip: {fileID: 8300000, guid: 00ce4035e7551f34aa32aa956e3c7733, type: 3}
 --- !u!4 &1546726102

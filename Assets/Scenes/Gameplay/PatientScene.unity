@@ -2345,14 +2345,14 @@ MonoBehaviour:
   minimumSampleCount: 3
   minimumStrokeLength: 2
   referenceOrthographicSize: 5
-  minimumLengthCoverage: 0.8
+  minimumLengthCoverage: 0.65
   normalizedSampleCount: 64
-  normalizedPathTolerance: 0.18
-  minimumPathMatchRatio: 0.85
-  normalizedEndpointTolerance: 0.12
-  normalizedMidpointTolerance: 0.2
-  maximumPointDistance: 0.35
-  maximumAverageDistance: 0.3
+  normalizedPathTolerance: 0.24
+  minimumPathMatchRatio: 0.72
+  normalizedEndpointTolerance: 0.22
+  normalizedMidpointTolerance: 0.3
+  maximumPointDistance: 0.46
+  maximumAverageDistance: 0.36
 --- !u!120 &863098231
 LineRenderer:
   serializedVersion: 3
@@ -4830,7 +4830,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.08
+  m_Volume: 0.22
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -5680,23 +5680,23 @@ MonoBehaviour:
   score: 0
   missCount: 0
   waterThresholds:
-    perfectThreshold: 0.05
-    greatThreshold: 0.07
+    perfectThreshold: 0.04
+    greatThreshold: 0.065
     goodThreshold: 0.09
     ehThreshold: 0.12
   earthThresholds:
-    perfectThreshold: 0.05
-    greatThreshold: 0.07
-    goodThreshold: 0.09
-    ehThreshold: 0.12
+    perfectThreshold: 0.045
+    greatThreshold: 0.075
+    goodThreshold: 0.105
+    ehThreshold: 0.14
   fireThresholds:
     perfectThreshold: 0.05
-    greatThreshold: 0.07
-    goodThreshold: 0.09
-    ehThreshold: 0.12
+    greatThreshold: 0.08
+    goodThreshold: 0.115
+    ehThreshold: 0.15
   idealCastTime: 0.85
   maxCastTime: 2.2
-  speedAccuracyBonus: 0.35
+  speedAccuracyBonus: 0
   speedAccuracyPenalty: 0.2
   quickCastThreshold: 0.95
   runeRotationSmoothTime: 0.12
@@ -7167,7 +7167,7 @@ MonoBehaviour:
     requiredSpell: 5
     requiredWoundLocation: 2
     requiredSpawnAreaId: 
-  characterRevealInterval: 0.1
+  characterRevealInterval: 0.035
   audioSource: {fileID: 5268265412323231569}
   voiceTestClip: {fileID: 8300000, guid: 00ce4035e7551f34aa32aa956e3c7733, type: 3}
   surgeryEndController: {fileID: 745434966}

@@ -171,13 +171,13 @@ MonoBehaviour:
     activateSpawnAreaId: 
     triggerEmergencyTimeDilation: 0
     triggerEmergencyImpact: 0
-    missionCompleteFlag: 1
+    missionCompleteFlag: 0
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: FinalRupture
   - speaker: Nurse
     text: ...! You're gonna fall-
-    waitForSpellSelect: 1
+    waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
     waitBeforeShowingLine: 0
