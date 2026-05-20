@@ -28,10 +28,24 @@ MonoBehaviour:
   preOpLines: []
   surgeryLines: []
   intermissionLines:
-  - speaker: Nurse
-    text: "It's certainly \t\t... a tavern."
+  - speaker: 'Narrator '
+    text: Inside the frontier town of Spellshire at the local tavern is where this
+      story begins. A nurse enters the mostly empty tavern in the early morning and
+      your setting up for another day of serving patrons.
   - speaker: Player
-    text: Yeah, thats correct...?
+    text: 'Welcome to the humble tavern of Spellshire, what are looking for at a
+      tavern this early in the morning? '
   - speaker: Nurse
-    text: Let's just get our job started...
+    text: Hello I'm [name] and saw the job notice for a nurse here.
+  - speaker: Player
+    text: Yes, I've been looking to hire a nurse recently due to the amount of injured
+      adventurers coming to the tavern recently and don't have the knowledge on how
+      to help them.
+  - speaker: Player
+    text: 'I''m looking for a nurse to guide and assist me on using magic to heal
+      adventurers. I''ve only used it to slay monsters back in my adventuring days
+      but now I need help on how to use my skills to heal instead. '
+  - speaker: Nurse
+    text: 'Well this sounds like a job I can handle let me guide you through some
+      of the basics.  '
   woundLayout: []
