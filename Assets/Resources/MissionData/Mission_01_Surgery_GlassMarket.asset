@@ -26,14 +26,29 @@ MonoBehaviour:
   nextMissionId: ch1_surgery_02
   unlockedByDefault: 0
   preOpLines:
-  - speaker: Nurse
-    text: 'First patient of the night: Angie. Two outside cuts, steady pulse.'
-  - speaker: Nurse
-    text: Keep her calm, trace the Fire rune cleanly, and do not waste Water unless
-      her blood drops.
+  - speaker: Nurse Rina
+    text: 'We have your first living patient coming in now. '
+  - speaker: Nurse Rina
+    text: Her name is Annie and she is an aspiring young adventurer.
+  - speaker: Annie
+    text: Hi, I've just been scratched up a bit after my first adventure fighting
+      some beasts in the nearby plains.
+  - speaker: Annie
+    text: 'I was planning to go to the church to get this taken care of but found
+      out the prices for a basic treatment was more than what I was able to earn
+      today. '
+  - speaker: Player
+    text: 'You''ve come to the right place at the right time, we just opened up this
+      infirmary at the tavern today so don''t worry about the price for the treatment.  '
+  - speaker: Player
+    text: Grab some food after you get treated and I'll concider your debt for this
+      treatment paid.
+  - speaker: 'Nurse Rina '
+    text: 'I''ve got the components ready, lets get this treatment started now. '
   surgeryLines:
   - speaker: Angie
-    text: I can feel the cut pulsing. Please make it quick.
+    text: I can feel the stinging sensation from the cuts. Could you please make
+      this quick.
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -48,11 +63,11 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
-  - speaker: Angie
-    text: 'Let''s cast some Water first, to top up the blood of our patient.
+  - speaker: Nurse Rina
+    text: 'Let''s cast the Water spell first to top up the blood of our patient.
 
       Select
-      the Water spell.'
+      the Water spell on the bottom left of the screen.'
     waitForSpellSelect: 1
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -67,7 +82,7 @@ MonoBehaviour:
     requiredSpell: 1
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
-  - speaker: Angie
+  - speaker: Nurse Rina
     text: Great! Now just follow the rune, and cast the spell.
     waitForSpellSelect: 0
     waitForSpellCast: 1
@@ -83,7 +98,7 @@ MonoBehaviour:
     requiredSpell: 1
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
-  - speaker: Angie
+  - speaker: Nurse Rina
     text: Great work! Let's deal with the cuts now.
     waitForSpellSelect: 0
     waitForSpellCast: 0
@@ -99,8 +114,11 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
-  - speaker: Nurse
-    text: Select Fire. This is an outside wound, so keep the work clean and direct.
+  - speaker: Nurse Rina
+    text: ' This is an shallow wound, so keep the work clean and direct with a Fire
+      Spell.
+
+      Select the Fire spell on the bottom left of the screen.'
     waitForSpellSelect: 1
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -116,7 +134,7 @@ MonoBehaviour:
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
   - speaker: Nurse
-    text: Close both outside cuts with Fire.
+    text: Close both shallow wounds with the Fire spell.
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 1
@@ -132,7 +150,23 @@ MonoBehaviour:
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
   - speaker: Angie
-    text: The sting is gone. I can breathe again.
+    text: 'Thank you so much. '
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 1
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: 
+  - speaker: Angie
+    text: I no longer feel the stinging sensation and can breathe easy again.
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0

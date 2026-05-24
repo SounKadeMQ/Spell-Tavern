@@ -26,14 +26,28 @@ MonoBehaviour:
   nextMissionId: ch1_intermission_01
   unlockedByDefault: 0
   preOpLines:
-  - speaker: Nurse
-    text: Mira is next. The chest laceration is controlled enough... but there is
-      a second tear in the left leg.
-  - speaker: Mira
-    text: I can still feel the glass pulling whenever I breathe.
+  - speaker: Nurse Rina
+    text: You've done well on your first operation, but don't rest too easy, a couple
+      other adventurers are waiting for treatments as well.
+  - speaker: Player
+    text: 'Alright, that wasn''t too hard, I think I can handle another patient. '
+  - speaker: Nurse Rina
+    text: Alright, I'll bring the next patient in.
+  - speaker: Jacob
+    text: 'I was fighting some dire wolves in the forest and got hurt pretty bad. '
+  - speaker: Jacob
+    text: 'I was fighting some dire wolves in the forest and got hurt pretty bad. '
+  - speaker: Jacob
+    text: 'While leaving I spotted some priests on a pilgramage into the forest so
+      I asked them if I could get my wounds treated then and there. I was ignored
+      by them while they marched on without a single response. '
+  - speaker: Jacob
+    text: So I'm here to avoid the church for treatment.
+  - speaker: Player
+    text: 'Well you''ve come to the right place, we can treat your wounds here. '
   surgeryLines:
-  - speaker: Mira
-    text: Ow...
+  - speaker: Jacob
+    text: I'm staying conscious right now with my spite towards the church.
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -49,7 +63,11 @@ MonoBehaviour:
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
   - speaker: Nurse
-    text: Lacerations do not close cleanly with Fire first. Select Earth.
+    text: 'Lacerations do not close with a Fire spell, it requires a Earth spell
+      first before a Fire spell.
+
+      Select the Earth spell on the bottom left
+      of the screen.'
     waitForSpellSelect: 1
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -65,7 +83,7 @@ MonoBehaviour:
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
   - speaker: Nurse
-    text: Cast Earth on the chest laceration to bind the split edges.
+    text: Cast the Earth spell on the chest laceration to bind the split edges.
     waitForSpellSelect: 0
     waitForSpellCast: 1
     waitForWoundsCleared: 0
@@ -81,7 +99,7 @@ MonoBehaviour:
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
   - speaker: Nurse
-    text: Good. Now select Fire and finish the sealed chest wound.
+    text: Good. Now select Fire and cauterise the sealed chest wound.
     waitForSpellSelect: 1
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -94,22 +112,6 @@ MonoBehaviour:
     triggerEmergencyImpact: 0
     missionCompleteFlag: 0
     requiredSpell: 5
-    requiredWoundLocation: 0
-    requiredSpawnAreaId: 
-  - speaker: Nurse
-    text: Close the chest laceration with Fire.
-    waitForSpellSelect: 0
-    waitForSpellCast: 0
-    waitForWoundsCleared: 1
-    waitBeforeShowingLine: 0
-    transitionToInside: 0
-    transitionToPart: 0
-    focusSpawnAreaId: 
-    activateSpawnAreaId: 
-    triggerEmergencyTimeDilation: 0
-    triggerEmergencyImpact: 0
-    missionCompleteFlag: 0
-    requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
   - speaker: Nurse
@@ -144,8 +146,8 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 2
     requiredSpawnAreaId: 
-  - speaker: Mira
-    text: I can stand again. That is enough for tonight.
+  - speaker: Jacob
+    text: I can stand again. Let me rest up for the night.
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
