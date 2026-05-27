@@ -41,7 +41,7 @@ MonoBehaviour:
     text: 'You''ve come to the right place at the right time, we just opened up this
       infirmary at the tavern today so don''t worry about the price for the treatment.  '
   - speaker: Player
-    text: Grab some food after you get treated and I'll concider your debt for this
+    text: Grab some food after you get treated and I'll consider your debt for this
       treatment paid.
   - speaker: 'Nurse Rina '
     text: 'I''ve got the components ready, lets get this treatment started now. '

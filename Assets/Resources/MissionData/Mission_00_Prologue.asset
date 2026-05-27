@@ -31,12 +31,12 @@ MonoBehaviour:
   - speaker: 'Narrator '
     text: Inside the frontier town of Spellshire at the local tavern is where this
       story begins. A nurse enters the mostly empty tavern in the early morning while
-      your setting up for another day of serving patrons.
+      you're setting up for another day of serving patrons.
   - speaker: Player
-    text: 'Welcome to the humble tavern of Spellshire, what are looking for at a
-      tavern this early in the morning? '
+    text: 'Welcome to the humble tavern of Spellshire, what are you looking for at
+      a tavern this early in the morning? '
   - speaker: Nurse Rina
-    text: Hello I'm Rina and saw the job notice for a nurse here.
+    text: Hello, I'm Rina and saw the job notice for a nurse here.
   - speaker: Player
     text: Yes, I've been looking to hire a nurse recently due to the amount of injured
       adventurers coming to the tavern recently and don't have the knowledge on how
@@ -46,6 +46,6 @@ MonoBehaviour:
       adventurers. I''ve only used it to slay monsters back in my adventuring days
       but now I need help on how to use my skills to heal instead. '
   - speaker: Nurse Rina
-    text: 'Well this sounds like a job I can handle let me guide you through some
+    text: 'Well this sounds like a job I can handle, let me guide you through some
       of the basics.  '
   woundLayout: []
