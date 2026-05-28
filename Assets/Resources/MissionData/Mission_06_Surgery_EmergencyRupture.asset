@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Mission_06_Surgery_EmergencyRupture
   m_EditorClassIdentifier: Assembly-CSharp::MissionData
   missionId: ch1_surgery_final
-  displayName: A Real Sage
+  displayName: A Chaotic Morning
   episodeCode: 1-F
   episodeOrder: 6
   chapterLabel: Chapter 1

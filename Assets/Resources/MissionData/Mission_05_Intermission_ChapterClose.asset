@@ -13,14 +13,13 @@ MonoBehaviour:
   m_Name: Mission_05_Intermission_ChapterClose
   m_EditorClassIdentifier: Assembly-CSharp::MissionData
   missionId: ch1_intermission_02
-  displayName: Chaos at the INN
+  displayName: A Peaceful Night
   episodeCode: INT-4
   episodeOrder: 5
   chapterLabel: Chapter 1
   kind: 1
   patientData: {fileID: 0}
-  missionSummary: A headache hits between patients, then an emergency case breaks
-    the quiet before the chapter can close.
+  missionSummary: A quiet night, a morning surprise.
   sceneName: VNScene
   surgeryMusicResource: 
   nextMissionId: ch1_surgery_final
@@ -28,12 +27,19 @@ MonoBehaviour:
   preOpLines: []
   surgeryLines: []
   intermissionLines:
-  - speaker: 
-    text: You feel a headache settle behind your eyes.
+  - speaker: Narrator
+    text: 'You start closing down the store, clearing up tables and sweeping up the
+      floors. '
+  - speaker: Nurse Rina
+    text: 'Thats a great first day at work, I''m going to head out. '
+  - speaker: Nurse Rina
+    text: See you tomorrow.
   - speaker: Player
-    text: Another day... Ugh... what a horrible headache...
-  - speaker: Nurse
-    text: You alright there? Take a breather.
-  - speaker: Player
-    text: I'm okay... don't worry.
+    text: Thank you for being a great nurse see you tomorrow.
+  - speaker: Narrator
+    text: You head to bed in your own room of the tavern and complete your nightly
+      routine before heading to bed.
+  - speaker: Narrator
+    text: at the crack of dawn you are woken up by a loud knocking on the door of
+      the tavern and cries for help.
   woundLayout: []
