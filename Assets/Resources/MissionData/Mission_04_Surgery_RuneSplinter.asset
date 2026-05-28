@@ -26,13 +26,14 @@ MonoBehaviour:
   nextMissionId: ch1_intermission_02
   unlockedByDefault: 0
   preOpLines:
-  - speaker: Nurse
-    text: Sera needs a full check. Chest, leg, and right arm, in that order.
   - speaker: Sera
-    text: I can stay still. Just tell me when to breathe.
+    text: Please *pant* need *pant* first aid. *pant*
+  - speaker: Player
+    text: 'Bring her to the clinic quickly. Were giving her immediate care.  '
   surgeryLines:
-  - speaker: Nurse
-    text: Okay doctor, I need to leave you alone with the patient.
+  - speaker: Nurse Rina
+    text: Okay, she's going to need work done on her chest, arm and leg, this is
+      going to be a long procedure.
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -47,7 +48,7 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: Chest
-  - speaker: 
+  - speaker: Player
     text: Chest first. Two cuts and one laceration.
     waitForSpellSelect: 0
     waitForSpellCast: 0
@@ -63,8 +64,8 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: Chest
-  - speaker: 
-    text: Chest is clear. Move to the leg.
+  - speaker: Player
+    text: Chest is clear. Moving onto the leg.
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -80,7 +81,7 @@ MonoBehaviour:
     requiredWoundLocation: 0
     requiredSpawnAreaId: LeftLeg
   - speaker: Sera
-    text: I feel it in my leg now.
+    text: I'm feeling much better now but my arm and leg still hurts.
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 1
@@ -95,8 +96,8 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: LeftLeg
-  - speaker: 
-    text: Leg is clear. Move to the right arm.
+  - speaker: Player
+    text: Leg done. Moving onto the right arm.
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -111,7 +112,7 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: RightArm
-  - speaker: 
+  - speaker: Player
     text: Two cuts on the arm.
     waitForSpellSelect: 0
     waitForSpellCast: 0
@@ -128,7 +129,8 @@ MonoBehaviour:
     requiredWoundLocation: 0
     requiredSpawnAreaId: RightArm
   - speaker: Sera
-    text: My hand stopped shaking.
+    text: 'Thank you so much for the care, this was much more than I was ever expecting
+      from here. '
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -143,8 +145,25 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: RightArm
-  - speaker: 
-    text: I'm back... Oh? Well done!
+  - speaker: Sera
+    text: If you ever need help from an adventurer, I'll lend my services
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 1
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: RightArm
+  - speaker: Player
+    text: I'll take you up on that offer if I ever need adventurers but its time
+      to call it a night.
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
