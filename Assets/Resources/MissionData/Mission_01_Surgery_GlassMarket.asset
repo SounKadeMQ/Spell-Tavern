@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Mission_01_Surgery_GlassMarket
   m_EditorClassIdentifier: Assembly-CSharp::MissionData
   missionId: ch1_surgery_01
-  displayName: Under The Spell
+  displayName: Young Adventurer
   episodeCode: 1-1
   episodeOrder: 1
   chapterLabel: Chapter 1
   kind: 0
   patientData: {fileID: 11400000, guid: d76f5b62e52517145b650e24ea3e9016, type: 2}
-  missionSummary: Angie has two simple outside cuts. This first operation teaches
+  missionSummary: Annie has two simple outside cuts. This first operation teaches
     spell selection, clean Fire casts, and basic wound targeting.
   sceneName: preOpScene
   surgeryMusicResource: Audio/Music/NormalSurgery

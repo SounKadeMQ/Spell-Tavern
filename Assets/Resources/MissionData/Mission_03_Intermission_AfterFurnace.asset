@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Mission_03_Intermission_AfterFurnace
   m_EditorClassIdentifier: Assembly-CSharp::MissionData
   missionId: ch1_intermission_01
-  displayName: The Issue Within
+  displayName: The Dinner Rush
   episodeCode: INT-1
   episodeOrder: 3
   chapterLabel: Chapter 1
   kind: 1
   patientData: {fileID: 0}
-  missionSummary: A story chapter in the tavern clinic after Mira's operation. The
-    team realizes the injuries are connected to a cracked ward-stone.
+  missionSummary: 'A story chapter in the tavern after Jacob''s operation, catching
+    up on how the player is fairing with the work and how others are feeling. '
   sceneName: VNScene
   surgeryMusicResource: 
   nextMissionId: ch1_surgery_03
@@ -28,12 +28,21 @@ MonoBehaviour:
   preOpLines: []
   surgeryLines: []
   intermissionLines:
-  - speaker: Nurse
-    text: Two unrelated accidents in one evening is bad luck...
   - speaker: Player
-    text: Really now?
-  - speaker: Nurse
-    text: Yes, REALLY.
+    text: That operation was tough, but I was able to get through it with your help
+      Rina.
+  - speaker: Nurse Rina
+    text: 'You''ve done well for your first day on the job so far. '
+  - speaker: Nurse Rina
+    text: 'Enjoy a well deserved rest from doing surgeries. '
+  - speaker: Annie
+    text: 'The food is great here and thanks for treating me earlier. '
   - speaker: Player
-    text: Huh. Okay then.
+    text: 'Glad you like the food, and you''re welcome to come for treatments whenever
+      you need. '
+  - speaker: Player
+    text: 'Just keep supporting the tavern with your patronage. '
+  - speaker: Narrator
+    text: You keep working during the dinner rush serving the patrons but right before
+      the day ends a heavily wounded adventurer walks in.
   woundLayout: []

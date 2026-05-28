@@ -36,8 +36,6 @@ MonoBehaviour:
   - speaker: Jacob
     text: 'I was fighting some dire wolves in the forest and got hurt pretty bad. '
   - speaker: Jacob
-    text: 'I was fighting some dire wolves in the forest and got hurt pretty bad. '
-  - speaker: Jacob
     text: 'While leaving I spotted some priests on a pilgramage into the forest so
       I asked them if I could get my wounds treated then and there. I was ignored
       by them while they marched on without a single response. '
@@ -62,7 +60,7 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
-  - speaker: Nurse
+  - speaker: Nurse Rina
     text: 'Lacerations do not close with a Fire spell, it requires a Earth spell
       first before a Fire spell.
 
@@ -82,7 +80,7 @@ MonoBehaviour:
     requiredSpell: 3
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
-  - speaker: Nurse
+  - speaker: Nurse Rina
     text: Cast the Earth spell on the chest laceration to bind the split edges.
     waitForSpellSelect: 0
     waitForSpellCast: 1
@@ -98,7 +96,7 @@ MonoBehaviour:
     requiredSpell: 3
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
-  - speaker: Nurse
+  - speaker: Nurse Rina
     text: Good. Now select Fire and cauterise the sealed chest wound.
     waitForSpellSelect: 1
     waitForSpellCast: 0
@@ -114,7 +112,7 @@ MonoBehaviour:
     requiredSpell: 5
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
-  - speaker: Nurse
+  - speaker: Nurse Rina
     text: There is another laceration in the left leg.
     waitForSpellSelect: 0
     waitForSpellCast: 0
@@ -130,7 +128,7 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
-  - speaker: Nurse
+  - speaker: Nurse Rina
     text: Stabilize it with Earth, then finish with Fire.
     waitForSpellSelect: 0
     waitForSpellCast: 0
