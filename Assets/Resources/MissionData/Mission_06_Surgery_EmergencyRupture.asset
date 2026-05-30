@@ -19,20 +19,31 @@ MonoBehaviour:
   chapterLabel: Chapter 1
   kind: 0
   patientData: {fileID: 11400000, guid: 9c0d8ddc9a304418bb7ddc6e81fb73a5, type: 2}
-  missionSummary: A low-blood emergency patient arrives as the doctor's headache
-    peaks. Clear the first chest wounds, then survive the rupture under slowed time.
+  missionSummary: A low-blood emergency patient arrives in the early morning inturupting
+    your sleep.
   sceneName: preOpScene
   surgeryMusicResource: 
   nextMissionId: 
   unlockedByDefault: 0
   preOpLines:
+  - speaker: Narrator
+    text: 'After being jolted awake from the sudden noise, you wake up and go to
+      check on whats happened. you open the front door of your tavern and are faced
+      with three adventures. Two adventurers carrying their injured comrade. '
+  - speaker: Healthy Adventurer 1
+    text: HELP! OUR FRIEND HERE IS HEAVILY INJURED! WE HEARD YOU HELP HEAL PEOPLE
+      HERE.
+  - speaker: Healthy Adventurer 2
+    text: 'THE CHURCH IS CLOSED AT THIS HOUR AND THIS IS OUR LAST HOPE. '
   - speaker: Player
-    text: He is crashing. Thirty blood at most, and the chest is open everywhere.
-  - speaker: Nurse
-    text: Your headache does not matter. Keep your hands steady.
+    text: 'Alright, let me bring him to the clinic we have here. '
+  - speaker: Player
+    text: I don't have my nurse with me right now, but I'll see what I can do to
+      help patch him up.
   surgeryLines:
-  - speaker: Nurse
-    text: Oh my...! We need to cast water, NOW! Select Water with D!
+  - speaker: Player
+    text: He's been losing a lot of blood on his way here, we should start with a
+      water spell.
     waitForSpellSelect: 1
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -47,8 +58,8 @@ MonoBehaviour:
     requiredSpell: 1
     requiredWoundLocation: 0
     requiredSpawnAreaId: Chest
-  - speaker: Nurse
-    text: Good, now cast water, so we can restore some of the patients blood!
+  - speaker: Player
+    text: Now for the water spell
     waitForSpellSelect: 0
     waitForSpellCast: 1
     waitForWoundsCleared: 0
@@ -63,8 +74,8 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: FinalRupture
-  - speaker: Nurse
-    text: Great work... We need to deal with these sudden cuts now....
+  - speaker: Player
+    text: Now to deal with all the cuts
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -79,8 +90,8 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: FinalRupture
-  - speaker: Nurse
-    text: 'Seven cuts on the chest we need to clear. Keep water on standby! '
+  - speaker: PLayer
+    text: 'A tonne of cuts on the chest we need to clear.  '
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 1
@@ -111,8 +122,8 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: Rupture
-  - speaker: Nurse
-    text: What the...!? Are you o-...
+  - speaker: Player
+    text: Still so many cuts to go, gotta stay with me here.
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 1
@@ -128,7 +139,7 @@ MonoBehaviour:
     requiredWoundLocation: 0
     requiredSpawnAreaId: Rupture
   - speaker: Emergency Patient
-    text: Hey, PLAYER!? What's happening!?
+    text: '*grunt* It hurts like hell but I''m holding on.'
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -143,8 +154,8 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: FinalRupture
-  - speaker: Nurse
-    text: O-one more giant laceration!
+  - speaker: Player
+    text: 'finally onto the big gash through your chest. '
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 1
@@ -159,8 +170,8 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: FinalRupture
-  - speaker: Nurse
-    text: W-what was that? You cleared all those wounds in an instant...
+  - speaker: 'Emergency Patient '
+    text: AHHHHHH!!!
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
@@ -175,8 +186,59 @@ MonoBehaviour:
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: FinalRupture
-  - speaker: Nurse
-    text: ...! You're gonna fall-
+  - speaker: Player
+    text: 'You''re alright now, all the life threatening wounds have been cleaned
+      up. '
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 1
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: FinalRupture
+  - speaker: Player
+    text: 'You might wanna lay of adventuring for a bit and let your natural recovering
+      do its work for a bit before heading out again. '
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 1
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: FinalRupture
+  - speaker: Healthy Adventurer 1
+    text: We'll come back tonight to repay you for doing this for our friend. but
+      for now were going to get some rest.
+    waitForSpellSelect: 0
+    waitForSpellCast: 0
+    waitForWoundsCleared: 0
+    waitBeforeShowingLine: 0
+    transitionToInside: 0
+    transitionToPart: 0
+    focusSpawnAreaId: 
+    activateSpawnAreaId: 
+    triggerEmergencyTimeDilation: 0
+    triggerEmergencyImpact: 0
+    missionCompleteFlag: 1
+    requiredSpell: 0
+    requiredWoundLocation: 0
+    requiredSpawnAreaId: FinalRupture
+  - speaker: Emergency Patient
+    text: Thank you for this, I'll lay of adventuring for a bit and heal up
     waitForSpellSelect: 0
     waitForSpellCast: 0
     waitForWoundsCleared: 0
