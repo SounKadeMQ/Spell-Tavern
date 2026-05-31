@@ -115,7 +115,7 @@ MonoBehaviour:
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
   - speaker: Nurse Rina
-    text: ' This is an shallow wound, so keep the work clean and direct with a Fire
+    text: ' This is a shallow wound, so keep the work clean and direct with a Fire
       Spell.
 
       Select the Fire spell on the bottom left of the screen.'

@@ -157,7 +157,7 @@ MonoBehaviour:
     activateSpawnAreaId: 
     triggerEmergencyTimeDilation: 0
     triggerEmergencyImpact: 0
-    missionCompleteFlag: 1
+    missionCompleteFlag: 0
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: RightArm

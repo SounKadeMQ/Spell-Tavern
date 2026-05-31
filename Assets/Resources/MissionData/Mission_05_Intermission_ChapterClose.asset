@@ -28,8 +28,8 @@ MonoBehaviour:
   surgeryLines: []
   intermissionLines:
   - speaker: Narrator
-    text: 'You start closing down the store, clearing up tables and sweeping up the
-      floors. '
+    text: 'You start closing down the tavern, clearing up tables and sweeping up
+      the floors. '
   - speaker: Nurse Rina
     text: 'Thats a great first day at work, I''m going to head out. '
   - speaker: Nurse Rina
