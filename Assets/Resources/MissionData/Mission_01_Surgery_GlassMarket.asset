@@ -34,9 +34,9 @@ MonoBehaviour:
     text: Hi, I've just been scratched up a bit after my first adventure fighting
       some beasts in the nearby plains.
   - speaker: Annie
-    text: 'I was planning to go to the church to get this taken care of but found
-      out the prices for a basic treatment was more than what I was able to earn
-      today. '
+    text: 'My was planning to go to the church to get this taken care of. But after
+      visiting, I found the prices for even a basic treatment was more than what
+      I''m able to earn today. '
   - speaker: Player
     text: 'You''ve come to the right place at the right time, we just opened up this
       infirmary at the tavern today so don''t worry about the price for the treatment.  '
@@ -115,7 +115,7 @@ MonoBehaviour:
     requiredWoundLocation: 0
     requiredSpawnAreaId: 
   - speaker: Nurse Rina
-    text: ' This is a shallow wound, so keep the work clean and direct with a Fire
+    text: 'This is a shallow wound, so keep the work clean and direct with a Fire
       Spell.
 
       Select the Fire spell on the bottom left of the screen.'
@@ -161,7 +161,7 @@ MonoBehaviour:
     activateSpawnAreaId: 
     triggerEmergencyTimeDilation: 0
     triggerEmergencyImpact: 0
-    missionCompleteFlag: 1
+    missionCompleteFlag: 0
     requiredSpell: 0
     requiredWoundLocation: 0
     requiredSpawnAreaId: 

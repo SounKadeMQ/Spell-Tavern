@@ -43,6 +43,6 @@ MonoBehaviour:
   - speaker: Player
     text: 'Just keep supporting the tavern with your patronage. '
   - speaker: Narrator
-    text: You keep working during the dinner rush serving the patrons but right before
-      the day ends a heavily wounded adventurer walks in.
+    text: You keep working during the dinner rush serving the patrons, but right
+      before the day ends a heavily wounded adventurer walks in.
   woundLayout: []
