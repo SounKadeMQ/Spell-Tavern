@@ -28,8 +28,10 @@ MonoBehaviour:
   preOpLines:
   - speaker: Narrator
     text: 'After being jolted awake from the sudden noise, you wake up and go to
-      check on whats happened. you open the front door of your tavern and are faced
-      with three adventures. Two adventurers carrying their injured comrade. '
+      check on whats happened. '
+  - speaker: Narrator
+    text: You open the front door of your tavern and are faced with three adventures.
+      Two adventurers carrying their injured comrade.
   - speaker: Healthy Adventurer 1
     text: HELP! OUR FRIEND HERE IS HEAVILY INJURED! WE HEARD YOU HELP HEAL PEOPLE
       HERE.
